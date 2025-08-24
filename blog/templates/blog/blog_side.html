@@ -1,0 +1,25 @@
+{% load static %}
+
+
+<aside class="col-md-4 blog-sidebar">
+    <div class="p-3 mb-3 bg-secondary rounded" style="color: white;">
+        <h2 class="font-italic niceTitle"><i class="fa fa-info-circle"></i> À propos de nous</h2>
+        <p class="mb-0">Bienvenue chez <b>Judicalex</b>, votre partenaire de confiance pour l'accès à l'information juridique et au droit. Notre mission est de rendre le cadre légal plus accessible et... <br><br> <a href="{% url 'about_us' %}"><span style="color: whitesmoke;"><b>Lire plus <i class="fa fa-arrow-right"></i></b></span></a></p>
+    </div>
+
+    
+
+    <div class="p-3">
+      <h4 class="font-italic">Suivez-nous</h4>
+      <ol class="list-unstyled">
+        <li><a href="#">Linkedin</a></li>
+        <li><a href="#">Twitter</a></li>
+        <li><a href="#">Facebook</a></li>
+      </ol>
+    </div>
+    <div class="p-3">
+      <a href="https://smartylex.com" target="_blank">
+        <img src="{% static 'start/assets/statics/banniere-smartylex.jpg' %}" alt="">
+      </a>
+    </div>
+</aside>

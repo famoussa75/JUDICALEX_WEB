@@ -1,0 +1,156 @@
+
+{% load static %}
+ <!-- Bouton pour importer un fichier Excel -->
+ <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <b><i class="fa fa-info-circle"></i> IMPORTANT !</b>
+    <p>Si vous préferez importer les affaires à partir d'une base <b>Excel</b>, Veuillez télécharger le modèle de base <a href="{% static 'start/assets/modeles_enrollements/Canevas-enrollement-tc.xlsx' %}">ici</a>.</p>
+    <p>Suivez les instructions élaborées dans le modèle pour remplir le fichier, Ensuite importez-le dans le champ ci-dessous pour remplir automatiquement le tableau .</p>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+ <div class="mb-3">
+    <label for="excelFile" class="form-label">Importer votre base Excel</label>
+    <input type="file" id="excelFile" class="form-control" accept=".xlsx, .xls">
+</div>
+
+<!-- Tableau dynamique pour afficher les formulaires du formset -->
+<table class="table table-bordered" >
+    <button type="button" name="add" id="dynamic-ar"
+        class="btn btn-outline-primary mb-2" title="Ajouter une ligne">
+        <i class="fa fa-plus"></i>&nbsp;Ajouter
+    </button>
+    <thead>
+        <tr>
+            <th>N° Ordre</th>
+            <th>Date d'enrollement</th>
+            <th>Demandeurs</th>
+            <th>Défendeurs</th>
+            <th>Objet</th>
+            <th>Date d'audience</th>
+        </tr>
+    </thead>
+    <tbody id="formset-body" >
+        <!-- Formset Django -->
+        {% for form_data in formset %}
+        <tr>
+            <td>{{ form_data.numOrdre }}</td>
+            <td>{{ form_data.dateEnrollement }}</td>
+            <td>{{ form_data.demandeurs }}</td>
+            <td>{{ form_data.defendeurs }}</td>
+            <td>{{ form_data.objet }}</td>
+            <td>{{ form_data.dateAudience }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Gestion du formset -->
+{{ formset.management_form }}
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+<script>
+document.getElementById('excelFile').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: 'array' });
+
+        // Lire la première feuille
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        let rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+        // Filtrer les lignes vides (chaque cellule est vide ou undefined)
+        rows = rows.filter(row => row.some(cell => cell !== null && cell !== undefined && cell !== ''));
+
+        // Effacer les anciennes lignes du formset
+        document.getElementById('formset-body').innerHTML = '';
+
+        // Parcourir chaque ligne à partir de la 2e (en supposant que la 1ère ligne est l'en-tête)
+        rows.slice(1).forEach((row, index) => {
+
+            if (row.every(cell => cell === null || cell === '')) {
+                return;  // Arrêter l'itération pour cette ligne (ignorer les lignes vides)
+            }
+
+            const numOrdre = row[0] || '';          // Colonne 1: N° Ordre
+            const dateEnrollement = row[1] ? convertExcelDate(row[1]) : '';  // Format YYYY-MM-DD   // Colonne 2: Date d'enrollement
+            const demandeurs = row[2] || '';        // Colonne 3: Demandeurs
+            const defendeurs = row[3] || '';        // Colonne 4: Défendeurs
+            const objet = row[4] || '';             // Colonne 5: Objet
+            const dateAudience = row[5] ? new Date(row[5]).toISOString().split('T')[0] : '';  // Format YYYY-MM-DD      // Colonne 6: Date d'audience
+
+
+            // Fonction de conversion
+                function convertExcelDate(excelDate) {
+                    // Si la date est une chaîne au format mm/jj/aaaa ou jj/mm/aaaa, nous devons la convertir
+                    let date = new Date(excelDate);
+
+                    // Si la conversion a échoué, essayez de gérer le format Excel brut (lorsque les dates sont stockées en tant que nombres)
+                    if (isNaN(date.getTime())) {
+                        // Excel stocke parfois les dates comme des nombres, donc on les convertit
+                        date = new Date((excelDate - (25567 + 1)) * 86400 * 1000);
+                    }
+
+                    // Format la date en 'YYYY-MM-DD'
+                    return date.toISOString().split('T')[0];
+                }
+            
+            // Ajouter une nouvelle ligne au formset
+            const newRow = `
+                    <tr>
+                        <td><input type="number" name="form-${index}-numOrdre" value="${numOrdre}" class="form-control" required></td>
+                        <td><input type="date" name="form-${index}-dateEnrollement" value="${dateEnrollement}" class="form-control" required></td>
+                        <td><textarea rows="2" name="form-${index}-demandeurs" class="form-control" required>${demandeurs}</textarea></td>
+                        <td><textarea rows="2" name="form-${index}-defendeurs" class="form-control" required>${defendeurs}</textarea></td>
+                        <td><textarea rows="2" name="form-${index}-objet" class="form-control" required>${objet}</textarea></td>
+                        <td><input type="date" name="form-${index}-dateAudience" value="${dateAudience}" class="form-control" required></td>
+                        <td><button type="button" class="btn btn-outline-danger remove-input-field" title="Supprimer la ligne"><i class="fa fa-trash"></i></button></td>
+                    </tr>`;
+
+            
+            document.getElementById('formset-body').insertAdjacentHTML('beforeend', newRow);
+        });
+
+        // Mise à jour du management form
+        var t = rows.length - 1;
+        $('#id_form-TOTAL_FORMS').val(t)
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+});
+</script>
+
+
+    
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+      
+
+        $("#dynamic-ar").click(function() {
+
+            var i = parseInt($("#id_form-TOTAL_FORMS").val()); // Initialiser 'i' avec la valeur actuelle du nombre total de formulaires
+            var totalForm = i; // Utiliser la même variable pour suivre le nombre total de formulaires
+    
+            totalForm++; // Incrémenter le nombre total de formulaires
+            
+            $("#formset-body").append('<tr><td><input type="number" name="form-' + i + '-numOrdre" value="'+ (i+1) +'" class="form-control" required min="1" /></td><td><input type="date" rows="2" name="form-' + i + '-dateEnrollement" class="form-control" required/></td><td><textarea rows="2" name="form-' + i + '-demandeurs" class="form-control" required></textarea></td><td><textarea rows="2" name="form-' + i + '-defendeurs" class="form-control" required></textarea></td><td><textarea rows="2" name="form-' + i + '-objet" class="form-control" required></textarea></td><td><input type="date" rows="2" name="form-' + i + '-dateAudience" class="form-control" required/></td><td><button type="button" class="btn btn-outline-danger remove-input-field" title="Supprimer la ligne"><i class="fa fa-trash"></i></button></td></tr>');
+            $("#id_form-TOTAL_FORMS").val(totalForm);
+        });
+
+        $(document).on('click', '.remove-input-field', function() {
+            $(this).parents('tr').remove();
+            --totalForm;
+            $("#id_form-TOTAL_FORMS").val(totalForm);
+        });
+    });
+</script>
+
+

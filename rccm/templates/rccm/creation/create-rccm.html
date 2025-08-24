@@ -1,0 +1,468 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Rccms{% endblock title %}
+
+{% block content %}
+{% load static %}
+ 
+<style>
+@keyframes clignoter {
+    0%, 100% { background-color: #ccedff; }
+    50% { background-color: white; }
+}
+
+@keyframes blink {
+    50% { background-color: #ff9999; }
+}
+
+.field-error {
+    background-color: #f4ecec !important;
+    border: 1px solid red !important;
+    animation: blink 1s infinite;
+}
+
+
+.clignotant {
+    animation: clignoter 0.9s ease-in-out 3;
+}
+
+</style>
+
+<section id="content" class="content">
+   <div class="content__header content__boxed rounded-0">
+      <div class="content__wrap mb-3">
+         <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item fs-4"><a href="#" class="nav-toggler" aria-label="Nav Toggler">Menu</a></li>
+               <li class="breadcrumb-item fs-4"><a href="{% url 'rccm.list' %}" class="nav-toggler" aria-label="Nav Toggler">RCCM</a></li>
+               <li class="breadcrumb-item active fs-4" aria-current="page">Nouveau</li>
+            </ol>
+         </nav>
+
+      </div>
+
+   </div>
+
+
+   <div class="content__boxed">
+    <div class="content__wrap">
+
+       <!-- Table with toolbar -->
+       <div class="card mb-4">
+          <div class="card-header">
+             <h4 class="card-title mb-0">Création du RCCM</h4>            
+          </div>
+
+          <div class="card-body">
+            <form method="post" enctype="multipart/form-data"  id="upload-form">
+               {% csrf_token %}
+               <div class="row col-md-12">
+                  <div class="col-md-6">
+                     <!-- Colonne 1 : Type RCCM -->
+                     <div class="col-md-12">
+                        <label for="typeRccm" class="form-label">Type RCCM</label>
+                        {{ form_file.type_rccm }}
+                     </div>
+            
+                     <!-- Colonne 2 : PDF Upload -->
+                     <div class="col-md-12">
+                        <label for="upload_input" class="form-label">Importez un PDF</label>
+                        {{ form_file.pdf_file }}
+                     </div>
+
+                  </div>
+                  <div class="col-md-6">
+                     <label for="ocrResult" class="form-label">Texte extrait</label>
+                     {{ form_file.result_ocr }}
+                 </div>
+              </div>
+          
+               <!-- Spinner (Caché par défaut) -->
+               <div id="loadingSpinner" style="display: none; text-align: center; margin-top: 10px;">
+                  <div class="spinner-border text-primary" role="status">
+                     <span class="visually-hidden">Analyse en cours...</span>
+                  </div>
+                  <p>Analyse en cours...</p>
+               </div>
+               
+               <div class="col-md-4">
+                  <button type="submit" class="btn btn-primary mt-3" id="upload-btn">
+                     <i class="demo-pli-download-from-cloud fs-2"></i>&nbsp; Remplir le formulaire
+                  </button>
+               </div>
+           </form>
+           
+           <div class="card mt-4" id="div-progress" hidden>
+               <div class="card-body">
+                   <h5 class="card-title">Progression</h5>
+                   <div class="d-flex flex-column gap-3">
+                       <!-- Labels -->
+                       <div class="progress">
+                           <div
+                               id="progress-bar"
+                               class="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                               role="progressbar"
+                               aria-valuenow="0"
+                               aria-valuemin="0"
+                               aria-valuemax="100"
+                               style="width: 0%"
+                           ></div>
+                       </div>
+                       <div id="progress-label" class="mt-3 text-center fw-bold">
+                           Début du processus
+                       </div>
+                   </div>
+               </div>
+           </div>
+
+         </div>
+        
+       </div>
+
+       <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" action="{% url 'rccm.submitRccm' %}" class="p-xl-3" novalidate>
+                    {% csrf_token %}
+                     <!-- rccm section -->
+                     <section data-step="rccm">
+                        <legend class="w-auto fs-4">RCCM {% if type_rccm == 'PERSONNE PHYSIQUE' %} ( PERSONNE PHYSIQUE ) {% elif type_rccm == 'PERSONNE MORALE' %} ( PERSONNE MORALE ) {% else %} {% endif %} </legend>
+                        <hr>
+                        <div class="row g-3">
+                           <!-- Section Rccm -->
+                           <fieldset class=" p-3 mb-4 row">
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Type Rccm</label>
+                                 {{ formaliteForm.typeRccm }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Numéro RCCM</label>
+                                 {{ rccmForm.numeroRccm }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                <label for="" class="form-label label-required">Numéro de formalité</label>
+                                {{ formaliteForm.numeroFormalite }}
+                             </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Dénomination</label>
+                                 {{ formaliteForm.denomination }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Nom commercial</label>
+                                 {{ formaliteForm.nomCommercial }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Sigle</label>
+                                 {{ formaliteForm.sigle }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Siège Social</label>
+                                 {{ formaliteForm.siegeSocial }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                <label for="" class="form-label label-required">Activité(s)</label>
+                                {{ etablissementForm.activites }}
+                             </div>
+                             
+                             <div class="col-md-6 mb-3">
+                                <label for="" class="form-label label-required">Date de création</label>
+                                {{ rccmForm.dateEnreg }}
+                             </div>
+                            
+                           </fieldset>
+                        
+                        </div>
+
+                     </section>
+
+                      <!-- personne_physique section -->
+                      <section data-step="personne_physique">
+
+                        <legend class="w-auto fs-4">RENSEIGNEMENTS RELATIFS A LA PERSONNE PHYSIQUE</legend>
+                        <hr>
+                        <div class="row g-3">
+                           <fieldset class=" p-3 mb-4 row">
+                              <div class="col-md-3 mb-3">
+                                 <label for="" class="form-label label-required">Titre</label>
+                                 {{ personnePhysiqueForm.titreCivil }}
+                              </div>
+                              <div class="col-md-5 mb-3">
+                                 <label for="" class="form-label label-required">Prenom</label>
+                                 {{ personnePhysiqueForm.prenom }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Nom</label>
+                                 {{ personnePhysiqueForm.nom }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Situation matrimoniale</label>
+                                 {{ personnePhysiqueForm.situationMatrimoniale }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Date de naissance</label>
+                                 {{ personnePhysiqueForm.dateNaissance }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Lieu de naissance</label>
+                                 {{ personnePhysiqueForm.lieuNaissance }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Nationnalité</label>
+                                 {{ personnePhysiqueForm.nationnalite }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Adresse postale</label>
+                                 {{ personnePhysiqueForm.adressePostale }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Telephone</label>
+                                 {{ personnePhysiqueForm.telephone }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Domicile personnel</label>
+                                 {{ personnePhysiqueForm.domicile }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Ville</label>
+                                 {{ personnePhysiqueForm.ville }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Quartier</label>
+                                 {{ personnePhysiqueForm.quartier }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Autres precisions</label>
+                                 {{ personnePhysiqueForm.autrePrecision }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Coordonnées électronique</label>
+                                 {{ personnePhysiqueForm.coordonneesElectro }}
+                              </div>
+                           </fieldset>
+                        </div>
+
+                     </section>
+
+                     <!-- etablissement section -->
+                     <section data-step="etablissement">
+                        <legend class="w-auto fs-4">RENSEIGNEMENTS RELATIFS AUX ACTIVITES ANTERIEURES ( Facultatifs )</legend>
+                        <hr>
+                        <div class="row g-3">
+                           <fieldset class=" p-3 mb-4 row">
+                              <div class="col-md-12 mb-3">
+                                 <label for="" class="form-label">Exercice d'une précédente activité</label>
+                                 {{ activiteAnterieureForm.activite_precedente }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Nature de l'activité</label>
+                                 {{ activiteAnterieureForm.type_activite }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Détails sur l'autre activité</label>
+                                 {{ activiteAnterieureForm.details_autre_activite }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Période fin (mois et année)</label>
+                                 {{ activiteAnterieureForm.periode_fin }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Précédent RCCM (s'il y a lieu)</label>
+                                 {{ activiteAnterieureForm.rccm_precedent }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                <label for="" class="form-label">RCCM principal (s'il y a lieu)</label>
+                                {{ activiteAnterieureForm.rccm_principal }}
+                             </div>
+                            
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Établissement principal</label>
+                                 {{ activiteAnterieureForm.etablissement_principal }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Établissements secondaires</label>
+                                 {{ activiteAnterieureForm.etablissements_secondaires }}
+                              </div>
+                             
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Adresse géographique et postale</label>
+                                 {{ activiteAnterieureForm.adresse }}
+                              </div>
+                             
+                           </fieldset>
+                        </div>
+
+                     </section>
+                   
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </form>
+                
+            </div>
+       </div>
+       <!-- END : Table with toolbar -->
+
+    </div>
+ </div>
+
+
+  
+
+</section>
+
+
+<script>
+document.querySelector("#upload_input").addEventListener("change", async function(event) {
+    let pdfFile = event.target.files[0];
+    if (!pdfFile) return;
+
+    let uploadBtn = document.querySelector("#upload-btn"); // Sélection du bouton
+    uploadBtn.disabled = true; // Désactiver le bouton au début de l'analyse
+
+    let fileReader = new FileReader();
+    fileReader.readAsArrayBuffer(pdfFile);
+    
+    // Afficher le spinner
+    document.querySelector("#loadingSpinner").style.display = "block";
+    document.querySelector("#ocrResult").value = "Analyse en cours...";
+
+    fileReader.onload = async function () {
+        try {
+            let typedarray = new Uint8Array(fileReader.result);
+            let pdf = await pdfjsLib.getDocument(typedarray).promise;
+            let extractedText = "";
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                let page = await pdf.getPage(pageNum);
+                let scale = 2; // Zoom pour améliorer l'OCR
+                let viewport = page.getViewport({ scale });
+
+                let canvas = document.createElement("canvas");
+                let context = canvas.getContext("2d");
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+
+                await page.render({ canvasContext: context, viewport }).promise;
+                let imageUrl = canvas.toDataURL("image/png");
+
+                // Utiliser Tesseract.js pour l'OCR
+                let { data: { text } } = await Tesseract.recognize(imageUrl, "eng");
+                extractedText += `Page ${pageNum} :\n${text}\n\n`;
+            }
+
+            document.querySelector("#ocrResult").value = extractedText; // Mettre le texte extrait dans le champ
+        } catch (error) {
+            console.error("Erreur lors de l'analyse OCR :", error);
+            document.querySelector("#ocrResult").value = "Erreur lors de l'analyse OCR.";
+        } finally {
+            // Cacher le spinner après le traitement
+            document.querySelector("#loadingSpinner").style.display = "none";
+            uploadBtn.disabled = false; // Réactiver le bouton après l'analyse
+        }
+    };
+});
+
+</script>
+
+
+<script>
+   document.addEventListener("DOMContentLoaded", () => {
+       const form = document.getElementById("upload-form");
+       const progressBar = document.getElementById("progress-bar");
+       const progressLabel = document.getElementById("progress-label");
+       const uploadBtn = document.getElementById("upload-btn");
+
+       // Dynamically update progress bar and label
+       const updateProgress = (value, label) => {
+           progressBar.style.width = `${value}%`;
+           progressBar.setAttribute("aria-valuenow", value);
+           progressLabel.textContent = label;
+       };
+
+       form.addEventListener("submit", (event) => {
+           event.preventDefault(); // Prevent default form submission for testing
+           $('#div-progress').removeAttr('hidden', true);
+
+           // Simulate progress for demo purposes
+           let progress = 0;
+           const labels = [
+               "Initialisation...",
+               "Téléchargement en cours...",
+               "Traitement des données...",
+               "Finalisation...",
+               "Terminé !",
+           ];
+
+           const interval = setInterval(() => {
+               if (progress >= 100) {
+                   clearInterval(interval);
+                   updateProgress(progress, labels[4]);
+
+                   // Execute a POST request
+                   form.submit();
+            } else {
+                progress += 25; // Adjust this for finer increments
+                const labelIndex = Math.floor(progress / 25);
+                updateProgress(progress, labels[labelIndex]);
+            }
+           }, 1000); // Update every second for demo
+           
+       });
+   });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#nav-rccm').addClass('bg-primary text-white');
+        $('#txt-rccm').addClass('text-white');
+
+    });
+
+    var clignoter = {{ clignoter|yesno:"true,false" }};
+
+    document.addEventListener("DOMContentLoaded", function () {
+    function clignoterChamps() {
+        let champs = document.querySelectorAll("input, select, textarea");
+
+        champs.forEach(champ => {
+            champ.classList.add("clignotant");
+        });
+
+        // Supprimer la classe après la fin de l'animation (3 clignotements)
+        setTimeout(() => {
+            champs.forEach(champ => {
+                champ.classList.remove("clignotant");
+            });
+        }, 2700); // 0.5s * 3 clignotements
+    }
+
+    // Lancer le clignotement après un court délai (par exemple 1s après le chargement)
+
+    if (clignoter) {
+      setTimeout(clignoterChamps, 500);
+
+      let inputs = document.querySelectorAll("input:not([type='file']), textarea, select");
+
+       inputs.forEach(input => {
+           if (!input.value.trim()) {
+               input.classList.add("field-error");
+           }
+
+           // Supprimer la classe rouge quand l'utilisateur remplit le champ
+           input.addEventListener("input", function() {
+               if (this.value.trim()) {
+                   this.classList.remove("field-error");
+               } else {
+                   this.classList.add("field-error");
+               }
+           });
+       });
+
+    }
+});
+
+
+</script>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,174 @@
+{% extends 'start/base.html' %}
+{% load static %}
+
+{% block title %}Modèles de documents{% endblock title %}
+
+{% block content %}
+
+<style>
+  #contenu-modele {
+    width: 794px;
+    min-height: 1123px;
+    background-color: white;
+    padding: 50px;
+    font-size: 14px;
+    font-family: 'Georgia', serif;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  #contenu-modele pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    border: none;
+    background: transparent;
+    color: #333;
+  }
+
+  @media print {
+    body {
+      background: white !important;
+    }
+
+    .d-print-none {
+      display: none !important;
+    }
+
+    #contenu-modele {
+      width: 100%;
+      padding: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+  }
+
+  .btn-custom {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-custom i {
+    font-size: 16px;
+  }
+
+
+
+  .form-section {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+</style>
+
+<div class="page-wrapper">
+  <div class="container-xl">
+    <div class="page-header d-print-none mt-4">
+      <div class="row align-items-center">
+        <div class="col text-center">
+          <h1 class="niceTitle display-6" style="color:white;text-align: center;">📝 Modèles de documents juridiques</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-body mt-5">
+      <div class="container-xl">
+        <div id="loader" class="loader_default"></div>
+
+        <div class="container py-4">
+          <h2 class="mb-4 text-primary">{{ doc.titre }} <small class="text-muted">({{ doc.get_type_document_display }})</small></h2>
+
+          <div class="form-section mb-4">
+            <p class="text-muted"><i class="fa fa-info-circle"></i> Remplissez le formulaire ci-dessous pour personnaliser votre document.</p>
+            <form method="get" class="row g-3">
+              {% for field in form %}
+              <div class="col-md-4">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                <div class="text-danger small">{{ field.errors }}</div>
+                {% endif %}
+              </div>
+              {% endfor %}
+              <div class="col-12 text-end">
+                <button type="submit" class="btn btn-success btn-custom">
+                  <i class="bi bi-sliders"></i> Personnaliser
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div>
+            <h3 class="mb-3 text-dark">📄 Aperçu du document</h3>
+            <pre id="contenu-modele">{{ contenu|safe }}</pre>
+          </div>
+
+          <div class="mt-4 d-flex gap-3 flex-wrap">
+            <button class="btn btn-outline-secondary btn-custom" onclick="copyStyledText()">
+              <i class="bi bi-clipboard"></i> Copier
+            </button>
+            <button id="btn-export-pdf" class="btn btn-danger btn-custom">
+              <i class="bi bi-file-earmark-pdf-fill"></i> Exporter en PDF
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+  async function copyStyledText() {
+    const container = document.querySelector("#contenu-modele");
+
+    if (navigator.clipboard && window.ClipboardItem) {
+      const blob = new Blob([container.innerHTML], { type: "text/html" });
+      const item = new ClipboardItem({ "text/html": blob });
+      await navigator.clipboard.write([item]);
+      alert("Contenu copié !");
+    } else {
+      alert("Votre navigateur ne supporte pas cette fonctionnalité.");
+    }
+  }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  document.getElementById("btn-export-pdf").addEventListener("click", async function () {
+    const element = document.getElementById("contenu-modele");
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+
+    const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+    const imgX = (pageWidth - imgWidth * ratio) / 2;
+    const imgY = (pageHeight - imgHeight * ratio) / 2;
+
+    pdf.addImage(imgData, "PNG", imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+    pdf.save("modele-judicalex.pdf");
+  });
+</script>
+
+<!-- Optional: Bootstrap Icons CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+{% endblock %}

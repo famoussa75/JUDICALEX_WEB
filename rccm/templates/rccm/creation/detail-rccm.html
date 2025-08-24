@@ -1,0 +1,113 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Rccms{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<style>
+   .rccm {
+      color: orange;
+   }
+
+   .formalite {
+      color: skyblue;
+   }
+</style>
+
+<div class="page-wrapper">
+   <div class="container-xl">
+       <!-- Page title -->
+       <div class="page-header text-white d-print-none">
+           <div class="row align-items-center">
+               <div class="col">
+                   <!-- Page pre-title -->
+
+                   <h1 class="" style="color:white;text-align: center;">
+                       RCCM
+                   </h1>
+               </div>
+               <!-- Page title actions -->
+               <div class="col-auto ms-auto d-print-none">
+                   <div class="btn-list">
+                       <!-- Au d'une nouvelle idee de widget -->
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>
+   <div class="page-body">
+       <div class="container-fluid">
+           <div class="row g-3">
+           
+               <div class="col-12 animate-bottom">
+                  <section id="content" class="content">
+  
+
+                     <div class="content__boxed">
+                      <div class="content__wrap">
+                  
+                         <!-- Table with toolbar -->
+                         <div class="card">
+                            <div class="card-header">
+                               <h3 class="mb-0">Formalités du Rccm N° :&nbsp;</h3> 
+                               <span class=""> RCCM/{{ rccm.numeroRccm }} du {{ rccm.dateEnreg }}<span>
+
+                              
+                            </div>
+                  
+                            <div class="card-body">
+                              <div class="row p-3">
+                                  
+                                  {% for r in formalites %}
+                                  
+                                      <div class="col-md-3 d-flex gap-1 align-items-center mb-3 hv-grow ">
+                                          {% if r.typeFormalite == 'Création' %}
+                                          <a href="{{ r.rccm.rccm_file.url }}" target="_blank" class="text-decoration-none" style="margin-right: 4px;"> <i class="fa fa-file rccm " style="font-size: 7em;"></i></a>
+                                          {% else %} 
+                                          <a href="{{ r.formaliteSignee.url }}" class="text-decoration-none" style="margin-right: 4px;"> <i class="fa fa-file formalite" style="font-size: 7em;"></i></a>
+                                          {% endif %}
+                                          <b>
+                                          {{ r.typeFormalite }} <br>
+                                          N°Formalite : {{ r.numeroFormalite }} <br>
+                                          Ajouté le : {{ r.dateModification }}
+                                       </b>
+                                          
+                                      </div>
+                                 
+                                  {% endfor %}
+                  
+                               </div>
+                              
+                            </div>
+                         </div>
+                         <!-- END : Table with toolbar -->
+                  
+                      </div>
+                   </div>
+                  
+                  
+                    
+                  
+                  </section>
+               </div>
+           </div>
+       </div>
+   </div>
+
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#nav-rccm').addClass('bg-primary text-white');
+        $('#txt-rccm').addClass('text-white');
+    });
+</script>
+
+
+
+
+{% endblock %}

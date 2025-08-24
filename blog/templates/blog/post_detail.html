@@ -1,0 +1,323 @@
+
+{% extends 'start/base.html' %}
+
+
+{% block title %}Blog{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<style>
+    .post-preview {
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out;
+        margin-bottom: 30px;
+    }
+
+    .post-preview:hover {
+        transform: translateY(-5px);
+    }
+
+    .post-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+
+    .post-subtitle {
+        font-size: 1.2rem;
+        color: #6c757d;
+    }
+
+    .post-meta {
+        font-size: 0.9rem;
+        color: #adb5bd;
+    }
+
+    .post-image {
+        width: 100%;
+        height: auto;
+        max-height: 300px; /* Limite la hauteur maximale de l'image */
+        border-radius: 8px;
+        object-fit: cover; /* Garde l'image centrée si elle dépasse la hauteur */
+        border-radius: 8px;
+    }
+
+    .content-section {
+        padding: 15px;
+    }
+</style>
+
+
+<div class="page-wrapper" style="background-color: white;">
+    <!-- <div style="display: flex;  width: 100%; padding: 7px 1210px 8px 17px; align-items: center; background: var(--Bleu, #143642);">
+         <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-style: normal; font-weight: 700; line-height: normal;">
+            Divers
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg> 
+        <span style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 16px; font-style: normal; font-weight: 700; line-height: normal;">
+            Actualités
+        </span>
+      </div> 
+    -->
+    <!-- PUB CAROUSSEL -->
+    <div id="carouselExample" class="carousel slide mt-0 mb-4" data-bs-ride="carousel" style="background: rgba(20, 54, 66, 0.50); padding: 25px 40px 25px 40px;">
+        <div class="carousel-inner">
+        
+            <!-- Slide 1 -->
+            <div class="carousel-item active">
+            <div class="d-flex justify-content-center" style="gap: 80px;">
+                <img src="/static/start/assets/statics/pub1.jpg" 
+                    alt="Pub 1" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                <img src="/static/start/assets/statics/pub2.png" 
+                    alt="Pub 2" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                <img src="/static/start/assets/statics/pub3.png" 
+                    alt="Pub 3" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+            </div>
+            </div>
+        
+            <!-- Slide 2 -->
+            <div class="carousel-item">
+            <div class="d-flex justify-content-center" style="gap: 80px;">
+                <img src="/static/start/assets/statics/pub-smartylex1.jpg" 
+                    alt="Pub 1" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                <img src="/static/start/assets/statics/pub-smartylex2.jpg" 
+                    alt="Pub 2" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                <img src="/static/start/assets/statics/pub-smartylex3.jpg" 
+                    alt="Pub 3" 
+                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+            </div>
+            </div>
+        
+            
+        </div>
+    </div>
+
+     <!-- ACTUALITÉS SECTION -->
+
+    <div class="container">
+
+        <h1 class="text-left mb-3" 
+            style="color: var(--Bleu, #143642); font-family: Jost; font-size: 28px; font-weight: 700;">
+            L’accès à la justice : Un Droit Fondamental pour tous
+        </h1>
+
+        <div class="col-md-12 row">
+       
+            <div class="col-md-8">
+                <div class="row g-4 mb-4">
+                
+                    <!-- Carte Actualité 1 -->
+                    <div class="col-md-12">
+                        <div class="card" style="border: none; box-shadow: none;">
+                        <img src="/static/start/assets/statics/actu1.png" 
+                            class="card-img-top" 
+                            alt="Actu 1" 
+                            style="height: 500px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                <!-- Ligne Creator + Time -->
+                        
+                        <div class="">
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    <img src="/static/start/assets/statics/djoma.svg" 
+                                        alt="Djoma FM" 
+                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                    Djoma FM
+                                </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                            </div>
+                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                L’accès à la justice ne devrait jamais être un privilège réservé à une minorité. C’est un droit fondamental, reconnu dans de nombreux textes internationaux et constitutions, qui garantit à chaque citoyen la possibilité de faire valoir ses droits, de se défendre et de bénéficier d’un procès équitable.
+                                Pourtant, dans de nombreux pays, cet accès reste limité par des obstacles majeurs : manque d’information, coûts élevés, lenteurs judiciaires. C’est un droit fondamental, reconnu dans de nombreux textes internationaux et constitutions, qui garantit à chaque citoyen la possibilité de faire valoir ses droits, de se défendre et de bénéficier d’un procès équitable.
+                                Pourtant, dans de nombreux pays, cet accès reste limité par des obstacles majeurs : manque d’information, coûts élevés, lenteurs judiciaires.                             </p>
+                            
+                        </div>
+                        </div>
+                    </div>
+            
+                </div>
+
+                 <!-- Section des commentaires -->
+                 <h3 style="font-family: Jost; font-weight: 700; color: #143642;"><i class="fa fa-comments" ></i> Commentaires</h3>
+                 <div class="comments">
+                     {% for comment in comments %}
+                         <div class="comment mb-3 p-2 bg-light rounded">
+                             <p><strong><i class="fa fa-user" ></i> {{ comment.user.first_name }} {{ comment.user.last_name }}</strong> - {{ comment.created_at }}</p>
+                             <p>{{ comment.content }}</p>
+                         </div>
+                     {% empty %}
+                         <p>Aucun commentaire pour l'instant. Soyez le premier à commenter !</p>
+                     {% endfor %}
+                 </div>
+
+                 <!-- Formulaire d'ajout de commentaire -->
+                 {% if request.user.is_authenticated %}
+                     <h4><i class="fa fa-plus-circle"></i> Ajouter un commentaire</h4>
+                     <form method="POST">
+                         {% csrf_token %}
+                         {{ form.as_p }}
+                         <button type="submit" class="btn btn-primary">Envoyer</button>
+                     </form>
+                 {% else %}
+                     <p>Vous devez <a href="#" data-bs-toggle="modal" data-bs-target="#modal-login">vous connecter</a> pour commenter cet article.</p>
+                 {% endif %}
+                 <hr>
+
+       
+            </div>
+            
+            <div class="col-md-4">
+
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <img src="/static/start/assets/statics/pub-anime1.gif" 
+                        class="" 
+                        alt="Actu 1" 
+                        style="height: 657px; width: 463; object-fit: cover;">
+                    </div>
+
+                    <div class="col-md-12">
+                        <img src="/static/start/assets/statics/pub-anime2.gif" 
+                        class="" 
+                        alt="Actu 1" 
+                        style="height: 420px; width: 463; object-fit: cover;">
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12 mt-4 mb-5 row">
+
+            <h2 class="blog-post-title" style="font-family: Jost; font-weight: 700; color: #143642;">Articles similaires</h2>
+            <p class="blog-post-meta" style="font-family: Jost; font-size: 15px; color: #555;">December 23, 2013 by <a href="#">Jacob</a></p>
+            
+            <!-- Carte Actualité 1 -->
+            <div class="col-md-4">
+            <div class="card" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu1.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                    <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                        <img src="/static/start/assets/statics/djoma.svg" 
+                            alt="Djoma FM" 
+                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                        Djoma FM
+                        </span>
+                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                </p>
+                <!-- Ligne Commentaires + Lire plus -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                </div>
+                </div>
+            </div>
+            </div>
+        
+            <!-- Carte Actualité 2 -->
+            <div class="col-md-4">
+            <div class="card" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu2.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                    <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                        <img src="/static/start/assets/statics/djoma.svg" 
+                            alt="Djoma FM" 
+                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                        Djoma FM
+                        </span>
+                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                </p>
+                <!-- Ligne Commentaires + Lire plus -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                </div>
+                </div>
+            </div>
+            </div>
+        
+            <!-- Carte Actualité 3 -->
+            <div class="col-md-4">
+            <div class="card" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu3.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                    <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                        <img src="/static/start/assets/statics/djoma.svg" 
+                            alt="Djoma FM" 
+                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                        Djoma FM
+                        </span>
+                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                </p>
+                <!-- Ligne Commentaires + Lire plus -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                </div>
+                </div>
+            </div>
+            </div>
+        
+        </div>
+
+    </div>
+   
+</div>
+
+<!-- Lien vers Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+            document.getElementById("link_actualite").classList.add("active");
+  
+    });
+</script>
+
+{% endblock %}

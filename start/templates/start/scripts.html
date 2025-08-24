@@ -1,0 +1,288 @@
+{% load static %}
+
+<script src="{% static 'start/assets/dist/js/apexcharts.min.js' %}"></script>
+
+<!-- bootstrap5 dataTables js cdn -->
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<!-- Tabler Core -->
+<script src="{% static 'start/assets/dist/js/tabler.min.js' %}"></script>
+<script src="{% static 'start/assets/dist/js/demo.min.js' %}"></script>
+
+<!-- Validator JavaScript -->
+<script src="{% static 'start/assets/plugins/validator/validator.js' %}"></script>
+<script src="{% static 'start/assets/DataTables/datatables.min.js' %}"></script>
+
+
+
+<script src="{% static 'start/assets/dist/libs/nouislider/dist/nouislider.min.js' %}"></script>
+<script src="{% static 'start/assets/dist/libs/litepicker/dist/litepicker.js' %}"></script>
+<script src="{% static 'start/assets/dist/libs/tom-select/dist/js/tom-select.base.min.js' %}"></script>
+<!-- Tabler Core -->
+
+
+
+
+
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/jquery-3.5.1'%}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/dataTables.buttons.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/jszip.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/pdfmake.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/vfs_fonts.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/buttons.html5.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'start/assets/DataTables/js/buttons.html5.print.js' %}"></script>
+
+
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+
+
+
+<script>
+    document.getElementById('excelFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+    
+            // Lire la première feuille
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+    
+            // Effacer les anciennes lignes du formset
+            document.getElementById('formset-body').innerHTML = '';
+    
+            // Parcourir chaque ligne à partir de la 2e (en supposant que la 1ère ligne est l'en-tête)
+            rows.slice(1).forEach((row, index) => {
+                const numOrdre = row[0] || '';          // Colonne 1: N° Ordre
+                const dateEnrollement = row[1] || '';   // Colonne 2: Date d'enrollement
+                const demandeurs = row[2] || '';        // Colonne 3: Demandeurs
+                const defendeurs = row[3] || '';        // Colonne 4: Défendeurs
+                const objet = row[4] || '';             // Colonne 5: Objet
+                const dateAudience = row[5] || '';      // Colonne 6: Date d'audience
+    
+                // Ajouter une nouvelle ligne au formset
+                const newRow = `
+                    <tr>
+                        <td><input type="text" name="form-${index}-numOrdre" value="${numOrdre}" class="form-control"></td>
+                        <td><input type="date" name="form-${index}-dateEnrollement" value="${dateEnrollement}" class="form-control"></td>
+                        <td><input type="text" name="form-${index}-demandeurs" value="${demandeurs}" class="form-control"></td>
+                        <td><input type="text" name="form-${index}-defendeurs" value="${defendeurs}" class="form-control"></td>
+                        <td><input type="text" name="form-${index}-objet" value="${objet}" class="form-control"></td>
+                        <td><input type="date" name="form-${index}-dateAudience" value="${dateAudience}" class="form-control"></td>
+                    </tr>`;
+                
+                document.getElementById('formset-body').insertAdjacentHTML('beforeend', newRow);
+            });
+    
+            // Mise à jour du management form
+            document.getElementById('id_form-TOTAL_FORMS').value = rows.length - 1;
+        };
+    
+        reader.readAsArrayBuffer(file);
+    });
+    </script>
+
+<script>
+    var myVar;
+    
+    function myFunction() {
+      myVar = setTimeout(showPage, 2000);
+    }
+    
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+    }
+
+    function showloader() {
+        document.getElementById("loader").style.display = "block";    
+        myVar = setTimeout(showPage, 2000);
+    }
+</script>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+            var i = 0;
+            var totalForm =  $("#id_form-TOTAL_FORMS").val();
+        
+            $("#dynamic-ar").click(function() {
+            alert('ok');
+                ++i;
+                ++totalForm;
+                $("#dynamicAddRemove").append('<tr><td><input type="number" name="form-' + i + '-numOrdre" value="'+ (i+1) +'" class="form-control" required min="1" /></td><td><textarea rows="2" name="form-' + i + '-demandeurs" class="form-control" required></textarea></td><td><textarea rows="2" name="form-' + i + '-defendeurs" class="form-control" required></textarea></td><td><textarea rows="2" name="form-' + i + '-objet" class="form-control" required></textarea></td><td><button type="button" class="btn btn-outline-danger remove-input-field" title="Supprimer la ligne"><i class="fa fa-trash"></i></button></td></tr>');
+                $("#id_form-TOTAL_FORMS").val(totalForm);
+            });
+        
+            $(document).on('click', '.remove-input-field', function() {
+                $(this).parents('tr').remove();
+                --totalForm;
+                $("#id_form-TOTAL_FORMS").val(totalForm);
+            });
+        });
+  
+</script>
+
+
+  
+<script type="text/javascript">
+    $(document).ready(function() {
+  
+  
+      $('.dataTableExport').DataTable({
+        dom: 'Bfrtip',
+        searching: true,
+        buttons: [
+          'copy', 'csv', 'excel', 'pdf', 'print'
+        ]
+  
+      });
+  
+  
+  
+      //Get a reference to the new datatable
+      var table = $('.filterTable').DataTable();
+  
+      var categoryIndex = 0;
+      $("#filterTable th").each(function(i) {
+        if ($($(this)).html() == "Privilege") {
+          categoryIndex = i;
+          return false;
+        }
+      });
+  
+      //Use the built in datatables API to filter the existing rows by the Category column
+      $.fn.dataTable.ext.search.push(
+        function(settings, data, dataIndex) {
+          var selectedItem = $('.categoryFilter').val()
+          var category = data[categoryIndex];
+          if (selectedItem === "" || category.includes(selectedItem)) {
+            return true;
+          }
+          return false;
+        }
+      );
+  
+      //Set the change event for the Category Filter dropdown to redraw the datatable each time
+      //a user selects a new filter.
+      $(".categoryFilter").change(function(e) {
+        table.draw();
+      });
+  
+      table.draw();
+  
+    });
+</script>
+  
+    
+  
+<script>
+// @formatter:off
+document.addEventListener("DOMContentLoaded", function() {
+    window.Litepicker && (new Litepicker({
+    element: document.getElementById('datepicker-icon-prepend'),
+    buttonText: {
+        previousMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
+<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18" /></svg>`,
+        nextMonth: `<!-- Download SVG icon from http://tabler-icons.io/i/chevron-right -->
+<svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18" /></svg>`,
+    },
+    }));
+});
+// @formatter:on
+</script>
+  
+<script>
+    var message = document.getElementById('flash-message');
+    setTimeout(function () { message.style.display = 'none'}, 3000)
+
+</script>
+  
+<script>
+    var select_box_element = document.querySelector('#select_box');
+    var select_box_element2 = document.querySelector('#select_box2');
+    var select_box_element3 = document.querySelector('#select_box_section');
+
+
+
+    dselect(select_box_element, {
+        search: true
+    });
+
+
+    dselect(select_box_element2, {
+        search: true
+    });
+
+    dselect(select_box_element3, {
+        search: true
+    });
+
+  
+
+</script>
+
+
+
+<script>
+    function loadNotifications() {
+        fetch('/users/notifications/')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('notifications2');
+                const badge = document.getElementById('badge');
+
+                // Ne continue que si les éléments existent
+                if (!container || !badge) {
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                if (!data.notifications || data.notifications.length === 0) {
+                    badge.setAttribute('hidden', '');
+                    container.innerHTML = `
+                        <p class="text-center mt-4">
+                            <i class="fa fa-info-circle"></i> Vous n'avez pas de nouveaux messages !
+                        </p>`;
+                } else {
+                    badge.removeAttribute('hidden');
+
+                    data.notifications.forEach(notification => {
+                        container.innerHTML += `
+                            <a href="${notification.url}" class="notification-link2">
+                                <div class="notification-box2 ${notification.is_read ? 'read' : 'unread'}">
+                                    <div class="notification-content2">
+                                        <p class="notification-message2">${notification.message}</p>
+                                    </div>
+                                </div>
+                            </a>`;
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors du chargement des notifications :', error);
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        loadNotifications();
+        setInterval(loadNotifications, 5000);
+    });
+</script>
+
+
+
+
+ 
+
+  
+  

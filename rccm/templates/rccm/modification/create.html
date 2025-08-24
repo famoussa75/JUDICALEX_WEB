@@ -1,0 +1,788 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Modification{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<style>
+   .label-required::after {
+      content: " *";
+      color: red;
+      font-weight: bold;
+   }
+</style>
+
+<section id="content" class="content">
+   <div class="content__header content__boxed rounded-0">
+      <div class="content__wrap mb-3">
+         <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+               <li class="breadcrumb-item fs-4"><a href="#" class="nav-toggler" aria-label="Nav Toggler">Menu</a></li>
+               <li class="breadcrumb-item fs-4"><a href="{% url 'rccm.modification' %}">Déclaration modificative</a>
+               </li>
+               <li class="breadcrumb-item active fs-4" aria-current="page">Formalité</li>
+            </ol>
+         </nav>
+
+      </div>
+
+   </div>
+
+
+   <div class="content__boxed">
+      <div class="content__wrap">
+         <div class="col-md-12">
+            <h2 class="mt-5 mb-3 text-center"><i class="demo-pli-file-edit"></i> Formulaire de modification du Rccm</h2>
+            {% include '_base/tools/form-wizard.html' %}
+
+            <!-- Form wizard with validation -->
+            <div class="card">
+               <div class="card-header">
+
+
+                  <!-- Step progress -->
+                  <ul id="_dm-validWizardSteps" class="step-progress my-4">
+                     <li class="{% if section  %} {% else %} active {% endif %}" data-step="rccm">
+                        <span class="step-label">Rccm</span>
+                     </li>
+                     <li data-step="personne_physique">
+                        <span class="step-label">Renseignements relatifs <br> à la personne physique</span>
+                     </li>
+                     <li data-step="etablissement">
+                        <span class="step-label">Modifications relatives <br> à l'établissement</span>
+                     </li>
+                     <li data-step="personne_engager"
+                        title="Modifications relatives aux personnes pouvant engager la personne physique">
+                        <span class="step-label">Modifications relatives aux <br> personnes pouvant engager...</span>
+                     </li>
+                     <li data-step="apercu">
+                        <span class="step-label">Aperçu</span>
+                     </li>
+                    
+                  </ul>
+                  <!-- END : Step progress -->
+
+
+               </div>
+               <div class="card-body">
+
+                  <!-- Form sections -->
+                  <form id="_dm-validWizardForm" method="post" action="{% url 'rccm.submitFormalite' %}" class="p-xl-3" >
+                     {% csrf_token %}
+
+                     <div id="feedbackMessage"></div>
+
+                     <!-- rccm section -->
+                     <section data-step="rccm">
+                        <legend class="w-auto fs-3">RCCM</legend>
+                        <div class="row g-3">
+                           <!-- Section Rccm -->
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Type Rccm</label>
+                                 {{ formaliteForm.typeRccm }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Numéro RCCM</label>
+                                 {{ rccmForm.numeroRccm }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Date de création</label>
+                                 {{ rccmForm.dateEnreg }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Dénomination</label>
+                                 {{ formaliteForm.denomination }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Nom commercial</label>
+                                 {{ formaliteForm.nomCommercial }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Sigle</label>
+                                 {{ formaliteForm.sigle }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Siège Social</label>
+                                 {{ formaliteForm.siegeSocial }}
+                              </div>
+                           </fieldset>
+
+                           <legend class="w-auto fs-3">FORMALITE</legend>
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Type de formalité</label>
+                                 {{ formaliteForm.typeFormalite }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Déclaration modificative relative
+                                    à</label>
+                                 {{ formaliteForm.declarationModificative }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Option</label>
+                                 {{ formaliteForm.optionActivite }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Numéro de formalité</label>
+                                 {{ formaliteForm.numeroFormalite }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Date de modification</label>
+                                 {{ formaliteForm.dateModification }}
+                              </div>
+                           </fieldset>
+
+                        </div>
+
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                           <button data-next class="btn btn-primary">Suivant</button>
+                        </div>
+                     </section>
+
+                     <!-- personne_physique section -->
+                     <section data-step="personne_physique">
+
+                        <legend class="w-auto fs-3">RENSEIGNEMENTS RELATIFS A LA PERSONNE PHYSIQUE</legend>
+
+                        <div class="row g-3">
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-3 mb-3">
+                                 <label for="" class="form-label label-required">Titre</label>
+                                 {{ personnePhysiqueForm.titreCivil }}
+                              </div>
+                              <div class="col-md-5 mb-3">
+                                 <label for="" class="form-label label-required">Prenom</label>
+                                 {{ personnePhysiqueForm.prenom }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Nom</label>
+                                 {{ personnePhysiqueForm.nom }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Situation matrimoniale</label>
+                                 {{ personnePhysiqueForm.situationMatrimoniale }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Date de naissance</label>
+                                 {{ personnePhysiqueForm.dateNaissance }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Lieu de naissance</label>
+                                 {{ personnePhysiqueForm.lieuNaissance }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Nationnalité</label>
+                                 {{ personnePhysiqueForm.nationnalite }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Adresse postale</label>
+                                 {{ personnePhysiqueForm.adressePostale }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Telephone</label>
+                                 {{ personnePhysiqueForm.telephone }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Domicile personnel</label>
+                                 {{ personnePhysiqueForm.domicile }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Ville</label>
+                                 {{ personnePhysiqueForm.ville }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label label-required">Quartier</label>
+                                 {{ personnePhysiqueForm.quartier }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Autres precisions</label>
+                                 {{ personnePhysiqueForm.autrePrecision }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Coordonnées électronique</label>
+                                 {{ personnePhysiqueForm.coordonneesElectro }}
+                              </div>
+                           </fieldset>
+                        </div>
+
+                        <legend class="w-auto fs-3">MENDATAIRE</legend>
+
+                        <div class="row g-3">
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Mandataire (préciser si mandataire)</label>
+                                 {{ formaliteForm.mandataire }}
+                              </div>
+                           </fieldset>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                           <button data-prev class="btn btn-light">Précédent</button>
+                           <button data-next class="btn btn-primary">Suivant</button>
+                        </div>
+                     </section>
+
+                     <!-- etablissement section -->
+                     <section data-step="etablissement">
+                        <legend class="w-auto fs-3">MODIFICATIONS RELATIVES A L'ETABLISSEMENT</legend>
+
+                        <div class="row g-3">
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Nom commercial (Si nouveau)</label>
+                                 {{ etablissementForm.nomCommercial }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Sigle (Si nouveau)</label>
+                                 {{ etablissementForm.sigle }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label label-required">Activité(s)</label>
+                                 {{ etablissementForm.activites }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Activité(s) supprimée(s)</label>
+                                 {{ etablissementForm.activitesSupprimer }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Activité(s) ajoutée(s)</label>
+                                 {{ etablissementForm.activitesAjouter }}
+                              </div>
+                            
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Activité(s) actualisée(s)</label>
+                                 {{ etablissementForm.activitesActualiser }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Adresse de l'établissement (s'il y'a lieu)</label>
+                                 {{ etablissementForm.adresseEtablissement }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Ancienne adresse</label>
+                                 {{ etablissementForm.ancienneAdresse }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Nouvelle adresse</label>
+                                 {{ etablissementForm.nouvelleAdresse }}
+                              </div>
+                             
+                           </fieldset>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                           <button data-prev class="btn btn-light">Précédent</button>
+                           <button data-next class="btn btn-primary">Suivant</button>
+                        </div>
+                     </section>
+
+
+                     <!-- etablissement_secondaire section -->
+                     <section data-step="personne_engager">
+                        <legend class="w-auto fs-3">MODIFICATIONS RELATIVES AUX PERSONNES POUVANT ENGAGER LA PERSONNE PHYSIQUE</legend>
+
+                        <div class="row g-3">
+                           <fieldset class="border p-3 mb-4 row">
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Prenom</label>
+                                 {{ personnePhysiqueEngagerForm.prenom }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Nom</label>
+                                 {{ personnePhysiqueEngagerForm.nom }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Date de naissance</label>
+                                 {{ personnePhysiqueEngagerForm.dateNaissance }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Lieu de naissance</label>
+                                 {{ personnePhysiqueEngagerForm.lieuNaissance }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Nationnalité</label>
+                                 {{ personnePhysiqueEngagerForm.nationnalite }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Domicile personnel</label>
+                                 {{ personnePhysiqueEngagerForm.domicile }}
+                              </div>
+                              <div class="col-md-4 mb-3">
+                                 <label for="" class="form-label">Precision</label>
+                                 {{ personnePhysiqueEngagerForm.modeDomicilier }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Objet modification</label>
+                                 {{ personnePhysiqueEngagerForm.objetModification }}
+                              </div>
+                              <div class="col-md-6 mb-3">
+                                 <label for="" class="form-label">Date modification</label>
+                                 {{ personnePhysiqueEngagerForm.dateModification2 }}
+                              </div>
+                             
+                           </fieldset>
+                        </div>
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                           <button data-prev class="btn btn-light">Précédent</button>
+                           <button data-next class="btn btn-primary">Suivant</button>
+                        </div>
+                     </section>
+
+                     <!-- aperçu section -->
+                     <section data-step="apercu">
+
+                        <div>
+                           {% include 'rccm/modification/personne_physique/activite/form/apercu.html' %}
+                        </div>                       
+
+                        <div class="pt-3 d-flex justify-content-end gap-2">
+                           <div id="btnAction">
+                              <button data-prev class="btn btn-light">Précédent</button>
+                              <button class="btn btn-success" type="submit" id="submitButton">Enregistrer</button>
+                          </div>
+                           <button class="btn btn-info"  data-next  id="nextDownload" hidden>Suivant</button>
+                        </div>
+                     </section>
+
+                  </form>
+                  <!-- END : Form sections -->
+
+
+               </div>
+            </div>
+            <!-- END : Form wizard with validation -->
+
+
+         </div>
+      </div>
+   </div>
+
+
+  
+
+</section>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('_dm-validWizardForm');
+    const feedbackMessage = document.getElementById('feedbackMessage');
+    
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault(); // Empêche le rechargement de la page
+
+        const formData = new FormData(form); // Récupère les données du formulaire
+
+        try {
+            const response = await fetch(form.action, {
+                method: 'POST',
+                dataType: 'json',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                throw new Error('Une erreur est survenue. Veuillez réessayer.');
+            }
+
+            const data = await response.json(); // Suppose que votre vue retourne JSON
+            feedbackMessage.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+           
+        } catch (error) {
+            feedbackMessage.innerHTML = `<div class="alert alert-danger">${error.message}</div>`;
+        }
+    });
+});
+
+</script>
+
+<script>
+
+
+
+$(function() {
+    const champs = [
+        '#typeRccm', '#denomination', '#siegeSocial', '#numeroRccm', '#declarationModificative', 
+        '#optionActivite', '#activitesAjouter', '#dateModification', '#titreCivil',
+        '#nom', '#prenom', '#dateNaissance', '#lieuNaissance',
+        '#nationnalite', '#adressePostale', '#telephone', '#domicile', '#quartier', 
+        '#ville', '#autrePrecision', '#coordonneesElectro', '#sigle', 
+        '#nomCommercial', '#nomCommercialNew', '#situationMatrimoniale', 
+        '#activites', '#activiteSupprimer', '#activitesAjouter', '#activitesActualiser', 
+        '#mandataire', '#numeroFormalite', '#dateEnreg'
+    ];
+
+    champs.forEach(selector => {
+        let $el = $(selector);
+        if ($el.length) {
+            try {
+                console.log(`✅ Trigger sur ${selector} avec valeur:`, $el.val());
+                $el.trigger('change');
+            } catch (error) {
+                console.error(`❌ Erreur sur ${selector}:`, error);
+            }
+        } else {
+            console.warn(`⚠️ ${selector} introuvable`);
+        }
+    });
+});
+
+
+
+
+
+   // Page 1
+   $('#typeRccm').on('change', function() { $('#typeRccm_value').html(this.value) });
+   $('#denomination').on('change', function() { 
+      $('#denomination_value').html(this.value); 
+      $('#ancienneDenomination_value').html(this.value); 
+   });
+   $('#siegeSocial').on('change', function() { $('#siege_value').html(this.value) });
+   $('#numeroRccm').on('change', function() {
+      $('#numRccm_value').html(`RCCM/${this.value}`);
+      $('#numRccm_value2').html(`RCCM/${this.value}`);
+
+   });
+   
+   $('#declarationModificative').on('change', function() { 
+      $('#declarationModificative_value').html(this.value);
+
+      // Sur la page 2
+      var declaration = this.value;
+      if (declaration === "A L'ACTIVITE") {
+         $('#div-activite').removeAttr('hidden', true);
+         $('#div-denomination').attr('hidden');
+
+         $('#_dm-activite').prop('checked', true);
+         $('#activite_value').css({
+            'font-weight': 'bold',
+            'text-decoration': 'underline'
+         });
+         
+      }
+      if (declaration === "A LA DENOMINATION") {
+         $('#div-denomination').removeAttr('hidden');
+         $('#div-activite').attr('hidden',true);
+
+         $('#_dm-activite').prop('checked', true);
+         $('#activite_value').css({
+            'font-weight': 'bold',
+            'text-decoration': 'underline'
+         });
+         
+      }  
+   });
+   $('#optionActivite').on('change', function() { 
+      $('#optionActivite_value').html(this.value);
+      var declarationModificative =  $('#declarationModificative').val();
+     
+
+      if (declarationModificative == "A L'ACTIVITE") {
+         $('#textModification').html(`Modification relative aux activités (${this.value})`);
+      }
+
+      if (declarationModificative == "A LA DENOMINATION") {
+         $('#textModification').html(`Modification relative à la dénomination (${this.value})`);
+
+      }
+
+
+      var option = this.value;
+      if (option === 'Rajout') {
+         $('#_dm-activite-rajout').prop('checked', true);
+      }
+     
+   });
+
+   $('#activitesAjouter').on('change', function() { $('#activitesAjouter_value').html(this.value) });
+   $('#numeroFormalite').on('change', function() { 
+      $('#numeroFormalite_value').html(this.value); 
+      $('#numeroFormalite_value2').html(this.value); 
+   });
+   $('#dateModification').on('change', function() { 
+
+      console.log('date :', this.value); // Avec une virgule
+
+     // Formatez la date au format "jour mois année"
+      var options = { day: 'numeric', month: 'long', year: 'numeric' };
+      var date = new Date(this.value); // Convertir la chaîne en objet Date   
+      var formattedDate = new Intl.DateTimeFormat('fr-FR', options).format(date);
+
+       // Formatez la date au format "dd/mm/yyyy"
+      var day = String(date.getDate()).padStart(2, '0'); // Ajoute un zéro si nécessaire
+      var month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+      var year = date.getFullYear();
+
+      var formattedDate2 = `${day}/${month}/${year}`; // Assemblez le format
+
+        // Affichez la date formatée dans l'élément cible
+      $('#dateModification_value').html(formattedDate);
+      $('#dateModification_value2').html(formattedDate2); 
+      $('#dateModification_value3').html(formattedDate2); 
+      $('#dateModification_value4').html(formattedDate2); 
+   });
+
+   $('#dateEnreg').on('change', function() { 
+     // Formatez la date au format "jour mois année"
+      var options = { day: 'numeric', month: 'long', year: 'numeric' };
+      var date = new Date(this.value); // Convertir la chaîne en objet Date
+      var formattedDate = new Intl.DateTimeFormat('fr-FR', options).format(date);
+
+        // Affichez la date formatée dans l'élément cible
+      $('#dateCreationRccm').html(formattedDate);
+    
+   });
+
+   // Page 2
+   $('#titreCivil').on('change', function () {
+      var titre = this.value;
+      if (titre === 'M') {
+         $('#_dm-m').prop('checked', true);
+         $('#m').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-mme').prop('checked', false);
+         $('#mme').css({
+            'font-weight': 'normal',          // Enlever le gras
+            'text-decoration': 'none'        // Enlever le soulignement
+         });
+
+         $('#_dm-mlle').prop('checked', false);
+         $('#mlle').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+
+      } else if (titre === 'Mme') {
+         $('#_dm-mme').prop('checked', true);
+         $('#mme').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-m').prop('checked', false);
+         $('#m').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-mlle').prop('checked', false);
+         $('#mlle').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+
+      } else if (titre === 'Mlle') {
+         $('#_dm-mlle').prop('checked', true);
+         $('#mlle').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-mme').prop('checked', false);
+         $('#mme').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-m').prop('checked', false);
+         $('#m').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+      }
+   });
+
+   $('#nom').on('change', function () { $('#nom_value').html(this.value); });
+   $('#prenom').on('change', function () { $('#prenom_value').html(this.value); });
+
+   var dateNaissance = '';
+   var lieuNaissance = '';
+   var formattedDateNaissance = '';
+   $('#dateNaissance').on('change', function () {
+
+      dateNaissance = new Date(this.value);
+      var day = String(dateNaissance.getDate()).padStart(2, '0'); // Ajoute un zéro si nécessaire
+      var month = String(dateNaissance.getMonth() + 1).padStart(2, '0'); // Les mois commencent à 0
+      var year = dateNaissance.getFullYear();
+
+      formattedDateNaissance = `${day}/${month}/${year}`; // Assemblez le format
+      $('#dateEtLieu').html(`Né(e) le ${formattedDateNaissance} à ${lieuNaissance}`);
+   });
+
+   $('#lieuNaissance').on('change', function () {
+      lieuNaissance = this.value;
+      $('#dateEtLieu').html(`Né(e) le ${formattedDateNaissance} à ${lieuNaissance}`);
+   });
+
+   $('#nationnalite').on('change', function () { $('#nationnalite_value').html(this.value); });
+   $('#adressePostale').on('change', function () { $('#adressePostale_value').html(this.value); });
+   $('#telephone').on('change', function () { $('#telephone_value').html(this.value); });
+   $('#domicile').on('change', function () { $('#domicile_value').html(this.value); });
+   $('#quartier').on('change', function () { $('#quartier_value').html(this.value); });
+   $('#ville').on('change', function () { $('#ville_value').html(this.value); });
+   $('#autrePrecision').on('change', function () { $('#autrePrecision_value').html(this.value); });
+   $('#coordonneesElectro').on('change', function () { $('#coordonneesElectro_value').html(this.value); });
+   $('#sigle').on('change', function () { 
+      $('#sigle_value').html(this.value); 
+      $('#nouveauSigle_value').html(this.value); 
+   });
+   $('#nomCommercial').on('change', function () { 
+      $('#nomCommercial_value').html(this.value);
+   });
+
+   $('#nomCommercialNew').on('change', function () { 
+      $('#nouvelleDenomination_value').html(this.value); 
+      $('#nouveauNomcommercial_value').html(this.value); 
+   });
+
+   $('#situationMatrimoniale').on('change', function () {
+      var situationMatrimoniale = this.value;
+
+      if (situationMatrimoniale === 'Celibataire') {
+
+         $('#_dm-celib').prop('checked', true);
+         $('#celib').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-marier').prop('checked', false);
+         $('#marier').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-veuf').prop('checked', false);
+         $('#veuf').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-divorce').prop('checked', false);
+         $('#divorce').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });   
+
+      } else if (situationMatrimoniale === 'Marie(e)') {
+
+         $('#_dm-celib').prop('checked', false);
+         $('#celib').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-marier').prop('checked', true);
+         $('#marier').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-veuf').prop('checked', false);
+         $('#veuf').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-divorce').prop('checked', false);
+         $('#divorce').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+
+      } else if (situationMatrimoniale === 'Veuf(e)') {
+
+         $('#_dm-celib').prop('checked', false);
+         $('#celib').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-marier').prop('checked', false);
+         $('#marier').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-veuf').prop('checked', true);
+         $('#veuf').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+
+         $('#_dm-divorce').prop('checked', false);
+         $('#divorce').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+      } else if (situationMatrimoniale === 'Divorce(e)') {
+         $('#_dm-celib').prop('checked', false);
+         $('#celib').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-marier').prop('checked', false);
+         $('#marier').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-veuf').prop('checked', false);
+         $('#veuf').css({
+               'font-weight': 'normal',
+               'text-decoration': 'none'
+         });
+
+         $('#_dm-divorce').prop('checked', true);
+         $('#divorce').css({
+               'font-weight': 'bold',
+               'text-decoration': 'underline'
+         });
+      }
+   });
+
+   $('#activites').on('change', function () {
+      $('#activites_value').html(this.value);
+      $('#activites_value2').html(this.value);
+      $('#activites_value3').html(this.value);
+   });
+
+   $('#activiteSupprimer').on('change', function () {
+      $('#activiteSupprimer_value').html(this.value);
+      $('#activiteSupprimer_value2').html(this.value);
+   });
+
+   $('#activitesAjouter').on('change', function () {
+      $('#activitesAjouter_value').html(this.value);
+      $('#activitesAjouter_value2').html(this.value);
+      $('#activitesAjouter_value3').html(this.value);
+   });
+
+   $('#activitesActualiser').on('change', function () {
+      $('#activitesActualiser_value').html(this.value);
+      $('#activitesActualiser_value2').html(this.value);
+   });
+
+   $('#mandataire').on('change', function () { $('#mandataire_value').html(this.value); });
+
+
+
+	
+</script>
+
+
+{% endblock %}

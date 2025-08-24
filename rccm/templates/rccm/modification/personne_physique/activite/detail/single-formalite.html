@@ -1,0 +1,86 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Modification{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<style>
+   
+   .label-required::after {
+      content: " *";
+      color: red;
+      font-weight: bold;
+   }
+
+</style>
+
+<section id="content" class="content" >
+
+
+   <div class="content__boxed mt-5 mb-5">
+      <div class="content__wrap">
+         <div class="col-md-12">
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+               <button class="btn btn-secondary text-white d-flex align-items-center justify-content-center hv-grow p-3" onclick="window.history.back();">
+                  <i class="fa fa-arrow-left fs-1"></i>&nbsp;
+                  <span class="h4 mb-0">RCCM</span>
+              </button>
+              
+               <button class="btn btn-success text-white d-flex align-items-center justify-content-center hv-grow p-3" id="captureBtn">
+                  <i class="fa fa-download fs-1"></i>&nbsp;
+                  <span class="h4 mb-0">Télécharger une copie</span>
+              </button>
+               <br>
+                   <!-- Spinner -->
+              
+                  <div id="spinner" style="display: none; text-align: center; margin-top: 10px;">
+                     <div class="spinner-border text-white" role="status">
+                         <span class="visually-hidden">Chargement...</span>
+                     </div>
+                     <p class="text-white text-center mt-2">Génération du PDF...</p>
+                 </div>
+                 
+              
+            </div>
+
+       
+                  
+            <div class="d-flex flex-column flex-md-row justify-content-center align-items-center div2 p-3" 
+                  id="divId"  style="background-color: whitesmoke; width: 100%;">
+               {% include 'rccm/modification/personne_physique/activite/detail/detail-formalite.html' %}
+            </div>
+       
+
+
+         </div>
+      </div>
+   </div>
+
+
+  
+
+</section>
+
+ <!--  JS RCCM  -->
+
+ <script src="{% static 'start/_base/assets/vendors/popperjs/popper.min.js' %}"></script>
+ <script src="{% static 'start/_base/assets/vendors/bootstrap/bootstrap.min.js' %}"></script>
+ <script src="{% static 'start/_base/assets/js/nifty.js' %}"></script>
+ <script src="{% static 'start/_base/assets/js/demo-purpose-only.js' %}"></script>
+ <script src="{% static 'start/_base/assets/vendors/chart.js/chart.umd.min.js' %}"></script>
+ <script src="{% static 'start/_base/assets/pages/dashboard-1.js' %}"></script>
+ <script src="{% static 'start/_base/assets/vendors/zangdar/zangdar.min.js' %}"></script>
+ <script src="{% static 'start/_base/assets/pages/form-wizard.js' %}"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+   $(document).ready(function() {
+       $('#nav-modification').addClass('bg-primary text-white');
+       $('#txt-modification').addClass('text-white');
+   });
+</script>
+
+
+{% endblock %}

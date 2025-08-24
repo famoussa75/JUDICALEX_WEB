@@ -1,0 +1,182 @@
+<style>
+	.first_div{
+		overflow: hidden; 
+		position: relative; 
+		background-color: white; 
+		width: auto; 
+		height: auto;
+		font-size:37px;
+		font-family:TimesNewRomanPS-BoldItalicMT_z;
+		color:#000;
+	}
+	
+</style>
+<style>
+	.police-15{
+		font-size: 15px;
+	}
+	.police-18{
+		font-size: 18px;
+	}
+	.police-40{
+		font-size: 40px;
+	}
+	.police-34{
+		font-size: 34px;
+	}
+	.police-25{
+		font-size: 25px;
+	}
+	.police-28{
+		font-size: 28px;
+	}
+	.police-30{
+		font-size: 30px;
+	}
+	.police-37{
+		font-size: 30px;
+	}
+    .police-11{
+		font-size: 11px;
+	}
+    
+</style>
+
+
+
+
+
+
+<div id="captureDiv" style="overflow-y: scroll; height: 1286px;background-color: white;">
+    <!-- Page 1 -->
+    <div id="page1" style="font-style: italic; " class="d-flex justify-content-center align-items-center mb-3">
+        {% include 'rccm/modification/personne_physique/activite/detail/1.html' %}
+    </div>
+
+    <!-- Page 2 -->
+    <div id="page2" style="" class="d-flex justify-content-center align-items-center mb-3">
+        {% include 'rccm/modification/personne_physique/activite/detail/2.html' %}
+    </div>
+
+    <!-- Page 3 -->
+    <div id="page3" style="" class="d-flex justify-content-center align-items-center mb-3">
+        {% include 'rccm/modification/personne_physique/activite/detail/3.html' %}
+    </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#captureBtn").click(function () {
+            $("#spinner").show(); // Afficher le spinner
+            captureAllPages();
+        });
+    });
+    
+    function captureAllPages() {
+        let pages = ["page1", "page2", "page3"];
+        let images = [];
+        let index = 0;
+    
+        function captureNextPage() {
+            if (index >= pages.length) {
+                console.log("Toutes les pages ont été capturées !");
+                setTimeout(() => generatePDF(images), 200);
+                return;
+            }
+    
+            let captureElement = document.getElementById(pages[index]);
+    
+            // Nettoyer les styles avant la capture
+            cleanCSS(captureElement);
+    
+            console.log(`Capture en cours : ${pages[index]}`);
+            console.log("Styles appliqués :", window.getComputedStyle(captureElement));
+    
+            html2canvas(captureElement, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                backgroundColor: "#ffffff"  // Forcer un fond blanc pour éviter les erreurs
+            }).then(canvas => {
+                let { width, height } = getOptimalSize();
+                let imgData = resizeImage(canvas, width, height);
+                images.push(imgData);
+    
+                index++;
+                setTimeout(captureNextPage, 300);
+            }).catch(error => {
+                console.error(`Erreur lors de la capture de ${pages[index]} :`, error);
+                alert(`⚠️ Erreur lors de la capture de ${pages[index]} : ${error.message}`);
+                $("#spinner").hide();
+            });
+        }
+    
+        captureNextPage();
+    }
+    
+    // Nettoyer les styles problématiques avant la capture
+    function cleanCSS(element) {
+        element.querySelectorAll("*").forEach(el => {
+            el.style.backgroundColor = "#ffffff"; // Fond blanc
+            el.style.color = "#000000"; // Texte noir
+            el.style.boxShadow = "none"; // Supprimer les ombres
+            el.style.textShadow = "none"; // Supprimer les effets de texte
+            el.style.border = "none"; // Supprimer les bordures
+        });
+    }
+    
+    // Récupérer la taille optimale pour la capture
+    function getOptimalSize() {
+        let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        let maxWidth = isMobile ? window.innerWidth * 0.9 : 800;
+        let maxHeight = isMobile ? window.innerHeight * 0.9 : 1100;
+        return { width: maxWidth, height: maxHeight };
+    }
+    
+    // Redimensionner l'image capturée
+    function resizeImage(canvas, maxWidth, maxHeight) {
+        let tmpCanvas = document.createElement("canvas");
+        let tmpCtx = tmpCanvas.getContext("2d");
+    
+        let ratio = Math.min(maxWidth / canvas.width, maxHeight / canvas.height);
+        tmpCanvas.width = canvas.width * ratio;
+        tmpCanvas.height = canvas.height * ratio;
+    
+        tmpCtx.drawImage(canvas, 0, 0, tmpCanvas.width, tmpCanvas.height);
+        return tmpCanvas.toDataURL("image/png");
+    }
+    
+    // Générer le PDF à partir des images capturées
+    function generatePDF(images) {
+        const { jsPDF } = window.jspdf;
+        let pdf = new jsPDF("p", "mm", "a4");
+    
+        let pdfWidth = 210;
+        let pdfHeight = 297;
+    
+        images.forEach((imgData, index) => {
+            if (index > 0) pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        });
+    
+        let pdfBlob = pdf.output("blob");
+        let pdfURL = URL.createObjectURL(pdfBlob);
+    
+        let a = document.createElement("a");
+        a.href = pdfURL;
+        a.download = "document_complet.pdf";
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(pdfURL), 100);
+    
+        $("#spinner").hide(); // Masquer le spinner après la génération du PDF
+    }
+    </script>
+    
+

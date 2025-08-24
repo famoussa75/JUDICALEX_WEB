@@ -1,0 +1,253 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Modification{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<section id="content" class="content">
+    <div class="content__header content__boxed rounded-0">
+        <div class="content__wrap">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                   <li class="breadcrumb-item fs-4"><a href="#" class="nav-toggler" aria-label="Nav Toggler">Menu</a></li>
+                   <li class="breadcrumb-item active fs-4" aria-current="page">Déclaration modificative</li>
+                </ol>
+             </nav>
+             <h1 class="page-title d-flex flex-wrap align-items-center justify-content-center mb-2 mt-4"><i class="demo-pli-file-search"></i>&nbsp;Trouvez un RCCM
+             </h1>
+             <div style="background-image: url('{% static '_base/assets/img/bg-header-pages.png' %}'); height: 250px; background-size: cover; background-position: 0 100px; background-repeat:no-repeat">
+                    <!-- Project name and information -->
+                
+                    <p class="text-center">Pour aller plus rapidement dans la création d'une formalité, faites une recherche du Rccm initial.<br>Saisissez le Rccm à l'aide du champ ci-dessous.</p>
+                    <div class="col-md-8 offset-md-2 mb-3">
+                        <form class="searchbox input-group" id="search-form" >
+                            <input class="searchbox__input form-control form-control-lg" type="search" id="search-input"
+                                placeholder="Saisissez le rccm ici . . ." aria-label="Search">
+                            <div class="searchbox__btn-group">
+                                <button class="searchbox__btn btn btn-icon bg-transparent shadow-none border-0 btn-sm"
+                                    type="submit">
+                                    <i class="demo-pli-magnifi-glass"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- END : Project name and information -->
+             </div>
+
+        </div>
+      
+
+
+    </div>
+
+
+    <div class="content__boxed">
+        <div class="content__wrap">
+
+            <div class="py-4 text-center">
+
+
+                <!-- Loader - Ball pulse clip rotate -->
+                <div class="loader" id="loader" hidden>
+                   <div class="loader-inner ball-pulse-rise">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                   </div>
+                </div>
+                <!-- END : Loader - Ball pulse clip rotate -->
+
+
+             </div>
+
+             <div id="result" class="text-center" >
+                <h2 id="title-result-search"></h2>
+                <p class="fs-4" id="message-result-search"></p>
+                <div id="rccm-div" class="d-flex justify-content-center align-items-center"></div>
+
+               
+            </div>
+
+              <!-- Sort and priority filter -->
+              <div class="d-flex justify-content-between align-items-center py-4 mt-5">
+                <!-- Titre de la page -->
+                <h1 class="page-title mb-0"><i class="demo-pli-file"></i> Formalités enregistrées</h1>
+            
+                <!-- Filtres -->
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <div class="d-flex justify-content-center align-items-center">                    
+                        <a href="{% url 'rccm.scan' %}" type="button" class="btn btn-outline-primary btn-lg hstack gap-3 fw-semibold" id="new-formalite">
+                            <i class="demo-psi-add fs-4"></i>
+                            <span class="vr"></span>
+                            Nouveau RCCM
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th width="55"></th>
+                                    <th>Numéro de formalité</th>
+                                    <th class="text-nowrap">Date de Création</th>
+                                    <th>Categorie</th>
+                                    <th>Créer par</th>
+                                    <th class="text-center">Type de société</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                {% for f in formalites %}
+                                    
+                                <tr class="{% if f.typeFormalite == 'Création' %}  bg-gray  {% endif %}">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a class="btn-link text-body-emphasis text-decoration-underline text-truncate mb-0"
+                                            href="#">{{ f.numeroFormalite }}</a></td>
+                                    <td><span class="text-nowrap text-body-secondary">{{ f.dateModification }}</span></td>
+                                    <td>{{ f.typeFormalite }} {% if f.optionActivite %} ( {{ f.optionActivite }} ) {% endif %}</td>
+                                    <td><a href="#" class="btn-link text-nowrap">{{ f.created_by }}</a></td>
+                                    <td class="h5">
+                                        <div class="d-block badge bg-primary">{{ f.typeRccm }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-nowrap text-center">
+                                            {% if f.typeFormalite == 'Création' %}
+                                            <a href="{{ f.rccm.rccm_file.url }}" target="_blank" class="btn btn-sm btn-primary cl-white">Voir plus <i class="demo-pli-arrow-right fs-5"></i></a>
+                                            {% else %}
+                                            <a href="{% url 'rccm.formalite.detail' f.slug %}" class="btn btn-sm btn-primary">Voir plus <i class="demo-pli-arrow-right fs-5"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- END : Blog post lists -->
+
+
+                    <div class="mt-4 d-flex justify-content-center">
+
+                        <!-- Pagination - Disabled and active states -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item active" aria-current="page">
+                                    <a class="page-link" href="#">2</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">4</a></li>
+                                <li class="page-item"><a class="page-link" href="#">5</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                        <!-- END : Pagination - Disabled and active states -->
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   
+
+</section>
+
+<script>
+    $(document).ready(function () {
+
+       $('#nav-modification').addClass('bg-primary text-white');
+       $('#txt-modification').addClass('text-white');
+
+        $('#search-form').on('submit', function (event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+
+            let query = $('#search-input').val();
+
+            // Vérifier si le champ n'est pas vide
+            if (query.length > 0) {
+                // Afficher le loader
+                $('#loader').removeAttr('hidden');
+
+                $.ajax({
+                    url: '/rccm/form/search-rccm/', // L'URL du backend Django
+                    type: 'GET',
+                    data: { query: query },
+                    dataType: 'json',
+                    success: function (response) {
+                        // Introduire un délai de 3 secondes
+                        setTimeout(function () {
+                            // Masquer le loader après le délai
+                            $('#loader').attr('hidden', true);
+                            $('#search-input').val('');
+
+                            let rccm_div = '';
+                            const urls = { formaliteRapide: "{% url 'rccm.formalite-rapide' 0 %}".replace("0", ""), };
+                            console.log('Succès:', response);
+
+
+                            if (response.results.length > 0) {
+                                $('#title-result-search').html(`Résultat(s) de la recherche : <span style="color:gray;font-style:italic"> ${query} </span>`);
+                                $('#message-result-search').html(`Créer une nouvelle formalité à partir des informations de la dernière.`);
+
+                                response.results.forEach(function (result) {
+                                  
+                                    rccm_div += `
+                                            <div class="col-md-3 m-2">
+                                                <div class="card mb-1">
+                                                    <div class="px-3 py-4 text-bg-dark text-center rounded">
+                                                    <i class="demo-psi-folder-with-document display-4 my-3"></i><br>
+                                                    <span>RCCM</span>
+                                                    </div>
+                                                    <div class="p-3 text-center">
+                                                    <span class="h3 fw-normal mb-4">${result.numeroRccm}</span><br><br>
+                                                    <a href="${urls.formaliteRapide}${result.id}" class="link-info link-opacity-100 fs-5" >Créer une formalité</a>
+                                                    </div>
+                                                </div>
+                                            </div>`;
+                                });
+
+                                $('#rccm-div').html(rccm_div);
+                            } else {
+                                $('#rccm-div').html('');
+                                $('#title-result-search').html(`Aucune correspondance pour : <span style="color:gray;font-style:italic"> ${query} </span>`);
+                                $('#message-result-search').html(`Nous avons trouvé aucun Rccm correspondant, veuillez réessayer ou créer une nouvelle formalité.`);
+                            }
+                        }, 3000); // 3 secondes
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Erreur Ajax:', error);
+                        // Masquer le loader en cas d'erreur
+                        $('#loader').attr('hidden', true);
+                    }
+                });
+            } else {
+                // Vider le tableau si la recherche est trop courte
+                $('#rccm-table tbody').empty();
+            }
+        });
+
+    });
+</script>
+
+
+{% endblock %}

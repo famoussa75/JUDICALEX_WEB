@@ -1,0 +1,1572 @@
+{% extends 'start/base.html' %}
+
+{% block content %}
+{% load static %}
+
+
+<style>
+    .spinner-border {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.25em solid #f3f3f3;
+    border-right-color: #ab7f3f; /* Couleur personnalisée */
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pub {
+
+    width: 409px;
+    height: 202px;
+    flex-shrink: 0;
+}
+
+
+</style>
+
+<style>
+    /* Empêche de recouvrir l’image */
+    .carousel-indicators {
+        position: static;   /* au lieu de absolute */
+        margin-top: 15px;   /* espace sous l’image */
+        justify-content: center; /* centré */
+    }
+    
+    /* Style cercles */
+    .carousel-indicators [data-bs-target] {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: white;
+        border: 1px solid;
+        margin: 0 6px;
+        opacity: 0.5;
+        transition: all 0.3s ease;
+    }
+    .carousel-indicators .active {
+        opacity: 1;
+        border: none;
+        background-color: #DFB23D;
+        transform: scale(1.2);
+    }
+    </style>
+    
+
+<style>
+    #pub-anim {
+      position: relative;
+      min-height: 280px; /* Hauteur minimale pour les images */
+    }
+  
+    .fade-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 0;
+      border-radius: 0.375rem 0 0 0.375rem; /* coins gauche arrondis */
+    }
+  
+    .fade-image.active {
+      opacity: 1;
+      z-index: 1;
+    }
+  </style>
+  
+
+<div class="page-wrapper" style="background-color: white;">
+    <div class="col-md-12">
+        <div id="carousel-indicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active" style="height: 700px; position: relative; overflow: hidden;">
+              
+                  <!-- Image de fond -->
+                  <img src="/static/start/assets/statics/banniere4.jpg"
+                       alt="Bannière"
+                       class="w-100 h-100"
+                       style="object-fit: cover; object-position: center; position: absolute; top: 0; left: 0; z-index: 1;">
+              
+                  <!-- Calque sombre -->
+                  <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+                              background: rgba(0,0,0,0.5); z-index: 2;"></div>
+              
+                  <!-- Image au-dessus (branding) -->
+                  <img src="/static/start/assets/statics/branding2.png"
+                       alt="Branding"
+                       style="width: 650px; max-width: 80%; height: auto; position: absolute; top: -10%; left: 50%;
+                              transform: translateX(-50%); z-index: 3; opacity: 0.5;">
+                
+                  <!-- Drapeau -->
+                  <img src="/static/start/assets/statics/drapeau.png"
+                       alt="Branding"
+                       style="width: 150px; max-width: 80%; height: auto; position: absolute; top: 8%; right: 2%;
+                              transform: translateX(-50%); z-index: 3;">
+              
+                  <!-- Texte -->
+                  <div style="position: absolute; top: 15%; left: 35%; transform: translateX(-50%);
+                              color: white; text-align: left; z-index: 3; max-width: 950px;">
+              
+                    <h1 style="color: #DFB23D; font-family: Jost; font-size: 48px; font-weight: 700; margin-bottom: 15px;">
+                      JUDICALEX GUINÉE
+                    </h1>
+              
+                    <h2 style="color: #FFF; font-family: Jost; font-size: 32px; font-weight: 700; margin-bottom: 20px;">
+                      ACCÈS À L'INFORMATION JURIDIQUE ET AU DROIT
+                    </h2>
+              
+                    <p style="color: #FFF; font-family: Jost; font-size: 20px; font-weight: 700; margin-bottom: 30px;">
+                      Découvrez les ressources essentielles pour comprendre vos droits, accéder aux textes légaux, et suivre les évolutions juridiques.
+                      Une passerelle vers une meilleure maîtrise du cadre légal.
+                    </p>
+              
+                    <button type="button" class="btn btn-warning" style="background: #DFB23D; border: none; padding: 10px 25px; border-radius: 5px;">
+                      <span style="color: #143642; font-family: Jost; font-size: 20px; font-weight: 700;">
+                        En savoir plus +
+                      </span>
+                    </button>
+                  </div>
+              
+                </div>
+            </div>          
+        </div>
+    </div>
+
+    <div class="page-body  animate-bottom" style="margin-top: 0px;">
+
+        <!-- PUB CAROUSSEL -->
+        <div id="carouselExample" class="carousel slide mt-0 mb-4" data-bs-ride="carousel" style="background: rgba(20, 54, 66, 0.50); padding: 25px 40px 25px 40px;">
+            <div class="carousel-inner">
+          
+              <!-- Slide 1 -->
+              <div class="carousel-item active">
+                <div class="d-flex justify-content-center" style="gap: 80px;">
+                  <img src="/static/start/assets/statics/pub1.jpg" 
+                       alt="Pub 1" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                  <img src="/static/start/assets/statics/pub2.png" 
+                       alt="Pub 2" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                  <img src="/static/start/assets/statics/pub3.png" 
+                       alt="Pub 3" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                </div>
+              </div>
+          
+              <!-- Slide 2 -->
+              <div class="carousel-item">
+                <div class="d-flex justify-content-center" style="gap: 80px;">
+                  <img src="/static/start/assets/statics/pub-smartylex1.jpg" 
+                       alt="Pub 1" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                  <img src="/static/start/assets/statics/pub-smartylex2.jpg" 
+                       alt="Pub 2" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                  <img src="/static/start/assets/statics/pub-smartylex3.jpg" 
+                       alt="Pub 3" 
+                       style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                </div>
+              </div>
+          
+             
+            </div>
+        </div>
+
+        <!-- ACTUALITÉS SECTION -->
+        <div class="container my-5">
+            <h1 class="text-left mb-4" 
+                style="color: var(--Bleu, #143642); font-family: Jost; font-size: 48px; font-weight: 700;">
+            Actualités
+            </h1>
+        
+            <div class="row g-4 mb-4">
+            
+            <!-- Carte Actualité 1 -->
+            <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu1.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                        </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        
+            <!-- Carte Actualité 2 -->
+            <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu2.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                        </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        
+            <!-- Carte Actualité 3 -->
+            <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                <img src="/static/start/assets/statics/actu3.png" 
+                    class="card-img-top" 
+                    alt="Actu 1" 
+                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                        </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                    </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                </div>
+                </div>
+            </div>
+        
+            </div>
+
+            <div class="row g-4">
+            
+                <!-- Carte Actualité 1 -->
+                <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                    <img src="/static/start/assets/statics/actu1.png" 
+                        class="card-img-top" 
+                        alt="Actu 1" 
+                        style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                    
+                    <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                            </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                        </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                        <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            
+                <!-- Carte Actualité 2 -->
+                <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                    <img src="/static/start/assets/statics/actu2.png" 
+                        class="card-img-top" 
+                        alt="Actu 1" 
+                        style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                    
+                    <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                            </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                        </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                        <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            
+                <!-- Carte Actualité 3 -->
+                <div class="col-md-4">
+                <div class="card p-3" style="border: none; box-shadow: none;">
+                    <img src="/static/start/assets/statics/actu3.png" 
+                        class="card-img-top" 
+                        alt="Actu 1" 
+                        style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        <!-- Ligne Creator + Time -->
+                    
+                    <div class="">
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                            <img src="/static/start/assets/statics/djoma.svg" 
+                                alt="Djoma FM" 
+                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                            Djoma FM
+                            </span>
+                        <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                        </div>
+                    <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                        Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                    <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                        Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                    </p>
+                    <!-- Ligne Commentaires + Lire plus -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                        <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            
+            </div>
+
+        </div>
+
+        <div class="container my-5">
+
+            <div class="col-md-12 row">
+           
+                <div class="col-md-8">
+                    <div class="row g-4 mb-4">
+                    
+                        <!-- Carte Actualité 1 -->
+                        <div class="col-md-4">
+                            <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu1.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                    <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                        <img src="/static/start/assets/statics/djoma.svg" 
+                                            alt="Djoma FM" 
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                        Djoma FM
+                                    </span>
+                                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                                </p>
+                                <!-- Ligne Commentaires + Lire plus -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Carte Actualité 2 -->
+                        <div class="col-md-4">
+                            <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu2.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                    <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                        <img src="/static/start/assets/statics/djoma.svg" 
+                                            alt="Djoma FM" 
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                        Djoma FM
+                                    </span>
+                                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                                </p>
+                                <!-- Ligne Commentaires + Lire plus -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    
+                        <!-- Carte Actualité 3 -->
+                        <div class="col-md-4">
+                            <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu3.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                    <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                        <img src="/static/start/assets/statics/djoma.svg" 
+                                            alt="Djoma FM" 
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                        Djoma FM
+                                    </span>
+                                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                                </p>
+                                <!-- Ligne Commentaires + Lire plus -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                
+                    </div>
+
+                    <div class="row g-4">
+                    
+                        <!-- Carte Actualité 1 -->
+                        <div class="col-md-4">
+                        <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu1.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    <img src="/static/start/assets/statics/djoma.svg" 
+                                        alt="Djoma FM" 
+                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                    Djoma FM
+                                    </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                            </p>
+                            <!-- Ligne Commentaires + Lire plus -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    
+                        <!-- Carte Actualité 2 -->
+                        <div class="col-md-4">
+                        <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu2.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    <img src="/static/start/assets/statics/djoma.svg" 
+                                        alt="Djoma FM" 
+                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                    Djoma FM
+                                    </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                            </p>
+                            <!-- Ligne Commentaires + Lire plus -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    
+                        <!-- Carte Actualité 3 -->
+                        <div class="col-md-4">
+                        <div class="card" style="border: none; box-shadow: none;">
+                            <img src="/static/start/assets/statics/actu3.png" 
+                                class="card-img-top" 
+                                alt="Actu 1" 
+                                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                                <!-- Ligne Creator + Time -->
+                            
+                            <div class="">
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    <img src="/static/start/assets/statics/djoma.svg" 
+                                        alt="Djoma FM" 
+                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
+                                    Djoma FM
+                                    </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                </div>
+                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                            </p>
+                            <!-- Ligne Commentaires + Lire plus -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
+                                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <img src="/static/start/assets/statics/pub-anime1.gif" 
+                            class="" 
+                            alt="Actu 1" 
+                            style="height: 657px; width: 463; object-fit: cover;">
+                        </div>
+
+                        <div class="col-md-12">
+                            <img src="/static/start/assets/statics/pub-anime2.gif" 
+                            class="" 
+                            alt="Actu 1" 
+                            style="height: 420px; width: 463; object-fit: cover;">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+  
+        <!-- SERVICES SECTION -->
+        <div class="container my-4">
+            <h1 class="text-left mb-4" 
+                style="color: var(--Bleu, #143642); font-family: Jost; font-size: 48px; font-weight: 700;">
+            Ce que nous offrons
+            </h1>
+
+            <div class="row g-4 mb-4">
+            
+                <!-- Carte Actualité 1 -->
+                <div class="col-md-4">
+                    <div class="card text-center text-white" 
+                            style="border: none; 
+                                border-radius: 15px; 
+                                height: 200px; 
+                                background: linear-gradient(rgba(20, 54, 66, 0.60)),
+                                            url('/static/start/assets/statics/rccm.jpg') center/cover no-repeat; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                    
+                        <h1 style="font-family: Jost; font-size: 32px; font-weight: 700; color: #FFF; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">
+                        RCCM
+                        </h1>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center text-white" 
+                            style="border: none; 
+                                border-radius: 15px; 
+                                height: 200px; 
+                                background: linear-gradient(rgba(20, 54, 66, 0.60)),
+                                            url('/static/start/assets/statics/procedure.png') center/cover no-repeat; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                    
+                        <h1 style="font-family: Jost; font-size: 32px; font-weight: 700; color: #FFF; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">
+                        Procédures
+                        </h1>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center text-white" 
+                            style="border: none; 
+                                border-radius: 15px; 
+                                height: 200px; 
+                                background: linear-gradient(rgba(20, 54, 66, 0.60)),
+                                            url('/static/start/assets/statics/jurisprudence.png') center/cover no-repeat; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                    
+                        <h1 style="font-family: Jost; font-size: 32px; font-weight: 700; color: #FFF; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">
+                        Jurisprudences
+                        </h1>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center text-white" 
+                            style="border: none; 
+                                border-radius: 15px; 
+                                height: 200px; 
+                                background: linear-gradient(rgba(20, 54, 66, 0.60)),
+                                            url('/static/start/assets/statics/annuaire.jpg') center/cover no-repeat; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                    
+                        <h1 style="font-family: Jost; font-size: 32px; font-weight: 700; color: #FFF; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">
+                        Annuaire
+                        </h1>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center text-white" 
+                            style="border: none; 
+                                border-radius: 15px; 
+                                height: 200px; 
+                                background: linear-gradient(rgba(20, 54, 66, 0.60)),
+                                            url('/static/start/assets/statics/liens.png') center/cover no-repeat; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center;">
+                    
+                        <h1 style="font-family: Jost; font-size: 32px; font-weight: 700; color: #FFF; text-shadow: 2px 2px 6px rgba(0,0,0,0.8);">
+                        Liens utiles
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- SOCIAL CAROUSSEL -->
+        <div id="carouselExample" class="carousel slide mt-0 mb-4" data-bs-ride="carousel" style="padding: 40px 40px 40px 40px;">
+            <div class="carousel-inner">
+            
+                <!-- Slide 1 -->
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center" style="gap: 80px;">
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                               background: var(--Bleu, #143642);">
+                   
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/facebook.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                   
+                        </div>
+                   
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                               background: var(--Bleu, #143642);">
+                   
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/x-logo.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                   
+                        </div>
+
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                            background: var(--Bleu, #143642);">
+                
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/facebook.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                
+                        </div>
+
+                    </div>
+                </div>
+
+                 <!-- Slide 2 -->
+                 <div class="carousel-item">
+                    <div class="d-flex justify-content-center" style="gap: 80px;">
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                               background: var(--Bleu, #143642);">
+                   
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/facebook.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                   
+                        </div>
+                   
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                               background: var(--Bleu, #143642);">
+                   
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/x-logo.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                   
+                        </div>
+
+                        <div class="row align-items-center" 
+                            style="width: 660px; padding: 31px 28px; border-radius: 20px;
+                            background: var(--Bleu, #143642);">
+                
+                            <div style="display: flex; align-items: center; gap: 20px;  max-width: 800px; margin: auto;">
+
+                                    <!-- Avatar -->
+                                    <div style="flex-shrink: 0; margin-top: -20%;">
+                                        <img src="/static/start/assets/statics/facebook.png" 
+                                            alt="Social" 
+                                            style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid #DFB23D;">
+                                    </div>
+
+                                    <!-- Texte -->
+                                    <div>
+                                        <p style="color: #FFF; font-family: Jost; font-size: 18px; font-weight: 400; line-height: 1.6; margin: 0;font-style: italic;">
+                                            « Grâce à Judicalex, 
+                                            j’ai pu comprendre mes droits et finaliser mes démarches juridiques sans stress. 
+                                            La plateforme est claire, les informations sont fiables, et les liens utiles m’ont vraiment fait gagner du temps. 
+                                            <b>Un outil indispensable !</b> »
+                                        </p>
+                                        <span style="display: block; margin-top: 10px; font-family: Jost; font-weight: 600; color: #DFB23D;">
+                                        Mariam Diallo
+                                        </span>
+                                        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 15px; font-style: normal; font-weight: 400; line-height: normal;">
+                                            entrepreneure à Conakry
+                                        </span>
+                                    </div>
+                            </div>
+                
+                        </div>
+
+                    </div>
+                </div>
+            
+                
+            </div>
+        </div>
+
+        <!-- INSTITUTION CAROUSEL -->
+        <div id="carouselInstitutions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" style="width: 100%; margin: auto;">
+            <div class="carousel-inner">
+        
+            <!-- Slide 1 -->
+            <div class="carousel-item active" style="height: 500px;">
+                <img src="/static/start/assets/statics/institution1.png" 
+                    class="d-block w-100" 
+                    alt="Institution 1" 
+                    style="height: 100%; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+            </div>
+        
+            <!-- Slide 2 -->
+            <div class="carousel-item" style="height: 500px;">
+                <img src="/static/start/assets/statics/institution1.png" 
+                    class="d-block w-100" 
+                    alt="Institution 1" 
+                    style="height: 100%; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+            </div>
+        
+            <!-- Slide 3 -->
+            <div class="carousel-item" style="height: 500px;">
+                <img src="/static/start/assets/statics/institution1.png" 
+                    class="d-block w-100" 
+                    alt="Institution 1" 
+                    style="height: 100%; object-fit: cover; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+            </div>
+        
+            </div>
+        
+            <!-- Controls
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselInstitutions" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselInstitutions" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+            </button>  -->
+            
+             <!-- Indicators -->
+            <div class="carousel-indicators custom-indicators ">
+                <button type="button" data-bs-target="#carouselInstitutions" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#carouselInstitutions" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#carouselInstitutions" data-bs-slide-to="2"></button>
+            </div>
+
+        </div>
+
+
+        <!-- PARTENAIRES CAROUSEL -->
+        <div id="carouselPartenaires" class="carousel slide mt-0 mb-4" data-bs-ride="carousel">
+            <h1 class="text-left mb-5 container" 
+                style="color: var(--Bleu, #143642); font-family: Jost; font-size: 48px; font-weight: 700;">
+                Nos partenaires
+            </h1>
+
+            <div class="carousel-inner text-center">
+
+                <!-- Slide 1 -->
+                <div class="carousel-item active" data-bs-interval="5000">
+                    <div class="d-flex justify-content-center">
+                        <img src="/static/start/assets/statics/part1.png" class="partner-logo" alt="part1">
+                        <img src="/static/start/assets/statics/part2.png" class="partner-logo" alt="part2">
+                        <img src="/static/start/assets/statics/part3.png" class="partner-logo" alt="part3">
+                        <img src="/static/start/assets/statics/part4.png" class="partner-logo" alt="part4">
+                    </div>                    
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="carousel-item" data-bs-interval="5000">
+                    <div class="d-flex justify-content-center" >
+                        <img src="/static/start/assets/statics/part5.png" class="partner-logo" alt="part5">
+                        <img src="/static/start/assets/statics/part6.png" class="partner-logo" alt="part6">
+                        <img src="/static/start/assets/statics/part7.png" class="partner-logo" alt="part7">
+                    </div> 
+                </div>
+
+             
+            </div>
+
+        </div>
+
+        <style>
+        .partner-logo {
+            width: 310px; 
+            height: 120px; 
+            object-fit: contain; 
+            border-radius: 15px; 
+            background: #fff; 
+        }
+        </style>
+
+  
+        <div class="bg-dark-lt" style="display: flex;justify-content: center;align-items: center; ">
+            <div class="container">
+            {% if last_post %}
+                <div id="carouselExampleAutoplaying" class="carousel slide mt-4 mb-4" class="bg-dark-lt" data-bs-ride="carousel">
+                    <h1 style="
+                    text-align: center;
+                    color: #2c3e50; /* Bleu foncé : classique et sérieux */
+                    font-family: 'Merriweather', Georgia, serif; /* Police à empattement = autorité et lisibilité */
+                    font-weight: 700;
+                    font-size: 1.8rem;
+                    letter-spacing: 0.5px;
+                    text-transform: uppercase;
+                    margin-bottom: 1.5rem;
+                ">
+                    <i class="fa fa-globe me-2"></i> Actualités récentes
+                </h1>
+                
+                    <div class="carousel-inner mt-4">
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                        <div class="card-body d-flex flex-column align-items-start">
+                                            <strong class="d-inline-block mb-2 text-primary">{{ last_post.0.category }}</strong>
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="{% url 'post_detail' last_post.0.id %}">{{ last_post.0.title }}</a>
+                                            </h3>
+                                            <div class="mb-1 text-muted">{{ last_post.0.created_at }}</div>
+                                            <p class="card-text mb-auto">{{ last_post.0.content|truncatewords:10 }}</p>
+                                            <a href="{% url 'post_detail' last_post.0.id %}">Lire plus -></a>
+                                        </div>
+                                        <img class="card-img-right flex-auto d-none d-md-block"
+                                            data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]"
+                                            src="{{ last_post.0.image.url }}"
+                                            data-holder-rendered="true" style="width: 200px; height: 250px; object-fit: cover;">
+                                    </div>
+                                </div>
+                                
+                                {% if last_post.1 %}
+                                <div class="col-md-6">
+                                    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                        <div class="card-body d-flex flex-column align-items-start">
+                                            <strong class="d-inline-block mb-2 text-primary">{{ last_post.1.category }}</strong>
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="{% url 'post_detail' last_post.1.id %}">{{ last_post.1.title }}</a>
+                                            </h3>
+                                            <div class="mb-1 text-muted">{{ last_post.1.created_at }}</div>
+                                            <p class="card-text mb-auto">{{ last_post.1.content|truncatewords:10 }}</p>
+                                            <a href="{% url 'post_detail' last_post.1.id %}">Lire plus -></a>
+                                        </div>
+                                        <img class="card-img-right flex-auto d-none d-md-block"
+                                            data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]"
+                                            src="{{ last_post.1.image.url }}"
+                                            data-holder-rendered="true" style="width: 200px; height: 250px; object-fit: cover;">
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        {% if last_post|length > 2 %}
+                            
+                        <div class="carousel-item">
+                            <div class="row">
+                                {% if last_post.2 %}
+                                <div class="col-md-6">
+                                    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                        <div class="card-body d-flex flex-column align-items-start">
+                                            <strong class="d-inline-block mb-2 text-primary">{{ last_post.2.category }}</strong>
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="{% url 'post_detail' last_post.0.id %}">{{ last_post.2.title }}</a>
+                                            </h3>
+                                            <div class="mb-1 text-muted">{{ last_post.2.created_at }}</div>
+                                            <p class="card-text mb-auto">{{ last_post.2.content|truncatewords:10 }}</p>
+                                            <a href="{% url 'post_detail' last_post.0.id %}">Lire plus -></a>
+                                        </div>
+                                        <img class="card-img-right flex-auto d-none d-md-block"
+                                            data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]"
+                                            src="{{ last_post.2.image.url }}"
+                                            data-holder-rendered="true" style="width: 200px; height: 250px; object-fit: cover;">
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% if last_post.3 %}
+                                <div class="col-md-6">
+                                    <div class="card flex-md-row mb-4 box-shadow h-md-250">
+                                        <div class="card-body d-flex flex-column align-items-start">
+                                            <strong class="d-inline-block mb-2 text-primary">{{ last_post.3.category }}</strong>
+                                            <h3 class="mb-0">
+                                                <a class="text-dark" href="{% url 'post_detail' last_post.0.id %}">{{ last_post.3.title }}</a>
+                                            </h3>
+                                            <div class="mb-1 text-muted">{{ last_post.3.created_at }}</div>
+                                            <p class="card-text mb-auto">{{ last_post.3.content|truncatewords:10 }}</p>
+                                            <a href="{% url 'post_detail' last_post.0.id %}">Lire plus -></a>
+                                        </div>
+                                        <img class="card-img-right flex-auto d-none d-md-block"
+                                            data-src="holder.js/200x250?theme=thumb" alt="Thumbnail [200x250]"
+                                            src="{{ last_post.3.image.url }}"
+                                            data-holder-rendered="true" style="width: 200px; height: 250px; object-fit: cover;">
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                    {% endif %}
+                    </div>
+                    <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button> -->
+                
+                    
+                </div>
+            {% endif %}
+            </div>
+        </div>
+
+
+        <div class="container">
+            <div class="row row-deck row-cards mb-5 mt-5 ">
+                <h1 style="
+                text-align: center;
+                color: #2c3e50; /* Bleu foncé : classique et sérieux */
+                font-family: 'Merriweather', Georgia, serif; /* Police à empattement = autorité et lisibilité */
+                font-weight: 700;
+                font-size: 1.8rem;
+                letter-spacing: 0.5px;
+                text-transform: uppercase;
+                margin-bottom: 1.5rem;
+                ">
+                <i class="fa fa-balance-scale me-2"></i> Ce que nous proposons
+                </h1>
+
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/role-bg.jpg');background-size:cover;text-align:center;color:white;">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="{% url 'role.index' %}">Rôles d'audiences</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/courrier-bg.jpg');background-size:cover;text-align:center;color:white;">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="">Modèles de courriers</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/entreprendre-bg.jpg');background-size:cover;text-align:center;color:white;border-radius:10px">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="">Création d'entreprise</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/emploi-bg.jpg');background-size:cover;text-align:center;color:white;">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="">Emploi</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/annuaire-bg.jpg');background-size:cover;text-align:center;color:white;">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="">Annuaire</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-4 col-lg-4">
+
+                    <div class="card" style="height: 180px;">
+                        <div class="card-body"
+                            style="border-radius:10px;background-image:url('/static/start/assets/statics/liens-bg.jpg');background-size:cover;text-align:center;color:white;">
+                            <div>
+                                <h1 class="mt-5">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/scale -->
+                                    <a href="">Liens utiles</a>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <h1 style="
+            text-align: center;
+            color: #2c3e50; /* Bleu foncé : classique et sérieux */
+            font-family: 'Merriweather', Georgia, serif; /* Police à empattement = autorité et lisibilité */
+            font-weight: 700;
+            font-size: 1.8rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+        ">
+            <i class="fa fa-users me-2"></i> Nos partenaires
+        </h1>
+        <div class="bg-dark-lt" style="padding: 40px;display: flex;justify-content: center;align-items: center; ">
+
+            <a href="https://www.ask-avocats.com" target="_blank">
+                <img src="{% static 'start/assets/statics/ask.png' %}" style="max-height: 70px;min-height:40px"
+                    alt="Guinee" class="" >
+            </a>
+            &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;
+            <a href="https://www.smartylex.com" target="_blank">
+                <img src="{% static 'start/assets/statics/smartylex.png' %}" style="max-height: 70px;min-height:40px"
+                    alt="Guinee" class="">
+            </a>
+
+        </div>
+
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-5 mr-auto">
+                    <h1 style="
+                        text-align: left;
+                        color: #2c3e50; /* Bleu foncé : classique et sérieux */
+                        font-family: 'Merriweather', Georgia, serif; /* Police à empattement = autorité et lisibilité */
+                        font-weight: 700;
+                        font-size: 1.5rem;
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                        margin-bottom: 0.5rem;
+                    ">
+                        <i class="fa fa-phone me-2"></i> Contactez - nous
+                    </h1>
+                    <p class="mb-5">Nous sommes à votre disposition pour répondre à toutes vos questions et demandes d'informations. N'hésitez pas à nous écrire.</p>
+
+                    <ul class="list-unstyled pl-md-5 mb-5">
+                        <li class="d-flex text-black mb-2">
+                            <span class="mr-3">
+	                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="11" r="3" /><path d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" /></svg>
+                                 Matam, Conakry, République de Guinée
+                            </span>
+                        </li>
+                        <li class="d-flex text-black mb-2">
+                            <span class="mr-3">&nbsp;<i class="fa fa-phone"></i> (+224) 612006801</span>
+                        </li>
+                        <li class="d-flex text-black">
+                            <span class="mr-3">&nbsp;<i class="fa fa-envelope"></i> contact@judicalex-gn.com</span>
+                         </li>
+                    </ul>
+                    <div class="container">
+                        <div class="card border-0 shadow-sm rounded-3 bg-light">
+                          <div class="row g-0 align-items-center">
+                            <!-- Colonne image large -->
+                            <div class="col-md-6">
+                              <div id="pub-anim" class="position-relative w-100 h-100">
+                                <img src="{% static '/start/assets/statics/pub-smartylex1.jpg' %}" class="img-fluid fade-image active w-100 h-100 object-fit-cover rounded-start" alt="Publicité 1">
+                                <img src="{% static '/start/assets/statics/pub-smartylex3.jpg' %}" class="img-fluid fade-image w-100 h-100 object-fit-cover rounded-start" alt="Publicité 2">
+                                <img src="{% static '/start/assets/statics/pub-smartylex2.jpg' %}" class="img-fluid fade-image w-100 h-100 object-fit-cover rounded-start" alt="Publicité 3">
+                              </div>
+                            </div>
+                      
+                            <!-- Colonne texte -->
+                            <div class="col-md-6 p-4">
+                              <h4 class="fw-bold text-primary mb-2">
+                                <i class="bi bi-megaphone"></i> Vous avez un cabinet d'avocats ?
+                              </h4>
+                              <p class="mb-3">
+                                Facilitez la gestion administrative de votre cabinet avec
+                                <a href="#" class="fw-semibold text-decoration-underline">SMARTYLEX</a>. Visitez notre site web pour en savoir plus.
+                              </p>
+                              <a href="#" class="btn btn-primary rounded-pill">
+                                Cliquez ici <i class="bi bi-arrow-right ms-2"></i>
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      
+    
+                </div>
+
+                <div class="col-md-6">
+                    <div id="message-content"></div>
+
+                    <form class="mb-5" method="post" id="contactForm" name="contactForm">
+                        {% csrf_token %}
+                        <div class="row mb-2">
+
+                            <div class="col-md-12 form-group">
+                                <label for="name" class="col-form-label">Prenom et Nom</label>
+                                <input type="text" class="form-control" name="name" id="name" required>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12 form-group">
+                                <label for="email" class="col-form-label">Email</label>
+                                <input type="text" class="form-control" name="email" id="email" required>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-12 form-group">
+                                <label for="sujet" class="col-form-label">Sujet</label>
+                                <select name="subject" id="" class="form-select" required>
+                                    <option value="">Choisissez un sujet</option>
+                                    <option value="Informations">Informations</option>
+                                    <option value="Roles d'audiences">Roles d'audiences</option>
+                                    <option value="Modèles de courriers">Modèles de courriers</option>
+                                    <option value="Entreprenariat">Entreprenariat</option>
+                                    <option value="Emplois">Emplois</option>
+                                    <option value="">Autres</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <label for="message" class="col-form-label">Message</label>
+                                <textarea class="form-control" name="message" id="message" cols="30"
+                                    rows="7" required></textarea>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <button id="submitButton" type="submit" class="btn btn-primary " style="background-color: #2c3e50;">
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/send -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <line x1="10" y1="14" x2="21" y2="3" />
+                                        <path
+                                            d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5" />
+                                    </svg>
+                                    <span id="buttonText">Envoyer</span>
+                                </button>
+                                <div id="spinner" class="spinner-border text-light ms-2" role="status" style="display: none; vertical-align: middle;">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+        {% include 'start/ads.html' %}
+
+    </div>
+</div>
+<script src="{% static 'start/assets/dist/js/virtual-select.min.js'%}"></script>
+<script>
+    VirtualSelect.init({
+        ele: '#multipleSelect1',
+        multiple: true,
+        selectAllText: 'Tout selectionner',
+        allOptionsSelectedText: 'Cours d\'appels',
+
+    });
+</script>
+<script>
+    VirtualSelect.init({
+        ele: '#multipleSelect2',
+        multiple: true,
+        selectAllText: 'Tout selectionner',
+        allOptionsSelectedText: 'juridictions Spécialisées',
+
+    });
+</script>
+<script>
+    VirtualSelect.init({
+        ele: '#multipleSelect3',
+        multiple: true,
+        selectAllText: 'Tout selectionner',
+        allOptionsSelectedText: 'Tribunaux de première instance',
+
+    });
+</script>
+<script>
+    VirtualSelect.init({
+        ele: '#multipleSelect4',
+        multiple: true,
+        selectAllText: 'Tout selectionner',
+        allOptionsSelectedText: 'Justice de paix',
+
+    });
+</script>
+
+<script>
+
+const form = document.getElementById('contactForm');
+    const submitButton = document.getElementById('submitButton');
+    const spinner = document.getElementById('spinner');
+    const buttonText = document.getElementById('buttonText');
+
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+
+        e.preventDefault();  // Empêcher la soumission classique du formulaire
+
+         // Empêcher l'envoi multiple
+         submitButton.disabled = true;
+
+        // Afficher le spinner et masquer le texte du bouton
+        spinner.style.display = 'inline-block';
+        buttonText.style.display = 'none';
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        const messageContent = document.getElementById('message-content');
+   
+
+        fetch('/send_email/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken')  // Ajouter le token CSRF pour Django
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                messageContent.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fa fa-check-circle"></i> ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+                form.reset();  // Réinitialiser le formulaire après envoi
+            } else {
+                messageContent.innerHTML = `
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        ${data.error || 'Une erreur est survenue.'}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Erreur :', error);
+        })
+        .finally(() => {
+            // Réinitialiser le bouton
+            spinner.style.display = 'none';
+            buttonText.style.display = 'inline';
+            submitButton.disabled = false;
+        });
+    });
+
+    // Fonction pour récupérer le cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const images = document.querySelectorAll('#pub-anim .fade-image');
+      let current = 0;
+  
+      setInterval(() => {
+        images[current].classList.remove('active');
+        current = (current + 1) % images.length;
+        images[current].classList.add('active');
+      }, 3000); // Change toutes les 3 secondes
+    });
+  </script>
+
+
+
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Formalite{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="page-wrapper">
+    <div class="container-xl">
+        <!-- Page title -->
+        <div class="page-header text-white d-print-none">
+            <div class="row align-items-center">
+                <div class="col">
+                    <!-- Page pre-title -->
+
+                    <h1 class="" style="color:white;text-align: center; font-family: 'Merriweather', serif;">
+                        Plus d'informations
+                    </h1>
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <!-- Au d'une nouvelle idee de widget -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
+            <div class="row g-3">
+                <!-- <div class="col-2">
+                    <div class="card" style="padding: 8px;">
+                        <img src="" width="110" height="130" style="margin-left:17% ;" alt="Tabler" class="mb-3">
+                        <a href="" download="" class="btn btn-success btn-pill w-100"
+                            title="Telecharger le document original">
+                          
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                                <polyline points="7 11 12 16 17 11" />
+                                <line x1="12" y1="4" x2="12" y2="16" />
+                            </svg> Telecharger
+                        </a>
+                    </div>
+                </div> -->
+                <div class="col-12 animate-bottom">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <p class="h2">{{ affaire.role.juridiction }}</p>
+                                <p class="h3" >AFFAIRE N° : {{ affaire.numOrdre }} / {{ affaire.created_at|date:"Y" }} </p>
+                                <p class="h3">{{ affaire.role.section }}</p>
+                                <p class="h3">{{ affaire.role.get_typeAudience_display }}</p>
+
+                                {% if is_suivi %}
+                                    <span class="badge bg-success text-light" style="font-size: 14px;">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="white" d="M23 10a2 2 0 0 0-2-2h-6.32l.96-4.57c.02-.1.03-.21.03-.32c0-.41-.17-.79-.44-1.06L14.17 1L7.59 7.58C7.22 7.95 7 8.45 7 9v10a2 2 0 0 0 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73zM1 21h4V9H1z"/></svg>
+                                        &nbsp;Vous suivez cette affaire
+                                    </span>
+                                {% endif %}
+                                    
+                            </div>
+                            <div class="col-md-4">
+                                <p class="h2 text-center text-info" style="text-decoration: underline;">Ministère de la Justice et du droit de l'Homme</p>
+                            </div>
+                            <div class="col-4 text-end">
+                                <p class="h3">REPUBLIQUE DE GUINEE</p>
+                                <address>
+                                    Travail - Justice - Solidarite<br>
+                                </address>
+                            </div>
+                            <hr>
+                            <div class="col-12 my-5">
+                                <p class="h1" style="margin-bottom:-20px ;text-decoration-line:underline;text-align:center ;">DÉCISIONS RENDUES</p><br><br>
+                                {% if affaire.demandeurs %}
+                                    <p class="h3" style="text-decoration-line:underline">PARTIES : {{ affaire.demandeurs }} <mark>C/</mark> {{ affaire.defendeurs }}</p>
+                                {% endif %}
+
+                                {% if affaire.objet %}
+                                    <p class="h3" style="margin-bottom:-20px ; text-decoration-line:underline">OBJET : {{ affaire.objet }}</p><br>
+                                {% endif %}
+
+                            </div>
+                        </div>
+                       
+                        <table class="table table-transparent table-responsive mb-5">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width: 1%;font-size: small;">N°</th>
+                                    <th class="text-center" style="font-size:small;text-align: center;">Type de décision</th>
+                                    <th class="text-center" style="font-size:small;">Décision DU</th>
+                                    <th style="font-size:small;">Président(e)</th>
+                                    <th style="font-size:small;">Greffier(ère)</th>
+                                    <th style="font-size:small;">Décision</th>
+                                    <th style="font-size:small;">Prochaine Audience</th>
+
+                                </tr>
+                            </thead>
+                                
+                            
+                            {% for decision in decisions  %}
+                                                                
+                            <tr>
+                                <td class="text-center">{{forloop.counter}}</td>
+
+                                <td class="text-center">
+                                    <p class="strong mb-1">{{decision.typeDecision}}</p>
+                                </td>
+
+                                <td class="text-center">{{ decision.dateDecision|default:"Non défini" }}</td>
+                               
+                                <td>
+                                    <p class="strong mb-1">{{decision.president}}</p>
+                                </td>
+                                <td>
+                                    <p class="strong mb-1">{{decision.greffier}}</p>
+                                </td>
+                                <td>
+                                    <p class="strong mb-1" style="white-space: pre-wrap;">{{decision.decision}}</p>
+                                </td>
+                                <td>
+                                    <span class="strong mb-1 bg-secondary p-2" style="color: white;">{{decision.prochaineAudience|default:"Non défini"}}</span>
+                                </td>
+                              
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center"><h3>Aucune décision disponible</h3></td>
+                            </tr>
+                            {% endfor %}
+
+                        </table>
+                        <!-- <div class="row">
+                            <div class="col-6">
+
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="h5">Conakry, {{role.created_at}}</p>
+                                <address style="font-size:12px ;">
+                                    La Greffiere
+                                </address>
+                            </div>
+                        </div> -->
+                        
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.getElementById('typeDecision');
+        const divSection = document.getElementById('divSection');
+        const selectSection = document.getElementById('selectSection');
+    
+        if (selectElement) {
+            selectElement.addEventListener('change', function() {
+                const selectedValue = this.value;
+                console.log("Valeur sélectionnée :", selectedValue);
+    
+                // Exemple : afficher ou masquer un champ selon la valeur choisie
+                if (selectedValue === 'Affectation') {
+                    divSection.removeAttribute('hidden');
+                    selectSection.setAttribute('required', true);
+                } else {
+                    divSection.setAttribute('hidden', true);
+                    selectSection.removeAttribute('required');
+
+                }
+            });
+        }
+    });
+</script>
+    
+
+<script>
+    function isProchaineAudience() {
+        var checkbox = document.getElementById("nonApplicable");
+        if (checkbox.checked) {
+            document.getElementById("prochaineAudience").disabled = true;
+            document.getElementById("prochaineAudience").required = false;
+        }else{
+            document.getElementById("prochaineAudience").disabled = false;
+            document.getElementById("prochaineAudience").required = true;
+        }
+        
+    }
+
+    function recuperationIDAffaire(id) {
+
+        $("#idDecision").val(id);
+        
+    }
+
+function openEditModal(decision) {
+  document.getElementById('editDecisionId').value = decision.id;
+  document.getElementById('editTypeDecision').value = decision.typeDecision;
+  document.getElementById('editDateDecision').value = decision.dateDecision || '';
+  document.getElementById('editPresident').value = decision.president;
+  document.getElementById('editGreffier').value = decision.greffier;
+  document.getElementById('editDecisionText').value = decision.decision;
+  document.getElementById('editProchaineAudience').value = decision.prochaineAudience || '';
+
+  // Affiche le modal
+  var modal = new bootstrap.Modal(document.getElementById('modal-edit-decision'));
+  modal.show();
+}
+
+</script>
+
+
+
+
+{% endblock %}

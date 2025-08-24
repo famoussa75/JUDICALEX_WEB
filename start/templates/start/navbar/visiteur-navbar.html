@@ -1,0 +1,285 @@
+{% load static %}
+
+<style>
+
+  /* Style global du menu */
+  .navbar-nav.menu .nav-link {
+      font-family: 'Jost', sans-serif;
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+      color: #333; /* couleur par défaut */
+      padding: 10px 15px;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+
+  }
+
+  /* Hover */
+  .navbar-nav.menu .nav-link:hover {
+      color: var(--Jaune, #DFB23D);
+  }
+
+  /* Actif */
+  .navbar-nav.menu .nav-link.active {
+    color: var(--Jaune, #DFB23D);
+    border-bottom: 3px solid var(--Jaune, #DFB23D);
+    border-radius: 0;
+    padding-bottom: 2px; /* rapproche la barre du texte */
+}
+
+
+
+  .nav-link-subtitle {
+
+
+    /* Sous titre 2 (Bold) */
+    font-family: Jost;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+    }
+
+.login_button {
+  color: var(--Jaune, #DFB23D);
+  font-family: Jost, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  background: transparent;
+  border: 2px solid var(--Jaune, #DFB23D);
+  border-radius: 6px;
+  padding: 6px 14px;
+
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.login_button:hover {
+  background: var(--Jaune, #DFB23D);
+  color: var(--Bleu, #143642);
+}
+
+
+.signup_button {
+  color: var(--Blanc, #FFF);
+  font-family: Jost, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  background: var(--Bleu, #143642);
+  border: 2px solid var(--Bleu, #143642);
+  border-radius: 6px;
+  padding: 6px 14px;
+
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.signup_button:hover {
+  background: var(--Jaune, #DFB23D);
+  color: var(--Bleu, #143642);
+}
+
+</style>
+
+
+<header class="navbar navbar-expand-md navbar-white navbar-overlap d-print-none">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a href="{% url 'home' %}" class="navbar-brand d-flex align-items-center me-5">
+      <img src="{% static 'start/assets/statics/eJustice_logo_white.png' %}" 
+           alt="judicalex-gn"
+           class="img-fluid"
+           style="max-height: 45px; width: auto;">
+    </a>
+
+    <div class="collapse navbar-collapse" id="navbar-menu">
+      <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center fs-3">
+        <ul class="navbar-nav menu me-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home' %}" id="link_accueil">
+              <span class="nav-link-title">Accueil</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'post_list' %}" id="link_actualite">
+              <span class="nav-link-title">Actualités</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="nav-link-title">RCCM</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <span class="nav-link-title">Jurisprudence</span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="link_procedure" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+              <span class="nav-link-title">Procédures</span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="dropdown-menu-columns">
+                <div class="dropdown-menu-column">
+                  <a class="dropdown-item" href="{% url 'role.index' %}"><span class="nav-link-subtitle">Rôles d'audiences</span></a>
+                  <a class="dropdown-item" href="#"><span class="nav-link-subtitle">Requêtes</span></a>
+                  <a class="dropdown-item" href="#"><span class="nav-link-subtitle">Appel</span></a>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="nav-item dropdown">
+            <a id="link_divers" class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button" aria-expanded="false">
+              <span class="nav-link-title">Divers</span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="dropdown-menu-columns">
+                <div class="dropdown-menu-column">
+                  <div class="dropend">
+                    <a class="dropdown-item dropdown-toggle {% if request.resolver_match.url_name in 'annuaire' %}active{% endif %}" 
+                       href="#sidebar-authentication" 
+                       data-bs-toggle="dropdown" 
+                       data-bs-auto-close="outside" 
+                       role="button" 
+                       aria-expanded="true">
+                      <span class="nav-link-subtitle">Annuaire</span>
+                    </a>
+                    
+                    <div class="dropdown-menu" data-bs-popper="none">
+                      <a class="dropdown-item {% if request.path == '/annuaire/notaire/' %}active{% endif %}" href="{% url 'annuaire' 'notaire' %}">
+                        <span class="nav-link-subtitle">Notaires</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/avocat/' %}active{% endif %}" href="{% url 'annuaire' 'avocat' %}">
+                        <span class="nav-link-subtitle">Avocats</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/huissier/' %}active{% endif %}" href="{% url 'annuaire' 'huissier' %}">
+                        <span class="nav-link-subtitle">Huissiers</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/comptable/' %}active{% endif %}" href="{% url 'annuaire' 'comptable' %}">
+                        <span class="nav-link-subtitle">Experts comptables/ Comptables</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/courtier/' %}active{% endif %}" href="{% url 'annuaire' 'courtier' %}">
+                        <span class="nav-link-subtitle">Courtiers en assurance</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/commissaire/' %}active{% endif %}" href="{% url 'annuaire' 'commissaire' %}">
+                        <span class="nav-link-subtitle">Commissaires/priseurs</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/mandataire/' %}active{% endif %}" href="{% url 'annuaire' 'mandataire' %}">
+                        <span class="nav-link-subtitle">Mandataires Judiciaires</span>
+                      </a>
+                      <a class="dropdown-item {% if request.path == '/annuaire/medecin/' %}active{% endif %}" href="{% url 'annuaire' 'medecin' %}">
+                        <span class="nav-link-subtitle">Médecins légistes</span>
+                      </a>
+                    </div>
+                  </div>
+                  
+  
+                  <a class="dropdown-item" href="{% url 'liens_utiles' %}"><span class="nav-link-subtitle">Liens utiles</span></a>
+                  <a class="dropdown-item" href="{% url 'about_us' %}"><span class="nav-link-subtitle">À propos de nous</span></a>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <ul class="navbar-nav  ms-auto">
+          {% if user.is_authenticated %}
+          <div class="nav-item dropdown d-none d-md-flex me-3">
+            <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications" aria-expanded="false">
+              <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
+              <i class="fa fa-envelope" style="font-size: Large;"></i>
+              <span class="badge bg-green" id="badge" hidden></span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
+              <div class="card">
+                <div class="card-body p-2" id="notifications2" >
+                </div>
+              </div>
+            </div>
+          </div>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle bg-light-lt" href="#navbar-base" data-bs-toggle="dropdown"
+              data-bs-auto-close="outside" role="button" aria-expanded="false">
+              {% if user.photo and user.photo.url %}
+                  <span class="avatar avatar-sm" 
+                        style="background-image: url( {{ user.photo.url }} )">
+                  </span>
+              {% else %}
+                  <span class="avatar avatar-sm" 
+                        style="background-image: url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png')">
+                  </span>
+              {% endif %}
+              &nbsp;
+              <span class="nav-link-title">
+               {{user.first_name}} {{user.last_name}}
+              </span>
+            </a>
+            <div class="dropdown-menu">
+              <div class="dropdown-menu-columns">
+                <div class="dropdown-menu-column">
+
+                  <a href="{% url 'profile' %}" class="dropdown-item">
+                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <circle cx="12" cy="7" r="4" />
+                      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    </svg>
+                    &nbsp;&nbsp;Mon compte
+                  </a>
+
+                  <hr style="margin-top: 1px;margin-bottom: 3px">
+                  <a class="dropdown-item" href="#" onclick="event.preventDefault();
+                                                    document.getElementById('logout-form').submit();">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
+                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                      <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                    </svg>&nbsp;&nbsp;Se deconnecter
+
+                  </a>
+                  <form id="logout-form" action="{% url 'logout' %}" method="POST" class="d-none">
+                    {% csrf_token %}
+
+                  </form>
+
+                </div>
+
+              </div>
+            </div>
+          </li>
+          {% else %}
+
+          <li class="nav-item" style="margin-right: 5px;">
+
+            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-login" class="btn btn-outline-yellow login_button" style="border: 2px solid var(--Jaune, #DFB23D);">
+              Se connecter
+            </button>
+
+          </li>
+
+
+          <li class="nav-item">
+            <button type="button" class="btn btn-outline-dark signup_button" href="#" data-bs-toggle="modal" data-bs-target="#modal-register">
+                S'inscrire
+            </button>
+          </li>
+
+          {% endif %}
+
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>

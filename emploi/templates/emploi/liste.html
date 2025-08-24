@@ -1,0 +1,103 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Modèles{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+<style>
+    .document-card {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      padding: 24px;
+      transition: all 0.2s ease-in-out;
+      height: 100%;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+  
+    .document-card:hover {
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      transform: translateY(-4px);
+      text-decoration: none;
+    }
+  
+    .document-icon {
+      font-size: 32px;
+      color: #0d6efd;
+      margin-bottom: 12px;
+    }
+  
+    .document-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+  
+    .document-meta {
+      font-size: 14px;
+      color: #6c757d;
+    }
+  </style>
+
+<div class="page-wrapper">
+    <div class="container-xl">
+        <!-- Page title -->
+        <div class="page-header text-white d-print-none">
+            <div class="row align-items-center">
+                <div class="col">
+                    <!-- Page pre-title -->
+
+                    <h1 class="niceTitle display-6" style="color:white;text-align: center;">📝 Modèles de documents juridiques</h1>
+
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <!-- Au d'une nouvelle idee de widget -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+      
+      <div class="page-body mt-5">
+        <div class="container-xl mt-5">
+          <div id="loader" class="loader_default"></div>
+      
+          <div class="row g-4">
+            {% for doc in docs %}
+              <div class="col-md-6 col-lg-4">
+                <a href="{% url 'voir_modele_doc' slug=doc.slug %}" class="document-card h-100">
+                  <div class="document-icon">
+                    <i class="bi bi-file-earmark-text"></i>
+                  </div>
+                  <div class="document-title">{{ doc.titre }}</div>
+                  <div class="document-meta">
+                    {{ doc.get_type_document_display }}{% if doc.categorie %} – {{ doc.categorie }}{% endif %}
+                  </div>
+                </a>
+              </div>
+            {% empty %}
+              <div class="col-12">
+                <div class="alert alert-warning text-center" role="alert">
+                  Aucun modèle de document n’est disponible pour le moment.
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      
+      
+
+</div>
+
+  
+  {% endblock %}

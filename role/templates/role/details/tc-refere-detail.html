@@ -1,0 +1,395 @@
+{% extends 'start/base.html' %}
+
+
+{% block title %}Details du role{% endblock title %}
+
+{% block content %}
+{% load static %}
+
+
+<div class="page-wrapper">
+    <div class="container-xl">
+        <!-- Page title -->
+        <div class="page-header text-white d-print-none">
+            <div class="row align-items-center">
+                <div class="col">
+                    <!-- Page pre-title -->
+
+                    <h1 class="" style="color:white;text-align: center; font-family: 'Merriweather', serif;">
+                        Plus d'informations
+                    </h1>
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <!-- Au d'une nouvelle idee de widget -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+
+        <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
+            <div class="row g-3">
+                <!-- <div class="col-2">
+                    <div class="card" style="padding: 8px;">
+                        <img src="" width="110" height="130" style="margin-left:17% ;" alt="Tabler" class="mb-3">
+                        <a href="" download="" class="btn btn-success btn-pill w-100"
+                            title="Telecharger le document original">
+                          
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" />
+                                <polyline points="7 11 12 16 17 11" />
+                                <line x1="12" y1="4" x2="12" y2="16" />
+                            </svg> Telecharger
+                        </a>
+                    </div>
+                </div> -->
+                <div class="col-12 animate-bottom">
+                    <div class="card card-body">
+                        <div class="row">
+                            <div class="col-3 text-center">
+                                <p class="h3" style="margin-bottom:-25px ;">COUR D'APPEL DE CONAKRY</p><br>
+                                <p style="margin-bottom:-20px ;">..............</p><br>
+                                <p class="h3" >Tribunal du Commerce de Conakry</p><br>
+                                <p class="h3">{{role.section}}</p>
+                                <a href="#" {% if not is_greffe  %} hidden {% endif %}  class="btn btn-danger" data-bs-toggle="modal" id="" data-bs-target="#modal-danger" aria-label="" >
+                                    <!-- Download SVG icon from http://tabler-icons.io/i/x -->
+	                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                                    Supprimer ce rôle
+                                </a>
+                            </div>
+                            <div class="col-9 text-end">
+                                <p class="h3">REPUBLIQUE DE GUINEE</p>
+                                <address>
+                                    Travail - Justice - Solidarite<br>
+                                </address>
+                            </div>
+                            <div class="col-12 my-5" style="text-align:center ;">
+                                <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline">ROLE
+                                    D'AUDIENCE DE RÉFÉRÉ DU {{role.dateEnreg}}
+                                     <a href="#" data-bs-toggle="modal" id="{{role.dateEnreg}}" aria-label="Create new report" onclick="var name='dateEnreg'; var value=this.id; type='date'; updateRole(name,value,type) ">
+
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                        </svg>
+                                    </a>
+                                </p><br>
+                                <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline;">COMPOSITION DU 
+                                    TRIBUNAL</p><br>
+                                <p class="h3" style="margin-bottom:-20px;margin-right: 28px;"><span
+                                        style="text-decoration-line:underline;">PRESIDENT(E) :</span>
+                                    <span>{{role.president}}</span>
+
+                                    <a href="#" data-bs-toggle="modal" id="{{role.president}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='president'; var value=this.id; type='text'; updateRole(name,value,type) ">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                        </svg>
+                                    </a>
+                                </p>
+                                <br>
+                                <p class="h3" style="margin-bottom:-20px ;margin-right: 45px;"><span
+                                        style="text-decoration-line:underline">GREFFIER(E) :</span>
+                                    <span>{{role.greffier}}</span>
+                                     <a href="#" data-bs-toggle="modal" id="{{role.greffier}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='greffier'; var value=this.id; type='text'; updateRole(name,value,type) ">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                        </svg>
+                                    </a>
+                                </p><br>
+
+                            </div>
+                        </div>
+                        <table class="table table-transparent table-responsive">
+                            <div class="card-header">
+                                <span class="dropdown">
+                                    <button class="btn dropdown-toggle align-text-top show" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-expanded="true">Actions</button>
+                                    <div class="dropdown-menu dropdown-menu-end" data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(97px, 38px, 0px);">
+                                        <a href="#" class="dropdown-item" id="suivre_affaire">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/arrow-forward-up -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                                height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                stroke="currentColor" fill="none" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
+                                            </svg>&nbsp;Suivre
+                                        </a>
+                                        <a href="#" class="dropdown-item" id="ne_pas_suivre_affaire">
+                                           <!-- Download SVG icon from http://tabler-icons.io/i/x -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                                            &nbsp;Ne plus suivre
+                                         </a>
+                                       
+                                    </div>
+                                </span>
+                                 <!-- Champ de recherche -->
+                                 <form class="d-flex ms-auto" method="get" style="float: right;">
+                                    {% csrf_token %}
+                                    <input type="text" class="form-control me-2" name="search" id="recherche-objet" placeholder="Rechercher un objet..." style="max-width: 400px;">
+                                    <button class="btn btn-primary" type="submit">
+                                        Rechercher
+                                    </button>
+                                </form>
+                            </div>
+                            <thead>
+                                <tr>
+                                    <th class="w-4">
+                                        <input id="select-all" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices" >
+                                    </th>
+                                    <th class="text-center" style="width: 1%;font-size:12px;">N° D'ordre</th>
+                                    <th style="font-size:12px;">Demandeurs</th>
+                                    <th style="font-size:12px;">Défendeurs</th>
+                                    <th style="font-size:12px;">Objets</th>
+                                    <th style="font-size:12px;">Décisions</th>
+                                </tr>
+                            </thead>
+
+                            
+                            {% for affaire in page_obj  %}
+                                                                
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center mb-2">
+                                        <input class="form-check-input m-0 align-middle me-2 row-checkbox" type="checkbox" aria-label="Select invoice" value="{{ affaire.id }}">
+                                    
+                                        {% for a in affaireSuivis %}
+                                            {% if a.affaire_id == affaire.id %}
+                                                <span class="badge bg-success text-light">déjà suivi</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                        
+                                </td>
+                                <td class="text-center">{{affaire.numOrdre}}</td>
+                                <td>
+                                    <p class="strong mb-1">{{affaire.demandeurs}}
+                                         <a href="#" data-bs-toggle="modal" id="{{affaire.demandeurs}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='demandeurs'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
+
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                            </svg>
+                                        </a>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="strong mb-1">{{affaire.defendeurs}}
+                                         <a href="#" data-bs-toggle="modal" id="{{affaire.defendeurs}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='defendeurs'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                            </svg>
+                                        </a>
+                                    </p>
+                                </td>
+                                <td>
+                                    <p class="strong mb-1">{{affaire.objet}}
+                                         <a href="#" data-bs-toggle="modal" id="{{affaire.objet}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='objet'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
+                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                                stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                                            </svg>
+                                        </a>
+                                    </p>
+                                </td>
+                                <td>
+                                    <a href="{% url 'affaires.details' affaire.idAffaire %}" title="décisions">
+                                        Voir les décisions
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/arrow-big-right -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                            height="24" viewBox="0 0 24 24" stroke-width="2"
+                                            stroke="currentColor" fill="none" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path
+                                                d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                                        </svg>
+                                    </a>
+                                </td>
+                              
+                            </tr>
+                            {% endfor %}
+
+                        </table>
+                        <div class="pagination mt-3 d-flex justify-content-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">Précédent</span></li>
+                                    {% endif %}
+                        
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+                        
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+
+                            </div>
+                            <div class="col-6 text-end">
+                                <p class="h5">Conakry, {{ role.created_at|date:"j F Y" }}</p>
+                                <address style="font-size:12px ;">
+                                    Le/La Greffier(e)
+                                </address>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function updateRole(name,value,type) {
+        $('#field').val('').attr('name', '').attr('type', '');
+        $('#field').val(value).attr('name', name).attr('type', type);
+
+    }
+
+    function updateAffaire(name,value,type,idAffaire) {
+        $('#field').val('').attr('name', '').attr('type', '');
+        $('#idAffaire').val('');
+
+        $('#field').val(value).attr('name', name).attr('type', type);
+        $('#idAffaire').val(idAffaire);
+    }
+</script>
+
+<script>
+    $(document).ready(function(){
+        $('#updateForm').on('submit', function(event){
+            event.preventDefault(); // Empêche le formulaire de se soumettre de manière traditionnelle
+
+            $.ajax({
+                url: $(this).attr('action'), // L'URL définie dans l'attribut action du formulaire
+                method: 'POST',
+                data: $(this).serialize(), // Sérialise le formulaire en une chaîne de requête
+                success: function(response){
+                    // Code à exécuter en cas de succès, par exemple afficher un message
+                    alert('Formulaire soumis avec succès!');
+                },
+                error: function(xhr, status, error){
+                    // Code à exécuter en cas d'erreur, par exemple afficher un message d'erreur
+                    alert('Erreur lors de la soumission du formulaire : ' + error);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Modal Modification -->
+<div class="modal fade" id="modal-update" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+          
+            <form class="card card-md" method="POST" action="{% url 'role.update' %}" id="updateForm">
+               {% csrf_token %}
+                <div class="row modal-body">
+                    <input  type="hidden" class="form-control" name="idRole" value="{{role.id}}">
+                    <input  type="hidden" class="form-control" id="idAffaire" name="idAffaire" >
+
+                    <div class="mb-2 col-md-10">
+                        <input id="field" type="" class="form-control"
+                            name="" required autocomplete="name" autofocus>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-30">appliquer</button>
+                    </div>
+    
+                </div>
+               
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal alerte suppression -->
+<div class="modal modal-blur fade" id="modal-danger"  tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <form class="card card-md" method="POST" action="{% url 'role.delete' %}" id="updateForm">
+        {% csrf_token %}
+        <div class="modal-content">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-status bg-danger"></div>
+            <div class="modal-body text-center py-4">
+            <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v2m0 4v.01"></path><path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path></svg>
+            <h3>Êtes-vous sûre?</h3>
+            <div class="text-muted">Cette action supprimera definitivement ce rôle d'audience.</div>
+            <input  type="hidden" class="form-control" name="idRole" value="{{role.id}}">
+
+            </div>
+            <div class="modal-footer">
+            <div class="w-100">
+                <div class="row">
+                <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">
+                    Annuler
+                    </a></div>
+                <div class="col">
+                    <button  type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">
+                    Supprimer
+                    </button>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
