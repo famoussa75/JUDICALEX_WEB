@@ -264,12 +264,13 @@ def usersControl(request):
 
 @login_required
 def profile(request):
+    account = request.user  # L'utilisateur actuellement connecté
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
-        
+        form = ProfileForm(request.POST, request.FILES, instance=account)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Votre profile a été mis à jour!')
+            messages.success(request, 'Votre profil a été mis à jour !')
             return redirect('profile')
         else:
             messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
@@ -277,21 +278,18 @@ def profile(request):
                 for error in errors:
                     print(f"Erreur dans le champ {field}: {error}")
     else:
-        form = AccountForm(instance=request.user)
-    
-    emailConnected = request.user.email
-    user = Account.objects.filter(email=emailConnected).first()
-    account = request.user  # Utilisateur actuel
-    notifications = Notification.objects.filter(recipient=user)
+        form = ProfileForm(instance=account)
 
-    # Récupérer les affaires suivies avec les jointures optimisées
+    # Notifications de l'utilisateur connecté
+    notifications = Notification.objects.filter(recipient=account)
+
+    # Affaires suivies de l'utilisateur connecté
     mesAffairesSuivies = SuivreAffaire.objects.select_related('affaire__role__juridiction').filter(account=account)
 
     context = {
         'form': form,
-        'user': user,
-        'mesAffairesSuivies':mesAffairesSuivies,
-        'notifications':notifications
+        'mesAffairesSuivies': mesAffairesSuivies,
+        'notifications': notifications,
     }
     return render(request, 'users/profile.html', context)
 
@@ -360,7 +358,7 @@ def mark_as_read(request, notification_id):
     notification = get_object_or_404(Notification, id=notification_id, recipient=request.user)
     notification.is_read = True
     notification.save()
-    return JsonResponse({'success': True})
+    return redirect(f"{reverse('profile')}?tab=tab-notifs")
 
 def delete_notifications(request):
     # Supprimer toutes les notifications non lues pour cet utilisateur

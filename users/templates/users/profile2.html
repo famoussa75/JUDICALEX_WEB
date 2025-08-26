@@ -1,0 +1,175 @@
+{% extends 'start/base.html' %}
+{% load static %}
+{% block title %}Profil utilisateur{% endblock %}
+
+{% block content %}
+<style>
+  .card {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .list-group-item-action.active {
+    background-color: #216bc4;
+    border-color: #216bc4;
+    color: white;
+  }
+
+  .profile-photo {
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #216bc4;
+    width: 120px;
+    height: 120px;
+  }
+</style>
+
+<div class="container-fluid py-4 mt-4">
+  <div class="row">
+    <div class="col-md-3 mb-4">
+      <div class="card shadow-sm rounded-3">
+        <div class="card-body text-center">
+          <div class="position-relative mb-3">
+            {% if user.photo and user.photo.name %}
+              <img src="{{ user.photo.url }}" class="profile-photo" id="profile-photo-preview">
+            {% else %}
+              <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" class="profile-photo" id="profile-photo-preview">
+            {% endif %}
+            <a href="javascript:void(0);" onclick="document.getElementById('id_photo').click();" class="position-absolute bottom-0 end-0 btn btn-sm btn-light border">
+              <i class="bi bi-camera-fill text-primary"></i>
+            </a>
+            <input type="file" id="id_photo" name="photo" style="display: none;" onchange="previewPhoto(event)" accept=".jpg,.png">
+          </div>
+          <h5 class="card-title">{{ user.first_name }} {{ user.last_name }}</h5>
+          <p class="text-muted">{{ user.profession|default:"Profession non renseignée" }}</p>
+        </div>
+      </div>
+
+      <div class="list-group mt-4">
+        <a class="list-group-item list-group-item-action active" data-bs-toggle="tab" href="#tab-infos"><i class="bi bi-person-lines-fill"></i> &nbsp; Informations</a>
+        <a class="list-group-item list-group-item-action" data-bs-toggle="tab" href="#tab-notifications"><i class="bi bi-bell"></i> &nbsp; Notifications</a>
+        <a class="list-group-item list-group-item-action" data-bs-toggle="tab" href="#tab-affaires"><i class="bi bi-briefcase"></i> &nbsp; Mes Affaires</a>
+        <a class="list-group-item list-group-item-action" data-bs-toggle="tab" href="#tab-password"><i class="bi bi-lock"></i> &nbsp; Mot de passe</a>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="tab-infos">
+          <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="card p-4">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label>Prénom</label>
+                  <input type="text" name="first_name" value="{{ user.first_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>Nom</label>
+                  <input type="text" name="last_name" value="{{ user.last_name }}" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>Email</label>
+                  <input type="email" name="email" value="{{ user.email }}" class="form-control" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>Adresse</label>
+                  <input type="text" name="adresse" value="{{ user.adresse }}" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>Téléphone 1</label>
+                  <input type="text" name="tel1" value="{{ user.tel1 }}" class="form-control">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label>Téléphone 2</label>
+                  <input type="text" name="tel2" value="{{ user.tel2 }}" class="form-control">
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="tab-pane fade" id="tab-notifications">
+          <div class="card p-4">
+            {% for notification in notifications %}
+              <div class="alert {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %} d-flex justify-content-between align-items-center">
+                <div>
+                  <strong>{{ notification.message }}</strong><br>
+                  <small>{{ notification.timestamp }}</small>
+                </div>
+                {% if not notification.is_read %}
+                <button class="btn btn-sm btn-outline-primary" onclick="markAsRead({{ notification.id }})">Marquer comme lu</button>
+                {% endif %}
+              </div>
+            {% empty %}
+              <p class="text-muted">Aucune notification.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-affaires">
+          <div class="card p-4">
+            {% for affaire in mesAffairesSuivies %}
+              <div class="border-bottom pb-2 mb-3">
+                <h5><a href="{% url 'affaires.details' affaire.affaire.idAffaire %}">{{ affaire.affaire }}</a></h5>
+                <small class="text-muted">{{ affaire.created_at }}</small>
+              </div>
+            {% empty %}
+              <p class="text-muted">Aucune affaire suivie.</p>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-password">
+          <form method="POST" action="{% url 'change_password' %}">
+            {% csrf_token %}
+            <div class="card p-4">
+              <div class="mb-3">
+                <label>Nouveau mot de passe</label>
+                <input type="password" name="password" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label>Confirmer le mot de passe</label>
+                <input type="password" name="confirm_password" class="form-control" required>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Changer le mot de passe</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function previewPhoto(event) {
+    const reader = new FileReader();
+    reader.onload = function () {
+      document.getElementById('profile-photo-preview').src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+  }
+
+  function markAsRead(notificationId) {
+    fetch(`/users/notifications/mark-as-read/${notificationId}/`, {
+      method: 'POST',
+      headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+    }).then(response => {
+      if (response.ok) {
+        location.reload();
+      }
+    });
+  }
+</script>
+{% endblock %}

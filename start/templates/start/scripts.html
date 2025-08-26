@@ -250,23 +250,29 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (!data.notifications || data.notifications.length === 0) {
                     badge.setAttribute('hidden', '');
                     container.innerHTML = `
-                        <p class="text-center mt-4">
-                            <i class="fa fa-info-circle"></i> Vous n'avez pas de nouveaux messages !
-                        </p>`;
+                        <div class="no-notification-box">
+                            <i class="fa fa-info-circle"></i>
+                            <p>Vous n'avez pas de nouveaux messages</p>
+                        </div>`;
                 } else {
                     badge.removeAttribute('hidden');
+                    container.innerHTML = ''; // Réinitialiser avant d'ajouter
 
                     data.notifications.forEach(notification => {
                         container.innerHTML += `
-                            <a href="${notification.url}" class="notification-link2">
-                                <div class="notification-box2 ${notification.is_read ? 'read' : 'unread'}">
-                                    <div class="notification-content2">
-                                        <p class="notification-message2">${notification.message}</p>
+                            <a href="{% url 'profile' %}?tab=tab-notifs" class="notification-link">
+                                <div class="notification-box ${notification.is_read ? 'read' : 'unread'}">
+                                    <div class="notification-icon">
+                                        <i class="fa fa-bell"></i>
+                                    </div>
+                                    <div class="notification-content">
+                                        <p class="notification-message">${notification.message}</p>
                                     </div>
                                 </div>
                             </a>`;
                     });
                 }
+
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des notifications :', error);

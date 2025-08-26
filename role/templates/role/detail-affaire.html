@@ -8,25 +8,36 @@
 
 
 <div class="page-wrapper">
-    <div class="container-xl">
-        <!-- Page title -->
-        <div class="page-header text-white d-print-none">
-            <div class="row align-items-center">
-                <div class="col">
-                    <!-- Page pre-title -->
+    <div class="mb-4" style="display: flex; align-items: center; background: var(--Bleu, #143642); padding: 7px 17px; gap: 10px; width: 100%;">
+        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Procédures
+        </span>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg>
 
-                    <h1 class="" style="color:white;text-align: center; font-family: 'Merriweather', serif;">
-                        Plus d'informations
-                    </h1>
-                </div>
-                <!-- Page title actions -->
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <!-- Au d'une nouvelle idee de widget -->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Rôles d'audiences
+        </span>
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg>
+
+        <a href="{% url 'role.detail' affaire.role.idRole %}">
+            <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Rôle d'audience de {{affaire.role.typeAudience}} du {{affaire.role.dateEnreg}}
+            </span>
+        </a>
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg>
+        
+        <span style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Dêcisions affaire N° {{ affaire.numAffaire }} 
+        </span>
     </div>
     <div class="page-body">
         <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
@@ -52,10 +63,11 @@
                     <div class="card card-body">
                         <div class="row">
                             <div class="col-4">
-                                <p class="h2">{{ affaire.role.juridiction }}</p>
-                                <p class="h3" >AFFAIRE N° : {{ affaire.numOrdre }} / {{ affaire.created_at|date:"Y" }} </p>
-                                <p class="h3">{{ affaire.role.section }}</p>
-                                <p class="h3">{{ affaire.role.get_typeAudience_display }}</p>
+                                <p class="h3">{{ affaire.role.juridiction }}</p>
+                                <p class="h4 text-muted" >NUA : {{ affaire.numAffaire }}</p>
+                                <p class="h4" >AFFAIRE N° : {{ affaire.numRg }}</p>
+                                <p class="h4">{{ affaire.role.section }}</p>
+                                <p class="h4">{{ affaire.role.get_typeAudience_display }}</p>
 
                                 {% if is_suivi %}
                                     <span class="badge bg-success text-light" style="font-size: 14px;">
@@ -66,24 +78,37 @@
                                     
                             </div>
                             <div class="col-md-4">
-                                <p class="h2 text-center text-info" style="text-decoration: underline;">Ministère de la Justice et du droit de l'Homme</p>
+                                <p class="h3 text-center text-primary" style="text-decoration: underline;">Ministère de la Justice et du droit de l'Homme</p>
                             </div>
-                            <div class="col-4 text-end">
-                                <p class="h3">REPUBLIQUE DE GUINEE</p>
+                            <div class="col-4 text-center">
+                                <p class="h4">REPUBLIQUE DE GUINEE</p>
                                 <address>
                                     Travail - Justice - Solidarite<br>
                                 </address>
                             </div>
                             <hr>
-                            <div class="col-12 my-5">
-                                <p class="h1" style="margin-bottom:-20px ;text-decoration-line:underline;text-align:center ;">DÉCISIONS RENDUES</p><br><br>
-                                {% if affaire.demandeurs %}
-                                    <p class="h3" style="text-decoration-line:underline">PARTIES : {{ affaire.demandeurs }} <mark>C/</mark> {{ affaire.defendeurs }}</p>
-                                {% endif %}
+                            <p class="h2" style="margin-bottom:-20px ;text-decoration-line:underline;text-align:center ;">DÉCISIONS RENDUES</p><br><br>
 
-                                {% if affaire.objet %}
-                                    <p class="h3" style="margin-bottom:-20px ; text-decoration-line:underline">OBJET : {{ affaire.objet }}</p><br>
-                                {% endif %}
+                            <div class="row col-12 my-5">
+                                <div class="col-6">
+                                    {% if affaire.role.president %}
+                                        <p class="h4" style="text-decoration-line:underline">PRESIDENT(E) : {{ affaire.role.president }}</p>
+                                    {% endif %}
+
+                                    {% if affaire.role.greffier %}
+                                        <p class="h4" style="text-decoration-line:underline">GREFFIER(E) : {{ affaire.role.greffier }}</p>
+                                    {% endif %}
+                                </div>
+
+                                <div class="col-6">
+                                    {% if affaire.demandeurs %}
+                                        <p class="h4" style="text-decoration-line:underline">PARTIES : {{ affaire.demandeurs }} <mark>C/</mark> {{ affaire.defendeurs }}</p>
+                                    {% endif %}
+
+                                    {% if affaire.objet %}
+                                        <p class="h4" style="margin-bottom:-20px ; text-decoration-line:underline">OBJET : {{ affaire.objet }}</p><br>
+                                    {% endif %}
+                                </div>
 
                             </div>
                         </div>
@@ -219,7 +244,13 @@ function openEditModal(decision) {
 
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
 
+            document.getElementById("link_procedure").classList.add("active");
+  
+    });
+</script>
 
 
 {% endblock %}

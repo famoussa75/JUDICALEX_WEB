@@ -1,11 +1,14 @@
 {% load static %}
 
+{% load socialaccount %}
+
+
 <style>
 
   /* Style global du menu */
   .navbar-nav.menu .nav-link {
       font-family: 'Jost', sans-serif;
-      font-size: 18px;
+      font-size: 15px;
       font-style: normal;
       font-weight: 700;
       line-height: normal;
@@ -36,7 +39,7 @@
 
     /* Sous titre 2 (Bold) */
     font-family: Jost;
-    font-size: 17px;
+    font-size: 14px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
@@ -88,6 +91,81 @@
 
 </style>
 
+<style>
+/* Boîte quand il n’y a pas de notifications */
+.no-notification-box {
+    text-align: center;
+    padding: 10px;
+    color: #143642;
+    font-size: 14px;
+    background: #FFF;
+    border: 1px solid #DFB23D;
+    border-radius: 12px;
+}
+.no-notification-box i {
+    color: #DFB23D;
+    font-size: 18px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Conteneur des notifications */
+.notification-link {
+    text-decoration: none;
+    display: block;
+    margin-bottom: 12px;
+}
+
+/* Style global */
+.notification-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #FFF;
+    border-left: 6px solid #DFB23D;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.notification-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Icône */
+.notification-icon {
+    width: 36px;
+    height: 36px;
+    background: #143642;
+    color: #FFF;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+/* Message */
+.notification-content {
+    flex: 1;
+}
+.notification-message {
+    margin: 0;
+    font-size: 14px;
+    color: #143642;
+}
+
+/* États lu / non-lu */
+.notification-box.unread {
+    background: #fefbf4;
+    border-left-color: #DFB23D;
+}
+.notification-box.read {
+    opacity: 0.7;
+    border-left-color: #CCC;
+}
+</style>
 
 <header class="navbar navbar-expand-md navbar-white navbar-overlap d-print-none">
   <div class="container-fluid">
@@ -190,95 +268,98 @@
               </div>
             </div>
           </li>
-        </ul>
-        <ul class="navbar-nav  ms-auto">
           {% if user.is_authenticated %}
-          <div class="nav-item dropdown d-none d-md-flex me-3">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'profile' %}" id="link_profile">
+              <span class="nav-link-title"><i class="fa fa-user me-1"></i> Mon espace</span>
+            </a>
+          </li>
+          {% endif %}
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+          {% if user.is_authenticated %}
+          <div class="nav-item dropdown d-none d-md-flex ">
             <a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications" aria-expanded="false">
               <!-- Download SVG icon from http://tabler-icons.io/i/bell -->
-              <i class="fa fa-envelope" style="font-size: Large;"></i>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 25 31" fill="none">
+                <path d="M12.5 31C12.9612 31.0001 13.418 30.9085 13.8441 30.7304C14.2703 30.5524 14.6575 30.2914 14.9837 29.9623C15.3099 29.6332 15.5686 29.2425 15.7452 28.8125C15.9218 28.3825 16.0127 27.9216 16.0128 27.4561H8.9872C8.98728 27.9216 9.0782 28.3825 9.25478 28.8125C9.43136 29.2425 9.69013 29.6332 10.0163 29.9623C10.3425 30.2914 10.7297 30.5524 11.1559 30.7304C11.582 30.9085 12.0388 31.0001 12.5 31ZM24.8749 25.2284L23.0348 22.1403V13.3516C23.0348 8.40788 19.6701 4.19172 15.1346 2.99166V2.64911C15.1321 1.94563 14.8534 1.27185 14.3596 0.775321C13.8658 0.278794 13.1971 0 12.5 0C11.8029 0 11.1343 0.278794 10.6405 0.775321C10.1467 1.27185 9.86796 1.94563 9.86542 2.64911V2.98461C5.3202 4.16489 1.96518 8.32687 1.96518 13.2807V22.1403L0.125099 25.2284C0.0451653 25.3628 0.00202019 25.5163 6.92345e-05 25.6731C-0.00188173 25.8299 0.0374311 25.9844 0.113994 26.1208C0.190557 26.2572 0.301626 26.3707 0.435862 26.4497C0.570097 26.5286 0.72269 26.5702 0.878058 26.5702H24.1219C24.2773 26.5702 24.4299 26.5286 24.5641 26.4497C24.6984 26.3707 24.8094 26.2572 24.886 26.1208C24.9626 25.9844 25.0019 25.8299 24.9999 25.6731C24.998 25.5163 24.9548 25.3628 24.8749 25.2284Z" fill="#143642"/>
+              </svg>
               <span class="badge bg-green" id="badge" hidden></span>
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-card">
               <div class="card">
-                <div class="card-body p-2" id="notifications2" >
+                <div class="card-body" id="notifications2" style="width: max-content;">
                 </div>
               </div>
             </div>
           </div>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle bg-light-lt" href="#navbar-base" data-bs-toggle="dropdown"
-              data-bs-auto-close="outside" role="button" aria-expanded="false">
-              {% if user.photo and user.photo.url %}
-                  <span class="avatar avatar-sm" 
-                        style="background-image: url( {{ user.photo.url }} )">
-                  </span>
-              {% else %}
-                  <span class="avatar avatar-sm" 
-                        style="background-image: url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png')">
-                  </span>
-              {% endif %}
-              &nbsp;
-              <span class="nav-link-title">
-               {{user.first_name}} {{user.last_name}}
-              </span>
-            </a>
-            <div class="dropdown-menu">
-              <div class="dropdown-menu-columns">
-                <div class="dropdown-menu-column">
+            {% get_social_accounts user as accounts %}
 
-                  <a href="{% url 'profile' %}" class="dropdown-item">
-                    <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <circle cx="12" cy="7" r="4" />
-                      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-                    </svg>
-                    &nbsp;&nbsp;Mon compte
-                  </a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle bg-light-lt" href="#navbar-base" data-bs-toggle="dropdown"
+                data-bs-auto-close="outside" role="button" aria-expanded="false">
 
-                  <hr style="margin-top: 1px;margin-bottom: 3px">
-                  <a class="dropdown-item" href="#" onclick="event.preventDefault();
-                                                    document.getElementById('logout-form').submit();">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                      stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                      <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
-                      <path d="M7 12h14l-3 -3m0 6l3 -3" />
-                    </svg>&nbsp;&nbsp;Se deconnecter
+                <span class="nav-link-title" style="color: var(--Bleu, #143642);font-family: 'Jost'; font-size: 16px; font-style: normal; font-weight: 700; line-height: normal;">
+                  {% if accounts.google %}
+                    {{ accounts.google.0.extra_data.name }}
+                  {% else %}
+                    {{ user.first_name }} {{ user.last_name }}
+                  {% endif %}
+                </span>
+                
+                &nbsp;
 
-                  </a>
-                  <form id="logout-form" action="{% url 'logout' %}" method="POST" class="d-none">
-                    {% csrf_token %}
+                {# Avatar #}
+                {% if accounts.google %}
+                  <span class="avatar" style="background-image: url('{{ accounts.google.0.extra_data.picture }}'); border: 2px #143642 solid; border-radius: 20px;"></span>
+                {% elif user.photo and user.photo.url %}
+                  <span class="avatar" style="background-image: url('{{ user.photo.url }}'); border: 2px #143642 solid; border-radius: 20px;"></span>
+                {% else %}
+                  <span class="avatar" style="background-image: url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'); border: 2px #143642 solid; border-radius: 20px;"></span>
+                {% endif %}
+              </a>
 
-                  </form>
+              <div class="dropdown-menu">
+                <div class="dropdown-menu-columns">
+                  <div class="dropdown-menu-column">
 
+                    <!-- Déconnexion -->
+                    <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
+                          viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" 
+                          fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                        <path d="M7 12h14l-3 -3m0 6l3 -3" />
+                      </svg>&nbsp;&nbsp;Se déconnecter
+                    </a>
+                    <form id="logout-form" action="{% url 'account_logout' %}" method="POST" class="d-none">
+                      {% csrf_token %}
+                    </form>
+
+                  </div>
                 </div>
-
               </div>
-            </div>
-          </li>
+            </li>
           {% else %}
+            <!-- Si pas connecté -->
+            <li class="nav-item" style="margin-right: 5px;">
 
-          <li class="nav-item" style="margin-right: 5px;">
-
-            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-login" class="btn btn-outline-yellow login_button" style="border: 2px solid var(--Jaune, #DFB23D);">
-              Se connecter
-            </button>
-
-          </li>
-
-
-          <li class="nav-item">
-            <button type="button" class="btn btn-outline-dark signup_button" href="#" data-bs-toggle="modal" data-bs-target="#modal-register">
-                S'inscrire
-            </button>
-          </li>
-
+              <button type="button" data-bs-toggle="modal" data-bs-target="#modal-login" class="btn btn-outline-yellow login_button" style="border: 2px solid var(--Jaune, #DFB23D);">
+                Se connecter
+              </button>
+  
+            </li>
+            <li class="nav-item">
+              <button type="button" class="btn btn-outline-dark signup_button" data-bs-toggle="modal" data-bs-target="#modal-register">
+                  S'inscrire
+              </button>
+            </li>
           {% endif %}
-
         </ul>
+
+        
       </div>
     </div>
   </div>

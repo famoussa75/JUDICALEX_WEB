@@ -8,25 +8,26 @@
 
 
 <div class="page-wrapper">
-    <div class="container-xl">
-        <!-- Page title -->
-        <div class="page-header text-white d-print-none">
-            <div class="row align-items-center">
-                <div class="col">
-                    <!-- Page pre-title -->
+    <div class="mb-4" style="display: flex; align-items: center; background: var(--Bleu, #143642); padding: 7px 17px; gap: 10px; width: 100%;">
+        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Procédures
+        </span>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg>
 
-                    <h1 class="" style="color:white;text-align: center; font-family: 'Merriweather', serif;">
-                        Plus d'informations
-                    </h1>
-                </div>
-                <!-- Page title actions -->
-                <div class="col-auto ms-auto d-print-none">
-                    <div class="btn-list">
-                        <!-- Au d'une nouvelle idee de widget -->
-                    </div>
-                </div>
-            </div>
-        </div>
+        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Rôles d'audiences
+        </span>
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        </svg>
+        
+        <span style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 16px; font-weight: 700;">
+            Rôle d'audience de référé du {{role.dateEnreg}}
+        </span>
     </div>
     <div class="page-body">
 
@@ -57,11 +58,6 @@
                                 <p style="margin-bottom:-20px ;">..............</p><br>
                                 <p class="h3" >Tribunal du Commerce de Conakry</p><br>
                                 <p class="h3">{{role.section}}</p>
-                                <a href="#" {% if not is_greffe  %} hidden {% endif %}  class="btn btn-danger" data-bs-toggle="modal" id="" data-bs-target="#modal-danger" aria-label="" >
-                                    <!-- Download SVG icon from http://tabler-icons.io/i/x -->
-	                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                                    Supprimer ce rôle
-                                </a>
                             </div>
                             <div class="col-9 text-end">
                                 <p class="h3">REPUBLIQUE DE GUINEE</p>
@@ -72,49 +68,17 @@
                             <div class="col-12 my-5" style="text-align:center ;">
                                 <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline">ROLE
                                     D'AUDIENCE DE RÉFÉRÉ DU {{role.dateEnreg}}
-                                     <a href="#" data-bs-toggle="modal" id="{{role.dateEnreg}}" aria-label="Create new report" onclick="var name='dateEnreg'; var value=this.id; type='date'; updateRole(name,value,type) ">
-
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                        </svg>
-                                    </a>
                                 </p><br>
                                 <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline;">COMPOSITION DU 
                                     TRIBUNAL</p><br>
                                 <p class="h3" style="margin-bottom:-20px;margin-right: 28px;"><span
                                         style="text-decoration-line:underline;">PRESIDENT(E) :</span>
                                     <span>{{role.president}}</span>
-
-                                    <a href="#" data-bs-toggle="modal" id="{{role.president}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='president'; var value=this.id; type='text'; updateRole(name,value,type) ">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                        </svg>
-                                    </a>
                                 </p>
                                 <br>
                                 <p class="h3" style="margin-bottom:-20px ;margin-right: 45px;"><span
                                         style="text-decoration-line:underline">GREFFIER(E) :</span>
                                     <span>{{role.greffier}}</span>
-                                     <a href="#" data-bs-toggle="modal" id="{{role.greffier}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='greffier'; var value=this.id; type='text'; updateRole(name,value,type) ">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                            stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                            <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                        </svg>
-                                    </a>
                                 </p><br>
 
                             </div>
@@ -182,47 +146,13 @@
                                 </td>
                                 <td class="text-center">{{affaire.numOrdre}}</td>
                                 <td>
-                                    <p class="strong mb-1">{{affaire.demandeurs}}
-                                         <a href="#" data-bs-toggle="modal" id="{{affaire.demandeurs}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='demandeurs'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
-
-                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                            </svg>
-                                        </a>
-                                    </p>
+                                    <p class="strong mb-1">{{affaire.demandeurs}}</p>
                                 </td>
                                 <td>
-                                    <p class="strong mb-1">{{affaire.defendeurs}}
-                                         <a href="#" data-bs-toggle="modal" id="{{affaire.defendeurs}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='defendeurs'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
-                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                            </svg>
-                                        </a>
-                                    </p>
+                                    <p class="strong mb-1">{{affaire.defendeurs}}</p>
                                 </td>
                                 <td>
-                                    <p class="strong mb-1">{{affaire.objet}}
-                                         <a href="#" data-bs-toggle="modal" id="{{affaire.objet}}" {% if not is_greffe  %} hidden {% endif %} data-bs-target="#modal-update" aria-label="Create new report" onclick="var name='objet'; var value=this.id; type='text'; idAffaire='{{affaire.idAffaire}}'; updateAffaire(name,value,type,idAffaire) ">
-                                            <!-- Download SVG icon from http://tabler-icons.io/i/pencil -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                                                stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                                                <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                                            </svg>
-                                        </a>
-                                    </p>
+                                    <p class="strong mb-1">{{affaire.objet}}</p>
                                 </td>
                                 <td>
                                     <a href="{% url 'affaires.details' affaire.idAffaire %}" title="décisions">
@@ -293,6 +223,14 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+            document.getElementById("link_procedure").classList.add("active");
+  
+    });
+</script>
+
+<script>
     function updateRole(name,value,type) {
         $('#field').val('').attr('name', '').attr('type', '');
         $('#field').val(value).attr('name', name).attr('type', type);
@@ -308,88 +246,7 @@
     }
 </script>
 
-<script>
-    $(document).ready(function(){
-        $('#updateForm').on('submit', function(event){
-            event.preventDefault(); // Empêche le formulaire de se soumettre de manière traditionnelle
 
-            $.ajax({
-                url: $(this).attr('action'), // L'URL définie dans l'attribut action du formulaire
-                method: 'POST',
-                data: $(this).serialize(), // Sérialise le formulaire en une chaîne de requête
-                success: function(response){
-                    // Code à exécuter en cas de succès, par exemple afficher un message
-                    alert('Formulaire soumis avec succès!');
-                },
-                error: function(xhr, status, error){
-                    // Code à exécuter en cas d'erreur, par exemple afficher un message d'erreur
-                    alert('Erreur lors de la soumission du formulaire : ' + error);
-                }
-            });
-        });
-    });
-</script>
 
-<!-- Modal Modification -->
-<div class="modal fade" id="modal-update" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-        <div class="modal-content">
-          
-            <form class="card card-md" method="POST" action="{% url 'role.update' %}" id="updateForm">
-               {% csrf_token %}
-                <div class="row modal-body">
-                    <input  type="hidden" class="form-control" name="idRole" value="{{role.id}}">
-                    <input  type="hidden" class="form-control" id="idAffaire" name="idAffaire" >
-
-                    <div class="mb-2 col-md-10">
-                        <input id="field" type="" class="form-control"
-                            name="" required autocomplete="name" autofocus>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-30">appliquer</button>
-                    </div>
-    
-                </div>
-               
-            </form>
-
-        </div>
-    </div>
-</div>
-
-<!-- Modal alerte suppression -->
-<div class="modal modal-blur fade" id="modal-danger"  tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-    <form class="card card-md" method="POST" action="{% url 'role.delete' %}" id="updateForm">
-        {% csrf_token %}
-        <div class="modal-content">
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            <div class="modal-status bg-danger"></div>
-            <div class="modal-body text-center py-4">
-            <!-- Download SVG icon from http://tabler-icons.io/i/alert-triangle -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon mb-2 text-danger icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 9v2m0 4v.01"></path><path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path></svg>
-            <h3>Êtes-vous sûre?</h3>
-            <div class="text-muted">Cette action supprimera definitivement ce rôle d'audience.</div>
-            <input  type="hidden" class="form-control" name="idRole" value="{{role.id}}">
-
-            </div>
-            <div class="modal-footer">
-            <div class="w-100">
-                <div class="row">
-                <div class="col"><a href="#" class="btn w-100" data-bs-dismiss="modal">
-                    Annuler
-                    </a></div>
-                <div class="col">
-                    <button  type="submit" class="btn btn-danger w-100" data-bs-dismiss="modal">
-                    Supprimer
-                    </button>
-                </div>
-                </div>
-            </div>
-            </div>
-        </div>
-      </form>
-    </div>
-  </div>
 
 {% endblock %}
