@@ -92,124 +92,131 @@
 
                             </div>
                         </div>
-                        <table class="table table-transparent table-responsive">
-                            <div class="card-header">
-                                <span class="dropdown">
-                                    <button class="btn dropdown-toggle align-text-top show" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-expanded="true">Actions</button>
-                                    <div class="dropdown-menu dropdown-menu-end " data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(97px, 38px, 0px);">
-                                        <a href="#" class="dropdown-item" id="suivre_affaire">
-                                            <!-- Download SVG icon from http://tabler-icons.io/i/arrow-forward-up -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
-                                                height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                stroke="currentColor" fill="none" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
-                                            </svg>&nbsp;Suivre
-                                        </a>
-                                        <a href="#" class="dropdown-item" id="ne_pas_suivre_affaire">
-                                           <!-- Download SVG icon from http://tabler-icons.io/i/x -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                                            &nbsp;Ne plus suivre
-                                         </a>
-                                       
-                                    </div>
-                                </span>
-                                 <!-- Champ de recherche -->
-                                 <form class="d-flex ms-auto" method="get" style="float: right;">
-                                    {% csrf_token %}
-                                    <input type="text" class="form-control me-2" name="search" id="recherche-objet" placeholder="Rechercher un objet..." style="max-width: 400px;">
-                                    <button class="btn btn-primary" type="submit">
-                                        Rechercher
-                                    </button>
-                                </form>
-                            </div>
-                            <thead>
-                                <tr>
-                                    <th class="w-4">
-                                        <input id="select-all" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices" >
-                                    </th>
-                                    <th class="text-center" style="width: 5%; font-size:12px;">N° D'ordre</th>
-                                    <th style="font-size:12px;">Demandeurs</th>
-                                    <th style="font-size:12px;">Défendeurs</th>
-                                    <th style="font-size:12px;">Objet</th>
-                                    <th style="font-size:12px;">Décisions</th>
-                                </tr>
-                            </thead>
-
-
-                            {% for affaire in page_obj %}
-
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center mb-2">
-                                        <input class="form-check-input m-0 align-middle me-2 row-checkbox" type="checkbox" aria-label="Select invoice" value="{{ affaire.id }}">
-                                    
-                                        {% for a in affaireSuivis %}
-                                            {% if a.affaire_id == affaire.id %}
-                                                <span class="badge bg-success text-light">déjà suivi</span>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                        
-                                </td>
-                                <td class="text-center">{{affaire.numOrdre}}</td>
-                                <td>
-                                    <p class="strong mb-1">{{affaire.demandeurs}}</p>
-                                </td>
-                                <td>
-                                    <p class="strong mb-1">{{affaire.defendeurs}}</p>
-                                </td>
-                                <td>
-                                    <p class="strong mb-1">{{affaire.objet}} </p>
-                                </td>
-                                <td>
-                                    <a href="{% url 'affaires.details' affaire.idAffaire %}" title="décisions">
-                                        Voir les décisions
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/arrow-big-right -->
+                        <div class="card-header">
+                            <span class="dropdown">
+                                <button class="btn dropdown-toggle align-text-top show" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-expanded="true">Actions</button>
+                                <div class="dropdown-menu dropdown-menu-end " data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(97px, 38px, 0px);">
+                                    <a href="#" class="dropdown-item" id="suivre_affaire">
+                                        <!-- Download SVG icon from http://tabler-icons.io/i/arrow-forward-up -->
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
                                             height="24" viewBox="0 0 24 24" stroke-width="2"
                                             stroke="currentColor" fill="none" stroke-linecap="round"
                                             stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                                        </svg>
+                                            <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
+                                        </svg>&nbsp;Suivre
                                     </a>
-                                </td>
-                              
-                            </tr>
-                            {% endfor %}
+                                    <a href="#" class="dropdown-item" id="ne_pas_suivre_affaire">
+                                       <!-- Download SVG icon from http://tabler-icons.io/i/x -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                                        &nbsp;Ne plus suivre
+                                     </a>
+                                   
+                                </div>
+                            </span>
+                             <!-- Champ de recherche -->
+                             <form class="d-flex ms-auto" method="get" style="float: right;" style="max-width: 500px;">
+                                {% csrf_token %}
+                                <input type="text" class="form-control me-2" name="search" id="recherche-objet" placeholder="Rechercher un objet..." >
+                                <button class="btn btn-primary" type="submit">
+                                    Rechercher
+                                </button>
+                            </form>
+                        </div>
 
-                        </table>
-                        <div class="pagination mt-3 d-flex justify-content-center">
-                            <nav aria-label="Page navigation">
-                                <ul class="pagination">
-                                    {% if page_obj.has_previous %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled"><span class="page-link">Précédent</span></li>
-                                    {% endif %}
+                        <table class="table table-transparent table-responsive">
+                            <thead>
+                                <tr>
+                                    <th class="w-4">
+                                        <input id="select-all" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices" >
+                                    </th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">N°</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">NUA</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">RG</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Demandeurs</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Défendeurs</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Objet</th>
+                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Décisions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% regroup page_obj by categorie as grouped_affaires %}
                         
-                                    {% for num in page_obj.paginator.page_range %}
-                                        {% if page_obj.number == num %}
-                                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                                        {% endif %}
+                                {% for group in grouped_affaires %}
+                                <tr class="text-center
+                                    {% if group.grouper == 'Nouvelles Affaires' %} bg-success-lt
+                                    {% elif group.grouper == 'Affaires Encours' %} bg-warning-lt
+                                    {% endif %}">
+                                    <td colspan="8"><b class="text-primary">📌 {{ group.grouper }}</b></td>
+                                </tr>
+                            
+                                    {% for affaire in group.list %}
+                                        <tr>
+                                             <td>
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <input class="form-check-input m-0 align-middle me-2 row-checkbox" type="checkbox" aria-label="Select invoice" value="{{ affaire.id }}">
+                                                
+                                                    {% for a in affaireSuivis %}
+                                                        {% if a.affaire_id == affaire.id %}
+                                                            <span class="badge bg-success text-light">déjà suivi</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </div>
+                                                    
+                                            </td>
+                                            <td class="text-center">{{ affaire.numOrdre }}</td>
+                                            <td class="text-center"><b>{{ affaire.numAffaire }}</b></td>
+                                            <td class="text-center">{{ affaire.numRg }}</td>
+                                            <td>{{ affaire.demandeurs }}</td>
+                                            <td>{{ affaire.defendeurs }}</td>
+                                            <td>{{ affaire.objet }}</td>
+                                            <td>
+                                                <a href="{% url 'affaires.details' affaire.idAffaire %}" title="décisions">
+                                                    Décisions
+                                                    <!-- Download SVG icon from http://tabler-icons.io/i/arrow-big-right -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
+                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
+                                                        stroke="currentColor" fill="none" stroke-linecap="round"
+                                                        stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                        <path
+                                                            d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
+                                                    </svg>
+                                                </a>
+                                            </td>
+                                        </tr>
                                     {% endfor %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
                         
-                                    {% if page_obj.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
-                                        </li>
-                                    {% else %}
-                                        <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+                        <!-- Pagination unique -->
+                        <div class="pagination mt-3 d-flex justify-content-center">
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">Précédent</span></li>
+                                {% endif %}
+                        
+                                {% for num in page_obj.paginator.page_range %}
+                                    {% if page_obj.number == num %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
                                     {% endif %}
-                                </ul>
-                            </nav>
+                                {% endfor %}
+                        
+                                {% if page_obj.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+                                {% endif %}
+                            </ul>
                         </div>
                         <div class="row">
                             <div class="col-6">
