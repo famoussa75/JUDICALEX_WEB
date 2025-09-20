@@ -1,0 +1,202 @@
+<style>
+  :root{
+    --sb-bg: #143642;         /* fond sidebar */
+    --sb-bg-hover: #0f2a32;   /* fond au survol/ouvert */
+    --sb-text: #e6f0f3;       /* texte par défaut */
+    --sb-muted: #c9d8de;      /* texte atténué */
+  }
+
+  /* Conteneur */
+  #sidebar.sidebar{
+    background: var(--sb-bg);
+    min-height: 100vh;
+  }
+
+  /* Titre de section */
+  #sidebar .nav-heading{
+    color: var(--sb-muted);
+    font-size: .75rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin: .75rem 0 .25rem;
+  }
+
+  /* Liens de 1er niveau */
+  #sidebar-nav .nav-link{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--sb-text);
+    background: transparent;
+    border-radius: .5rem;
+    padding: .6rem .75rem;
+    transition: background-color .2s ease, color .2s ease;
+    text-decoration: none;
+  }
+  #sidebar-nav .nav-link:hover,
+  #sidebar-nav .nav-link:focus{
+    background: var(--sb-bg-hover);
+    color: #fff;
+    outline: 0;
+  }
+  /* Actif / menu ouvert */
+  #sidebar-nav .nav-link[aria-expanded="true"],
+  #sidebar-nav .nav-link:not(.collapsed){
+    background: rgba(255,255,255,.06);
+    color: #fff;
+  }
+
+  /* Chevron animé */
+  #sidebar-nav .nav-link .bi-chevron-down{
+    margin-left: auto;
+    transition: transform .2s ease;
+  }
+  #sidebar-nav .nav-link[aria-expanded="true"] .bi-chevron-down{
+    transform: rotate(180deg);
+  }
+
+  /* Sous-menu */
+  #sidebar-nav .nav-content{
+    margin-left: .25rem;
+    padding-left: .25rem;
+    border-left: 1px solid rgba(255,255,255,.08);
+  }
+  #sidebar-nav .nav-content a{
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--sb-muted);
+    border-radius: .375rem;
+    padding: .5rem 1rem .5rem 2rem;
+    text-decoration: none;
+    transition: background-color .2s ease, color .2s ease;
+  }
+  #sidebar-nav .nav-content a:hover,
+  #sidebar-nav .nav-content a.active{
+    color: #fff;
+    background: rgba(255,255,255,.06);
+  }
+</style>
+
+
+
+
+<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav" >
+
+    <li class="nav-item" >
+      <a class="nav-link collapsed " id="accueil-link" href="{% url 'backoffice.index' %}">
+        <i class="bi bi-speedometer2"></i>
+        <span>Tableau de bord</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" id="news-link" href="{% url 'post_list' %}">
+        <i class="bi bi-newspaper"></i><span>News</span>
+      </a>
+    </li><!-- End News Nav -->
+  
+    <!-- 
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-calendar-check"></i><span>Rôles d'audiences</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-list-ul"></i><span>Liste</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-book"></i><span>Jurisprudence</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="tables-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-list-ul"></i><span>Liste</span>
+            </a>
+          </li>
+        </ul>
+      </li> 
+  -->
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" id="ad-link" href="{% url 'ad_list' %}">
+        <i class="bi bi-megaphone-fill"></i><span>Publicités</span>
+      </a>
+    </li><!-- End Publicités Nav -->
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" id="rh-link" data-bs-target="#charts-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-people-fill"></i><span>RH</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="charts-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="{% url 'user.list' %}">
+            <i class="bi bi-person-gear"></i><span>Compte utilisateurs</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'liste_demandes' %}">
+            <i class="bi bi-person-plus"></i><span>Demandes Contributeur</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End RH Nav -->
+  
+    <li class="nav-heading">EXTRA</li>
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-database"></i><span>Base professionelle</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="icons-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="#">
+            <span>Avocats</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span>Huissiers</span>
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <span>Notaires</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Base de données pro Nav -->
+  
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#">
+        <i class="bi bi-person-circle"></i>
+        <span>Changer mot de passe</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+  
+    <!-- <li class="nav-item">
+      <a class="nav-link collapsed" href="#">
+        <i class="bi bi-gear"></i>
+        <span>Paramètre</span>
+      </a>
+    </li> -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="#">
+        <i class="bi bi-bell"></i>
+        <span>Notifications</span>
+      </a>
+    </li>
+  
+  </ul>
+  
+
+</aside>

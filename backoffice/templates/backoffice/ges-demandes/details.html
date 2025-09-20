@@ -1,0 +1,100 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Aperçu {% endblock title %}
+
+{% block content %}
+
+<div class="pagetitle">
+    <h1>Gestion des demandes</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item">Demandes</li>
+        <li class="breadcrumb-item active">Détails</li>
+      </ol>
+    </nav>
+  </div>
+
+  <section class="section py-5 bg-light">
+    <div class="container">
+      <div class="card shadow-sm border-0 rounded-4 mx-auto" style="max-width: 720px;">
+        <div class="card-header bg-white border-0 pb-0">
+          <h2 class="h4 fw-bold mb-3">📋 Détails de la demande</h2>
+        </div>
+  
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">Nom</dt>
+            <dd class="col-sm-8 fw-semibold">{{ demande.nom }}</dd>
+  
+            <dt class="col-sm-4 text-muted">Email</dt>
+            <dd class="col-sm-8">{{ demande.email }}</dd>
+  
+            <dt class="col-sm-4 text-muted">Sujet</dt>
+            <dd class="col-sm-8">{{ demande.sujet }}</dd>
+  
+            <dt class="col-sm-4 text-muted">Motivation</dt>
+            <dd class="col-sm-8">{{ demande.motivation }}</dd>
+  
+            <dt class="col-sm-4 text-muted">Pièce d'identité</dt>
+            <dd class="col-sm-8">
+              <a href="{{ demande.piece_identite.url }}" target="_blank" class="link-primary text-decoration-none">
+                📎 Voir le fichier
+              </a>
+            </dd>
+  
+            <dt class="col-sm-4 text-muted">Statut</dt>
+            <dd class="col-sm-8">
+              <span class="badge 
+                {% if demande.status == 'pending' %} bg-warning text-dark
+                {% elif demande.status == 'approved' %} bg-success
+                {% elif demande.status == 'rejected' %} bg-danger
+                {% else %} bg-secondary {% endif %}">
+                {{ demande.get_status_display }}
+              </span>
+            </dd>
+          </dl>
+          <hr>
+          <div class="card-header bg-white border-0 pb-0">
+            <h2 class="h4 fw-bold mb-3"><i class="bi bi-person"></i> Compte associé</h2>
+          </div>
+          <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">Nom</dt>
+            <dd class="col-sm-8 fw-semibold">{{ demande.demandeur.first_name|default:demande.demandeur.username }}</dd>
+  
+            <dt class="col-sm-4 text-muted">Email</dt>
+            <dd class="col-sm-8">{{ demande.demandeur.email|default:"Compte Google" }}</dd>
+  
+          </dl>
+        </div>
+  
+        <div class="card-footer bg-white border-0 pt-3 d-flex justify-content-between">
+          <div>
+            {% if demande.status == "pending" %}
+              <a href="{% url 'approuver_demande' demande.id %}" class="btn btn-success btn-sm px-3">
+                ✅ Approuver
+              </a>
+              <a href="{% url 'rejeter_demande' demande.id %}" class="btn btn-danger btn-sm px-3">
+                ❌ Rejeter
+              </a>
+            {% endif %}
+          </div>
+          <a href="{% url 'liste_demandes' %}" class="btn btn-secondary btn-sm px-3">
+            ← Retour
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const rhLink = document.getElementById("rh-link");
+      if (rhLink) {
+        rhLink.classList.add("bg-primary", "text-white");   // activation visuelle
+      }
+    });
+  </script>
+
+{% endblock %}

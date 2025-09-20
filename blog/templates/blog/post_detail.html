@@ -6,6 +6,8 @@
 
 {% block content %}
 {% load static %}
+{% load social_extras %}
+{% load user_extras %}
 
 <style>
     .post-preview {
@@ -64,43 +66,9 @@
         </span>
       </div> 
     -->
-    <!-- PUB CAROUSSEL -->
-    <div id="carouselExample" class="carousel slide mt-0 mb-4" data-bs-ride="carousel" style="background: rgba(20, 54, 66, 0.50); padding: 25px 40px 25px 40px;">
-        <div class="carousel-inner">
-        
-            <!-- Slide 1 -->
-            <div class="carousel-item active">
-            <div class="d-flex justify-content-center" style="gap: 80px;">
-                <img src="/static/start/assets/statics/pub1.jpg" 
-                    alt="Pub 1" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub2.png" 
-                    alt="Pub 2" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub3.png" 
-                    alt="Pub 3" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-            </div>
-            </div>
-        
-            <!-- Slide 2 -->
-            <div class="carousel-item">
-            <div class="d-flex justify-content-center" style="gap: 80px;">
-                <img src="/static/start/assets/statics/pub-smartylex1.jpg" 
-                    alt="Pub 1" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub-smartylex2.jpg" 
-                    alt="Pub 2" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub-smartylex3.jpg" 
-                    alt="Pub 3" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-            </div>
-            </div>
-        
-            
-        </div>
-    </div>
+
+     <!-- PUB HAUT DE PAGE -->
+     {% include 'start/partials/pub_header.html' %}
 
      <!-- ACTUALITÉS SECTION -->
 
@@ -108,39 +76,64 @@
 
         <h1 class="text-left mb-3" 
             style="color: var(--Bleu, #143642); font-family: Jost; font-size: 28px; font-weight: 700;">
-            L’accès à la justice : Un Droit Fondamental pour tous
+            {{ post.title }}
         </h1>
 
         <div class="col-md-12 row">
        
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="row g-4 mb-4">
                 
                     <!-- Carte Actualité 1 -->
                     <div class="col-md-12">
                         <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu1.png" 
+                        <img src="{{ post.image.url }}" 
                             class="card-img-top" 
                             alt="Actu 1" 
                             style="height: 500px; object-fit: cover; border-radius: 15px; overflow: hidden;">
                                 <!-- Ligne Creator + Time -->
                         
                         <div class="">
+                            {% if post.author|has_group:"Contributeur" %}
                             <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
                                 <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                    <img src="/static/start/assets/statics/djoma.svg" 
-                                        alt="Djoma FM" 
-                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                    Djoma FM
+                                    {% if post.author.photo %}
+                                        <img src="{{ post.author.photo.url }}"
+                                            alt="{{ post.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% elif post.author|social_avatar %}
+                                        <img src="{{ post.author|social_avatar }}"
+                                            alt="{{ post.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% else %}
+                                        <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                                            alt="{{ post.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% endif %}
+
+                                    {{ post.author }}
                                 </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
+                                <!-- Photo de profil -->  
                             </div>
-                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
+                            {% else %}
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+
+                                        <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                                            alt="{{ post.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+
+                                Judicalex Guinée
+                                </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
+                                <!-- Photo de profil -->  
+                            </div>
+
+                            {% endif %}
                             <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                L’accès à la justice ne devrait jamais être un privilège réservé à une minorité. C’est un droit fondamental, reconnu dans de nombreux textes internationaux et constitutions, qui garantit à chaque citoyen la possibilité de faire valoir ses droits, de se défendre et de bénéficier d’un procès équitable.
-                                Pourtant, dans de nombreux pays, cet accès reste limité par des obstacles majeurs : manque d’information, coûts élevés, lenteurs judiciaires. C’est un droit fondamental, reconnu dans de nombreux textes internationaux et constitutions, qui garantit à chaque citoyen la possibilité de faire valoir ses droits, de se défendre et de bénéficier d’un procès équitable.
-                                Pourtant, dans de nombreux pays, cet accès reste limité par des obstacles majeurs : manque d’information, coûts élevés, lenteurs judiciaires.                             </p>
+                                {{ post.content|striptags|linebreaks }}
+                            </p>
                             
                         </div>
                         </div>
@@ -177,130 +170,88 @@
        
             </div>
             
-            <div class="col-md-4">
-
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime1.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 657px; width: 463; object-fit: cover;">
-                    </div>
-
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime2.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 420px; width: 463; object-fit: cover;">
-                    </div>
-
-                </div>
+             <!-- PUB LATERAL -->
+             <div class="col-md-3">
+                {% include 'start/partials/pub_lateral.html' %}
             </div>
 
         </div>
         <div class="col-md-12 mt-4 mb-5 row">
 
             <h2 class="blog-post-title" style="font-family: Jost; font-weight: 700; color: #143642;">Articles similaires</h2>
-            <p class="blog-post-meta" style="font-family: Jost; font-size: 15px; color: #555;">December 23, 2013 by <a href="#">Jacob</a></p>
+            <p class="blog-post-meta" style="font-family: Jost; font-size: 15px; color: #555;">Articles dans la categorie <a href="#">{{ post.category }}</a></p>
             
-            <!-- Carte Actualité 1 -->
-            <div class="col-md-4">
-            <div class="card" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu1.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+            
+            <div id="similarPostsCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+              
+                  {% for post in similar_posts %}
+                    {% if forloop.counter0|divisibleby:3 %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <div class="row">
+                    {% endif %}
+              
+                          <div class="col-md-4">
+                            <div class="card p-3" style="border: none; box-shadow: none;">
+                              <img src="{{ post.image.url }}" 
+                                  class="card-img-top" 
+                                  alt="{{ post.title }}" 
+                                  style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+              
+                              <div class="">
+                                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                  <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                    {% if post.author.photo %}
+                                      <img src="{{ post.author.photo.url }}"
+                                          alt="{{ post.author.username }}"
+                                          style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% elif post.author|social_avatar %}
+                                      <img src="{{ post.author|social_avatar }}"
+                                          alt="{{ post.author.username }}"
+                                          style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% else %}
+                                      <img src="{% static 'images/default-profile.png' %}"
+                                          alt="{{ post.author.username }}"
+                                          style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% endif %}
+                                    {{ post.author }}
+                                  </span>
+                                  <a href="#" style="color: gray; font-weight: 700;">Il y a {{ post.created_at|timesince }}</a>
+                                </div>
+              
+                                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
+                                  {{ post.title }}
+                                </h5>
+                                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
+                                  {{ post.short_content|default:post.content|striptags|truncatechars:120 }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                  <span style="font-family: Jost; font-size: 14px; color: #888;">
+                                    <i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)
+                                  </span>
+                                  <a href="{% url 'blog.post_detail' post.slug %}" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+              
+                    {% if forloop.counter|divisibleby:3 or forloop.last %}
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endfor %}
+              
                 </div>
-                </div>
-            </div>
-            </div>
-        
-            <!-- Carte Actualité 2 -->
-            <div class="col-md-4">
-            <div class="card" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu2.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-                </div>
-            </div>
-            </div>
-        
-            <!-- Carte Actualité 3 -->
-            <div class="col-md-4">
-            <div class="card" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu3.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-                </div>
-            </div>
-            </div>
+              
+                <!-- Contrôles -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#similarPostsCarousel" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#similarPostsCarousel" data-bs-slide="next">
+                  <span class="carousel-control-next-icon"></span>
+                </button>
+              </div>
+              
         
         </div>
 

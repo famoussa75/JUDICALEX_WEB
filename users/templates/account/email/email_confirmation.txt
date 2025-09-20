@@ -1,0 +1,8 @@
+Bonjour {{ user.username }},
+
+Cliquez sur le lien ci-dessous pour confirmer votre adresse e-mail :
+
+{{ activate_url }}
+
+Merci,
+L’équipe Judicalex

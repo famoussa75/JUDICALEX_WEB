@@ -1,0 +1,347 @@
+{% load static %}
+
+<div class="content-area">
+
+    {% if user_is_contributeur %}
+
+      <!-- Zone de publication -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0"><i class="bi bi-pencil-square"></i> Publier un article</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ post_form.non_field_errors }}
+
+            <div class="mb-3">
+              {{ post_form.title.label_tag }}
+              {{ post_form.title }}
+            </div>
+
+            <div class="mb-3">
+              {{ post_form.category.label_tag }}
+              {{ post_form.category }}
+            </div>
+
+            <div class="mb-3">
+              {{ post_form.content.label_tag }}
+              {{ post_form.content }}
+            </div>
+
+            <div class="mb-3">
+              {{ post_form.image.label_tag }}
+              {{ post_form.image }}
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label d-block">Option de sauvegarde <span class="text-danger">*</span></label>
+              <div class="d-flex flex-column gap-2">
+                <div class="form-check">
+                  <input 
+                    type="radio" 
+                    class="form-check-input" 
+                    id="status_draft" 
+                    name="status" 
+                    value="draft" 
+                    required>
+                  <label class="form-check-label" for="status_draft">Enregistrer en brouillon</label>
+                </div>
+                <div class="form-check">
+                  <input 
+                    type="radio" 
+                    class="form-check-input" 
+                    id="status_published" 
+                    name="status" 
+                    value="published" 
+                    required>
+                  <label class="form-check-label" for="status_published">Enregistrer et Publier</label>
+                </div>
+              </div>
+            </div>
+            
+            
+            
+
+            <div class="text-end">
+              <button type="submit" name="create_contribution" class="btn btn-success">
+                 Sauvegarder
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Liste des contributions existantes -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-light">
+          <h4 class="mb-0"><i class="bi bi-journal-text"></i> Mes publications</h4>
+        </div>
+        <div class="card-body">
+          {% if page_obj_user_post %}
+            <div class="list-group">
+              {% for post in page_obj_user_post %}
+                <div class="list-group-item d-flex justify-content-between align-items-start">
+                  <div class="ms-2 me-auto">
+                    <div class="fw-bold">{{ post.title }}</div>
+                    <small class="text-muted">Publié le {{ post.created_at|date:"d/m/Y H:i" }}</small>
+                    <!-- Statut + Groupes -->
+                    <div class="d-flex align-items-center gap-3 mt-3 flex-wrap">
+                      {% if post.status == "draft" %}
+                        <span class="badge rounded-pill bg-secondary">
+                          ⏳ {{ post.get_status_display }}
+                        </span>
+                      {% elif post.status == "published" %}
+                        <span class="badge rounded-pill bg-success">
+                          ✅ {{ post.get_status_display }}
+                        </span>
+                        <a href="{% url 'blog.post_detail' post.slug %}"><i class="fa fa-arrow-right"></i> Aperçu</a>
+                      {% elif post.status == "archived" %}
+                        <span class="badge rounded-pill bg-danger">
+                          📦 {{ post.get_status_display }}
+                        </span>
+                      {% else %}
+                        <span class="badge rounded-pill bg-dark">{{ post.get_status_display }}</span>
+                      {% endif %}
+                    </div>
+                    <!-- Barre d’infos : likes, partages, diffusion -->
+                    <div class="d-flex align-items-center gap-3 mt-3 flex-wrap">
+                      <span class="badge bg-primary text-white">
+                        👍 {{ post.total_likes }} Likes
+                      </span>
+                      <span class="badge bg-info text-white">
+                        💬 {{ post.comments.count }} Commentaires
+                      </span>
+                      
+                      <span class="badge bg-success text-white">
+                        🔄 {{ post.shares }} Partages
+                      </span>
+                      {% if post.is_published %}
+                        <span class="badge bg-info text-white">
+                          <i class="bi bi-broadcast"></i> Diffusé
+                        </span>
+                      {% else %}
+                        <span class="badge bg-secondary text-white">
+                          <i class="bi bi-broadcast"></i> Non diffusé
+                        </span>
+                      {% endif %}
+                    </div>
+                  </div>
+                  <div>
+                    <!-- Bouton modifier -->
+                    <button class="btn btn-sm btn-outline-primary me-1"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editPostModal{{ post.id }}">
+                      <i class="fa fa-pencil"></i>
+                    </button>
+
+                    <!-- Bouton supprimer -->
+                    <button class="btn btn-sm btn-outline-danger"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deletePostModal{{ post.id }}">
+                      <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Modal Modifier -->
+                <div class="modal fade" id="editPostModal{{ post.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-xl modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title text-primary">Modifier l'article</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <form method="post" enctype="multipart/form-data" action="{% url 'edit_post' post.id %}">
+                          {% csrf_token %}
+                          {{ post_form.non_field_errors }}
+
+                          <div class="mb-3">
+                            <label for="id_title_{{ post.id }}">Titre</label>
+                            <input type="text" name="title" class="form-control" id="id_title_{{ post.id }}" value="{{ post.title }}">
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="id_content_{{ post.id }}">Contenu</label>
+                            <textarea name="content" class="form-control tinymce-editor" id="id_content_{{ post.id }}">{{ post.content }}</textarea>
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="id_image_{{ post.id }}">Changer l'image</label>
+                            <input type="file" name="image" class="form-control" id="id_image_{{ post.id }}">
+                          </div>
+
+                          <div class="mb-3">
+                            <label class="form-label d-block">Option de sauvegarde <span class="text-danger">*</span></label>
+                            <div class="d-flex flex-column gap-2">
+                              <div class="form-check">
+                                <input 
+                                  type="radio" 
+                                  class="form-check-input" 
+                                  id="status_draft" 
+                                  name="status" 
+                                  value="draft" 
+                                  required>
+                                <label class="form-check-label" for="status_draft">Enregistrer en brouillon</label>
+                              </div>
+                              <div class="form-check">
+                                <input 
+                                  type="radio" 
+                                  class="form-check-input" 
+                                  id="status_published" 
+                                  name="status" 
+                                  value="published" 
+                                  required>
+                                <label class="form-check-label" for="status_published">Enregistrer et Publier</label>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="text-end">
+                            <button type="submit" class="btn btn-success">Enregistrer</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal Supprimer -->
+                <div class="modal fade" id="deletePostModal{{ post.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                      <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmer la suppression</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <div class="modal-body">
+                        <p>Voulez-vous vraiment supprimer l'article <strong>"{{ post.title }}"</strong> ?</p>
+                      </div>
+                      <div class="modal-footer">
+                        <form method="post" action="{% url 'delete_post' post.id %}">
+                          {% csrf_token %}
+                          <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              {% endfor %}
+
+              <!-- Pagination -->
+              <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj_user_post.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj_user_post.previous_page_number }}">Précédent</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Précédent</span></li>
+                    {% endif %}
+
+                    {% for num in page_obj_user_post.paginator.page_range %}
+                        {% if page_obj_user_post.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj_user_post.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj_user_post.next_page_number }}">Suivant</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+                    {% endif %}
+                </ul>
+              </nav>
+
+            </div>
+          {% else %}
+            <p class="text-muted">Vous n’avez publié aucun article pour le moment.</p>
+          {% endif %}
+        </div>
+      </div>
+
+    {% else %}
+
+      <!-- Si pas contributeur -->
+      <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <div>
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          Votre compte n’est <strong>pas éligible</strong> pour effectuer une contribution.
+        </div>
+        <a href="" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#demandeModal">
+          Remplir une demande
+        </a>
+      </div>
+      <p>
+        “Une contribution correspond à votre capacité à publier des articles sur la plateforme. Les utilisateurs ayant ce droit peuvent créer et partager des contenus sur des sujets juridiques. Si votre compte est limité au rôle de Visiteur, vous ne pouvez pas publier et devez remplir un formulaire de demande pour obtenir ce droit.”
+      </p>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="demandeModal" tabindex="-1" aria-labelledby="demandeModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+              
+              <div class="modal-header">
+                <h5 class="modal-title text-primary" id="demandeModalLabel">Demande pour devenir contributeur</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+              </div>
+
+              <div class="modal-body">
+                <form method="post" enctype="multipart/form-data">
+                  {% csrf_token %}
+
+                  <div class="mb-3">
+                    {{ contribution_form.nom.label_tag }}
+                    {{ contribution_form.nom }}
+                  </div>
+
+                  <div class="mb-3">
+                    {{ contribution_form.email.label_tag }}
+                    {{ contribution_form.email }}
+                  </div>
+
+                  <div class="mb-3">
+                    {{ contribution_form.sujet.label_tag }}
+                    {{ contribution_form.sujet }}
+                  </div>
+
+                  <div class="mb-3">
+                    {{ contribution_form.motivation.label_tag }}
+                    {{ contribution_form.motivation }}
+                  </div>
+
+                  <div class="mb-3">
+                    {{ contribution_form.piece_identite.label_tag }}
+                    {{ contribution_form.piece_identite }}
+                  </div>
+
+                  <div class="mb-3">
+                      <label class="form-check">
+                          <input type="checkbox" class="form-check-input" required />
+                          <span class="form-check-label" style=" font-family: Jost; font-size: 14px; font-style: normal; font-weight: 700; line-height: normal;">Acceptez les <a href="{% url 'condition_generale' %}"
+                                  tabindex="-1" style="color: var(--Blanc, #DFB23D); font-family: Jost; font-size: 14px; font-style: normal; font-weight: 700; line-height: normal;">termes et conditions</a>.</span>
+                      </label>
+                  </div>
+
+                  <div class="text-center mt-4">
+                    <button type="submit" name="demande_contribution" class="btn btn-success px-5">Envoyer la demande</button>
+                  </div>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+    {% endif %}
+
+  </div>

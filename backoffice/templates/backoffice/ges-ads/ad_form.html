@@ -1,0 +1,72 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Formulaire d'ajout {% endblock title %}
+
+{% block content %}
+<div class="pagetitle">
+  <h1>Gestion publicités</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+      <li class="breadcrumb-item">Publicité</li>
+      <li class="breadcrumb-item active">Creation</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="section py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-header bg-gradient rounded-top-4" style="background: linear-gradient(90deg, #0d6efd, #0dcaf0);">
+            <h2>{% if form.instance.pk %}Modification{% else %}Nouvelle{% endif %} publicité</h2>
+          </div>
+          <div class="card-body p-4">
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <div class="row g-3">
+                {% for field in form %}
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <label class="form-label fw-semibold">{{ field.label }}</label>
+                      {{ field }}
+                      {% if field.help_text %}
+                        <div class="form-text text-muted">{{ field.help_text }}</div>
+                      {% endif %}
+                      {% for error in field.errors %}
+                        <div class="text-danger small">{{ error }}</div>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success px-4 me-2">
+                  <i class="bi bi-check-circle me-1"></i> Enregistrer
+                </button>
+                <a href="{% url 'ad_list' %}" class="btn btn-outline-secondary px-4">
+                  <i class="bi bi-x-circle me-1"></i> Annuler
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const adLink = document.getElementById("ad-link");
+    if (adLink) {
+      adLink.classList.add("bg-primary", "text-white");   // activation visuelle
+    }
+  });
+</script>
+
+{% endblock %}

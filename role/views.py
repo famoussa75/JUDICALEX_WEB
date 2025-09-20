@@ -25,7 +25,6 @@ from django.db.models.functions import Coalesce
 from django.db.models import IntegerField
 
 
-
 import uuid
 
 # Create your views here.
@@ -41,7 +40,7 @@ def index(request):
     roles = Roles.objects.filter(dateEnreg__year=year).order_by('-created_at')
     presidents = Presidents.objects.all().order_by('-created_at')
      # Nombre d'objets par page
-    objets_par_page = 8
+    objets_par_page = 10
 
     paginator = Paginator(roles, objets_par_page)
 

@@ -132,10 +132,10 @@
   <ul class="nav nav-tabs nav-tabs-custom" id="myTab" role="tablist">
     <li class="nav-item">
         <a class="nav-link {% if request.GET.tab != 'tab-notifs' %} active{% endif %}" data-bs-toggle="tab" href="#tab-affaires">
-            <i class="fa fa-briefcase me-2"></i> Affaires
+            <i class="fa fa-briefcase me-2"></i> Affaires suivies
         </a>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a class="nav-link" data-bs-toggle="tab" href="#tab-requetes">
             <i class="fa fa-file-alt me-2"></i> Requêtes
         </a>
@@ -154,6 +154,11 @@
         <a class="nav-link" data-bs-toggle="tab" href="#tab-facture">
             <i class="fa fa-receipt me-2"></i> Facturation
         </a>
+    </li> -->
+    <li class="nav-item">
+      <a class="nav-link" data-bs-toggle="tab" href="#tab-contribution">
+          <i class="fa fa-receipt me-2"></i> Contributions
+        </a>
     </li>
     <li class="nav-item">
         <a class="nav-link {% if request.GET.tab == 'tab-notifs' %} active{% endif %}" data-bs-toggle="tab" href="#tab-notifs">
@@ -165,59 +170,45 @@
             <i class="fa fa-cog me-2"></i> Paramètres
         </a>
     </li>
+    
   </ul>
-
-
-
   <!-- Content -->
   <div class="tab-content">
+    <!-- {% if messages %}
+    <div>
+      {% for message in messages %}
+        {% if message.tags == "error" %}
+        <div class="alert alert-danger alert-dismissible fade show rounded-5 bg-danger" role="alert">
+          <strong  style="color: white;">{{ message }}</strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        
+        {% elif message.tags == "success" %}
+        <div class="alert alert-success alert-dismissible fade show rounded-5 bg-success" role="alert">
+          <strong style="color: white;">
+            {{ message }}
+            <i class="fa fa-check-circle"></i>
+          </strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        {% elif message.tags == "info" %}
+        <div class="alert alert-info alert-dismissible fade show rounded-5 bg-info" role="alert">
+          <strong style="color: white;">
+            {{ message }}
+            <i class="fa fa-check-circle"></i>
+          </strong>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% endif %} -->
 
     <!-- Affaires -->
     <div class="tab-pane fade container-fluid {% if request.GET.tab != 'tab-notifs' %}show active{% endif %}" id="tab-affaires">
-      <div class="content-area">
-        <h5 class="section-title mb-3">Mes affaires</h5>
-        
-        {% if mesAffairesSuivies %}
-
-          <div class="d-flex justify-content-end mb-3">
-            <button type="button" class="btn btn-outline-danger btn-sm" id="ne_pas_suivre_affaire">
-              <i class="fa fa-times me-2"></i> Ne plus suivre
-            </button>
-          </div>
-          
-        {% endif %}
-        
-        {% for affaire in mesAffairesSuivies %}
-        <div class="card mb-3 shadow-sm border-0 hover-card">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <!-- Informations sur l'affaire -->
-                <div>
-                    <h6 class="card-title mb-1 fw-bold">
-                        <a href="{% url 'affaires.details' affaire.affaire.idAffaire %}" 
-                           class="text-decoration-none text-dark">
-                            Affaire N° <span class="text-primary">{{ affaire.affaire.numAffaire }}</span> du {{ affaire.affaire.role.juridiction }}
-                        </a>
-                    </h6>
-                    <small class="text-muted">
-                        Suivie depuis le {{ affaire.created_at|date:"d/m/Y" }}
-                    </small>
-                </div>
-    
-                <!-- Case à cocher -->
-                <div class="form-check">
-                    <input class="form-check-input row-checkbox" 
-                           type="checkbox" 
-                           value="{{ affaire.affaire.id }}" 
-                           aria-label="Sélectionner affaire">
-                </div>
-            </div>
-        </div>
-        
-      
-        {% empty %}
-          <p class="text-muted">Aucune affaire disponible.</p>
-        {% endfor %}
-      </div>
+      {% include 'users/profil_partials/affaires.html' %}
     </div>
 
     <!-- Requêtes -->
@@ -265,152 +256,34 @@
       </div>
     </div>
 
-       <!-- FACTURATIONS -->
-       <div class="tab-pane fade container-fluid" id="tab-facture">
-        <div class="content-area">
-          <h5 class="section-title">Mes factures</h5>
-          {% for facture in factures %}
-            <div class="item-block">
-              <h6>{{ facture.objet }}</h6>
-              <small>{{ facture.date }}</small>
-            </div>
-          {% empty %}
-            <p class="text-muted">Aucune facture enregistrée.</p>
-          {% endfor %}
-        </div>
+      <!-- FACTURATIONS -->
+    <div class="tab-pane fade container-fluid" id="tab-facture">
+      <div class="content-area">
+        <h5 class="section-title">Mes factures</h5>
+        {% for facture in factures %}
+          <div class="item-block">
+            <h6>{{ facture.objet }}</h6>
+            <small>{{ facture.date }}</small>
+          </div>
+        {% empty %}
+          <p class="text-muted">Aucune facture enregistrée.</p>
+        {% endfor %}
       </div>
+    </div>
+
+    <!-- CONTRIBUTIONS -->
+    <div class="tab-pane fade container-fluid" id="tab-contribution">
+      {% include 'users/profil_partials/contribution.html' %}
+    </div>
 
     <!-- Notifications -->
     <div class="tab-pane fade container-fluid {% if request.GET.tab == 'tab-notifs' %}show active{% endif %}" id="tab-notifs">
-      <div class="content-area">
-        <h5 class="section-title">Notifications</h5>
-        {% for notification in notifications %}
-          <div class="alert d-flex justify-content-between align-items-center 
-                      {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %}">
-            
-            <div>
-              {{ notification.message }}
-              <small class="d-block text-muted">{{ notification.timestamp }}</small>
-            </div>
-      
-            {% if not notification.is_read %}
-            <form method="post" action="{% url 'mark_as_read' notification.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-sm btn-outline-success">
-                <i class="fa fa-check me-1"></i> Marquer comme lu
-              </button>
-            </form>
-            {% endif %}
-          </div>
-        {% empty %}
-          <p class="text-muted">Aucune notification.</p>
-        {% endfor %}
-      </div>
-      
+      {% include 'users/profil_partials/notifications.html' %}
     </div>
 
     <!-- Paramètres -->
     <div class="tab-pane fade container-fluid" id="tab-settings">
-      <div class="content-area">
-          <h5 class="section-title mb-4">Paramètres du compte</h5>
-          <div class="container-xl">
-            <form method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
-              {% csrf_token %}
-        
-              <!-- SECTION 1 : Photo de profil -->
-              <div class="card mb-4">
-                <div class="card-header"><b>Photo de profil</b></div>
-                <div class="card-body text-left">
-                  {% if request.user.profile_image %}
-                    <img src="{{ request.user.profile_image.url }}" alt="Photo profil" class="rounded-circle mb-3" width="100" height="100">
-                  {% elif request.user.socialaccount_set.exists %}
-                    <img src="{{ request.user.socialaccount_set.first.get_avatar_url }}" alt="Photo Google" class="rounded-circle mb-3" width="100" height="100">
-                  {% else %}
-                    <img src="{% static 'default-avatar.png' %}" alt="Photo par défaut" class="rounded-circle mb-3" width="100" height="100">
-                  {% endif %}
-                  <input type="file" name="profile_image" class="form-control" style="width: 50%;">
-                </div>
-              </div>
-        
-              <!-- SECTION 2 : Informations personnelles -->
-              <div class="card mb-4">
-                <div class="card-header"><b>Informations personnelles</b></div>
-                <div class="card-body">
-                  <div class="row g-3">
-                    <div class="col-md-6">
-                      <label class="form-label">Prénom</label>
-                      <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Nom</label>
-                      <input type="text" name="last_name" value="{{ request.user.last_name }}" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Email</label>
-                      <input type="email" name="email" value="{{ request.user.email }}" class="form-control">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Téléphone</label>
-                      <input type="text" name="tel1" value="{{ request.user.tel1 }}" class="form-control">
-                    </div>
-                  </div>
-                </div>
-              </div>
-        
-              <!-- SECTION 3 : Changement de mot de passe (local uniquement) -->
-              {% if not request.user.socialaccount_set.exists %}
-              <div class="card mb-4">
-                <div class="card-header"><b>Changer le mot de passe</b></div>
-                <div class="card-body">
-                  <div class="row g-3">
-                    <div class="col-md-6">
-                      <label class="form-label">Nouveau mot de passe</label>
-                      <input type="password" name="password" class="form-control" placeholder="Laisser vide pour conserver le mot de passe actuel">
-                    </div>
-                    <div class="col-md-6">
-                      <label class="form-label">Confirmer mot de passe</label>
-                      <input type="password" name="confirm_password" class="form-control" placeholder="Confirmer le nouveau mot de passe">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {% endif %}
-        
-              <!-- SECTION 4 : Notifications -->
-              <div class="card mb-4">
-                <div class="card-header"><b>Notifications</b></div>
-                <div class="card-body">
-                  <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" name="notif_email" {% if request.user.notif_email %}checked{% endif %}>
-                    <label class="form-check-label">Notifications par email</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="notif_sms" {% if request.user.notif_sms %}checked{% endif %}>
-                    <label class="form-check-label">Notifications par SMS</label>
-                  </div>
-                </div>
-              </div>
-        
-              <!-- SECTION 5 : Comptes connectés (Google / OAuth) -->
-              {% if request.user.socialaccount_set.exists %}
-              <div class="card mb-4">
-                <div class="card-header"><b>Comptes connectés</b></div>
-                <div class="card-body d-flex justify-content-between align-items-center">
-                  <span>Connecté via {{ request.user.socialaccount_set.first.provider|title }}</span>
-                  <a href="" class="btn btn-outline-danger btn-sm">Dissocier Google</a>
-                </div>
-              </div>
-              {% endif %}
-        
-              <!-- BOUTONS DE CONFIRMATION -->
-              <div class="d-flex justify-content-between">
-                <button class="btn btn-primary">Mettre à jour</button>
-                <a href=" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')">Supprimer le compte</a>
-              </div>
-        
-            </form>
-          </div>
-      </div>
+      {% include 'users/profil_partials/parametres.html' %}
     </div>
     
     

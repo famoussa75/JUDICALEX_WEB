@@ -1,0 +1,143 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Liste des demandes {% endblock title %}
+
+{% block content %}
+<div class="pagetitle">
+    <h1>Gestion des demandes</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item">Demandes</li>
+        <li class="breadcrumb-item active">Liste</li>
+      </ol>
+    </nav>
+  </div>
+  <section class="section py-4">
+    <div class="card container-fluid p-4">
+      <!-- Titre + barre de recherche -->
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <h2 class="h4 fw-bold mb-3 mb-md-0">📥 Liste des demandes de contribution</h2>
+  
+        <form method="get" class="d-flex" role="search">
+          <input 
+            type="text" 
+            name="q" 
+            value="{{ q }}" 
+            class="form-control form-control-sm me-2" 
+            placeholder="Rechercher par nom, email ou sujet..."
+          >
+          <button class="btn btn-sm btn-outline-primary" type="submit">Rechercher</button>
+        </form>
+      </div>
+  
+      <!-- Tableau -->
+      <div class="card border-0 shadow-sm rounded-4">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Utilisateur</th>
+                <th scope="col">Email</th>
+                <th scope="col">Sujet</th>
+                <th scope="col">Statut</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if page_obj.object_list %}
+                {% for demande in page_obj.object_list %}
+                <tr>
+                  <td class="fw-semibold">{{ demande.nom }}</td>
+                  <td>
+                    <a href="mailto:{{ demande.email }}" class="text-decoration-none">{{ demande.email }}</a>
+                  </td>
+                  <td class="text-truncate" style="max-width: 280px;">
+                    {{ demande.sujet }}
+                  </td>
+                  <td>
+                    {% if demande.status == "pending" %}
+                      <span class="badge bg-warning text-dark">En attente</span>
+                    {% elif demande.status == "approved" %}
+                      <span class="badge bg-success">Approuvée</span>
+                    {% else %}
+                      <span class="badge bg-danger">Rejetée</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-muted">{{ demande.created_at|date:"d/m/Y H:i" }}</td>
+                  <td class="text-end">
+                    <a href="{% url 'details_demande' demande.id %}" class="btn btn-sm btn-outline-primary">
+                      Voir
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="6" class="text-center py-5 text-muted">
+                    Aucune demande trouvée.
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+  
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <div class="card-footer bg-white border-0">
+          <nav aria-label="Pagination des demandes">
+            <ul class="pagination justify-content-center mb-0">
+              {% if page_obj.has_previous %}
+                <li class="page-item">
+                  <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page=1">&laquo;</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.previous_page_number }}">&lsaquo;</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                <li class="page-item disabled"><span class="page-link">&lsaquo;</span></li>
+              {% endif %}
+  
+              {% for num in page_obj.paginator.page_range %}
+                {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                  {% if num == page_obj.number %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                  {% else %}
+                    <li class="page-item"><a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ num }}">{{ num }}</a></li>
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+  
+              {% if page_obj.has_next %}
+                <li class="page-item">
+                  <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.next_page_number }}">&rsaquo;</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?{% if querystring %}{{ querystring }}&{% endif %}page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+                </li>
+              {% else %}
+                <li class="page-item disabled"><span class="page-link">&rsaquo;</span></li>
+                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+              {% endif %}
+            </ul>
+          </nav>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+  
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const rhLink = document.getElementById("rh-link");
+      if (rhLink) {
+        rhLink.classList.add("bg-primary", "text-white");   // activation visuelle
+      }
+    });
+  </script>
+
+{% endblock %}

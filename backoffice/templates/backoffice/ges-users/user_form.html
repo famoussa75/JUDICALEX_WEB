@@ -1,0 +1,113 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %}Création{% endblock title %}
+
+{% block content %}
+
+<div class="pagetitle">
+    <h1>Gestion utilisateurs</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item">RH</li>
+        <li class="breadcrumb-item active">Comptes utilisateurs</li>
+      </ol>
+    </nav>
+  </div>
+
+
+<section class="section py-4">
+  <div class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4">
+      <h2 class="h4 fw-bold mb-3">{{ title }}</h2>
+
+      <form method="post" enctype="multipart/form-data" class="row g-3">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+          {# --- Listes de cases à cocher (ex. groups/permissions) --- #}
+          {% if field.field.widget.allow_multiple_selected %}
+            <div class="col-12">
+              <label class="form-label">{{ field.label }}</label>
+              <div class="row row-cols-1 row-cols-md-2 g-2">
+                {% for cb in field %}
+                  <div class="col">
+                    <div class="form-check">
+                      {{ cb.tag }}
+                      <label class="form-check-label" for="{{ cb.id_for_label }}">{{ cb.choice_label }}</label>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+              {% if field.help_text %}<div class="form-text mt-1">{{ field.help_text }}</div>{% endif %}
+              {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+            </div>
+
+          {# --- Checkbox simple --- #}
+          {% elif field.field.widget.input_type == 'checkbox' %}
+            <div class="col-12 col-md-6">
+              <div class="form-check mt-4">
+                {{ field }}
+                <label class="form-check-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              </div>
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+            </div>
+
+          {# --- Champ fichier (aperçu pour 'photo' si présent) --- #}
+          {% elif field.field.widget.input_type == 'file' %}
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if form.instance and field.name == 'photo' and form.instance.photo %}
+                <div class="mt-2">
+                  <img src="{{ form.instance.photo.url }}" alt="Photo" class="rounded shadow-sm"
+                       style="width: 80px; height: 80px; object-fit: cover;">
+                </div>
+              {% endif %}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+            </div>
+
+          {# --- Textarea ou champs à afficher en pleine largeur --- #}
+          {% elif field.field.widget.attrs.rows or field.name in 'adresse profession' %}
+            <div class="col-12">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+            </div>
+
+          {# --- Par défaut (input/select demi-largeur) --- #}
+          {% else %}
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+              {{ field }}
+              {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+              {% for err in field.errors %}<div class="text-danger small">{{ err }}</div>{% endfor %}
+            </div>
+          {% endif %}
+        {% endfor %}
+
+        <div class="col-12 d-flex gap-2 mt-2">
+          <button class="btn btn-primary" type="submit">Enregistrer</button>
+          {# Adapte ce nom d'URL à ton routing : 'users:list' / 'user.list' / etc. #}
+          <a href="{% url 'user.list' %}" class="btn btn-outline-secondary">Annuler</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const rhLink = document.getElementById("rh-link");
+      if (rhLink) {
+        rhLink.classList.add("bg-primary", "text-white");   // activation visuelle
+      }
+    });
+  </script>
+
+{% endblock %}

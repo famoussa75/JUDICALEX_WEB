@@ -1,0 +1,152 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Liste Générale {% endblock title %}
+
+{% block content %}
+
+<style>
+  .card-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+</style>
+
+<div class="pagetitle">
+    <h1>Gestion des articles</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item">News</li>
+        <li class="breadcrumb-item active">Articles</li>
+      </ol>
+    </nav>
+  </div>
+<section class="section">
+  <div class="card shadow-sm border-0 rounded-3">
+    <div class="card-body p-4">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h4 fw-bold mb-0">
+          <i class="bi bi-journal-text me-2"></i> Liste des articles
+        </h2>
+        <a href="{% url 'post_create' %}" class="btn btn-success rounded-pill shadow-sm">
+          <i class="bi bi-plus-circle me-1"></i> Nouvel Article
+        </a>
+      </div>
+      <form method="get" class="d-flex ms-auto" role="search" style="max-width: 380px;">
+        <input
+          type="text"
+          name="q"
+          value="{{ query }}"
+          class="form-control form-control-sm me-2"
+          placeholder="Rechercher…"
+          aria-label="Rechercher"
+        >
+        <button class="btn btn-sm btn-outline-primary" type="submit">
+          <i class="bi bi-search me-1"></i>
+        </button>
+      </form>
+      
+      {% if posts %}
+        <div class="row g-3">
+           <!-- Résumé -->
+          <div class="d-flex justify-content-between align-items-center small text-muted mb-3">
+            <span>
+              Résultats :
+              <strong>{{ posts.paginator.count }}</strong>
+              article{% if posts.paginator.count > 1 %}s{% endif %}
+            </span>
+           
+          </div>
+          {% for post in posts %}
+            <div class="col-12">
+              <div class="card border-0 shadow-sm h-100 hover-shadow transition card-hover">
+                <a href="{% url 'post_detail' post.slug %}" class="text-decoration-none text-dark">
+                  <div class="card-body">
+                    <!-- Titre + Date -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="fw-bold mb-0">{{ post.title }}</h5>
+                      <small class="text-muted">
+                        <i class="bi bi-calendar-event me-1"></i>{{ post.created_at|date:"d/m/Y H:i" }}
+                      </small>
+                    </div>
+  
+                    <!-- Aperçu -->
+                    <p class="text-muted mb-3">
+                      {{ post.short_content|default:post.content|striptags|truncatechars:120 }}
+                    </p>                    
+  
+                    <!-- Statut + Groupes -->
+                    <div class="d-flex flex-wrap gap-2">
+                      {% if post.status == "draft" %}
+                        <span class="badge rounded-pill bg-secondary">
+                          ⏳ {{ post.get_status_display }}
+                        </span>
+                      {% elif post.status == "published" %}
+                        <span class="badge rounded-pill bg-success">
+                          ✅ {{ post.get_status_display }}
+                        </span>
+                      {% elif post.status == "archived" %}
+                        <span class="badge rounded-pill bg-danger">
+                          📦 {{ post.get_status_display }}
+                        </span>
+                      {% else %}
+                        <span class="badge rounded-pill bg-dark">{{ post.get_status_display }}</span>
+                      {% endif %}
+  
+                      {% for group in post.author.groups.all %}
+                        <span class="badge rounded-pill bg-info-light text-dark">
+                          <i class="bi bi-people-fill me-1"></i>{{ group.name }}
+                        </span>
+                      {% empty %}
+                        <span class="badge rounded-pill bg-light text-muted">Aucun groupe</span>
+                      {% endfor %}
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+  
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center align-items-center mt-4">
+          {% if posts.has_previous %}
+            <a href="?page={{ posts.previous_page_number }}" class="btn btn-outline-primary btn-sm me-2">
+              <i class="bi bi-arrow-left"></i> Précédent
+            </a>
+          {% endif %}
+          <span class="mx-2 small text-muted">
+            Page {{ posts.number }} sur {{ posts.paginator.num_pages }}
+          </span>
+          {% if posts.has_next %}
+            <a href="?page={{ posts.next_page_number }}" class="btn btn-outline-primary btn-sm ms-2">
+              Suivant <i class="bi bi-arrow-right"></i>
+            </a>
+          {% endif %}
+        </div>
+      {% else %}
+        <p class="text-muted fst-italic">Aucun article trouvé.</p>
+      {% endif %}
+    </div>
+  </div>
+  
+</section>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const newsLink = document.getElementById("news-link");
+      if (newsLink) {
+        newsLink.classList.add("bg-primary", "text-white");   // activation visuelle
+      }
+    });
+  </script>
+  
+  
+{% endblock %}
+

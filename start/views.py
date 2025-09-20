@@ -3,6 +3,7 @@ from blog.models import Post
 from role.models import AffaireRoles, Decisions, Roles
 from .models import MessageDefilant
 from users.models import Account
+from backoffice.models import Ad
 from datetime import datetime, timedelta, date
 from django.db.models.functions import TruncDate
 from django.db.models import Count
@@ -15,12 +16,23 @@ def index(request):
         if request.user.groups.filter(name='Visiteur').exists():
             return visiteurDashboard(request)
         else:
-            return backoffice(request)
+            return superAdminDashboard(request)
         
-
-    # Si l'utilisateur n'est pas authentifié ou n'appartient à aucun des groupes spécifiés
-    last_post = Post.objects.all().order_by('-created_at')
-    return render(request, 'start/home/index-visiteur.html', {'last_post': last_post})
+    else:
+        # Si l'utilisateur n'est pas authentifié ou n'appartient à aucun des groupes spécifiés
+        last_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[:6]
+        last_post_contrib = Post.objects.filter(type='contribution', status='published').order_by('-created_at')[:6]
+        old_post_news = Post.objects.filter(type='news', status='published').order_by('created_at')[:6]
+        ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
+        ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
+        context = {
+            'last_post_news': last_post_news,
+            'old_post_news': old_post_news,
+            'last_post_contrib': last_post_contrib,
+            'ads_header': ads_header,
+            'ads_lateral': ads_lateral,
+        }
+        return render(request, 'start/home/index-visiteur.html', context)
 
 
 
@@ -172,6 +184,22 @@ def backoffice(request):
 
 def visiteurDashboard(request):
 
+    last_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[:6]
+    last_post_contrib = Post.objects.filter(type='contribution', status='published').order_by('-created_at')[:6]
+    old_post_news = Post.objects.filter(type='news', status='published').order_by('created_at')[:6]
+    ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
+    ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
+    context = {
+        'last_post_news': last_post_news,
+        'old_post_news': old_post_news,
+        'last_post_contrib': last_post_contrib,
+        'ads_header': ads_header,
+        'ads_lateral': ads_lateral,
+    }
+    return render(request, 'start/home/index-visiteur.html', context)
+
+def superAdminDashboard(request):
+
     last_post = Post.objects.all().order_by('-created_at')
-    return render(request, 'start/home/index-visiteur.html',{'last_post': last_post})
+    return render(request, 'backoffice/home/home-1.html',{'last_post': last_post})
 

@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>
+    {% block title %} {% endblock title %}
+  </title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  {% include 'backoffice/tools/css.html' %}
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+    {% include 'backoffice/tools/header.html' %}
+  <!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+    {% include 'backoffice/tools/admin-sidebar.html' %}
+  <!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    {% block content %}{% endblock %}
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <!-- <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+
+      Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+    </div>
+  </footer>End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+{% include 'backoffice/tools/js.html' %}
+
+</body>
+
+</html>

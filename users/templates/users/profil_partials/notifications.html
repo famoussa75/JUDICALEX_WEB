@@ -1,0 +1,26 @@
+{% load static %}
+
+<div class="content-area">
+    <h5 class="section-title">Notifications</h5>
+    {% for notification in notifications %}
+      <div class="alert d-flex justify-content-between align-items-center 
+                  {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %}">
+        
+        <div>
+          {{ notification.message }}
+          <small class="d-block text-muted">{{ notification.timestamp }}</small>
+        </div>
+  
+        {% if not notification.is_read %}
+        <form method="post" action="{% url 'mark_as_read' notification.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-outline-success">
+            <i class="fa fa-check me-1"></i> Marquer comme lu
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p class="text-muted">Aucune notification.</p>
+    {% endfor %}
+  </div>

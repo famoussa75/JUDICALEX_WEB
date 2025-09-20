@@ -1,11 +1,10 @@
-
 from django.contrib import admin
 from django.urls import path, include
 from start import views
 from django.conf.urls.static import static
 from django.conf import settings
 from role.views import NePasSuivreAffaire,suivreAffaire
-from .views import DeleteNotificationsAPIView, MarkNotificationAsReadAPIView, allNotificationAPIView, api_sign_in, api_sign_up, api_sign_out,api_delete_account,api_update_account, detail_affaire_api,get_user,mes_affaires_suivies_api, PostDetailAPIView, PostListAPIView, CommentCreateAPIView, RolesListAPI, ne_pas_suivre_affaire_api, role_detail_api, suivre_affaire_api, send_contact_email, about_us,notificationAPIView, ges_message
+from .views import DeleteNotificationsAPIView, MarkNotificationAsReadAPIView, allNotificationAPIView, api_sign_in, api_sign_up, api_sign_out,api_delete_account,api_update_account, condition_generale, detail_affaire_api,get_user,mes_affaires_suivies_api, PostDetailAPIView, PostListAPIView, CommentCreateAPIView, RolesListAPI, ne_pas_suivre_affaire_api, politique, role_detail_api, suivre_affaire_api, send_contact_email, about_us,notificationAPIView, ges_message
 
 
 urlpatterns = [
@@ -18,14 +17,15 @@ urlpatterns = [
     path('entreprise/', include('entreprise.urls')),
     path('emploi/', include('emploi.urls')),
     path('role/', include('role.urls')),
+    path('jurisprudence/', include('jurisprudence.urls')),
     path('magistrats/', include('magistrats.urls')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
-    path("__debug__/", include("debug_toolbar.urls")),
     path('suivre-affaire/', suivreAffaire, name='suivre-affaire'),
     path('ne-pas-suivre-affaire/', NePasSuivreAffaire, name='ne-pas-suivre-affaire'),
     path('blog/', include('blog.urls')),
     path('rccm/', include('rccm.urls')),
+    path('backoffice/', include('backoffice.urls')),
 
     #API REST FOR FLUTTER APP
     path('api/signin/', api_sign_in, name='api_sign_in'),
@@ -50,6 +50,8 @@ urlpatterns = [
     path('send_email/', send_contact_email, name='send_email'),
 
     path('a_propos/', about_us, name='about_us'),
+    path('condition_general/', condition_generale, name='condition_generale'),
+    path('politique/', politique, name='politique'),
 
     path('api/notifications/', notificationAPIView, name='notification-list'),
     path('api/notifications/all/', allNotificationAPIView, name='notification-list-all'),

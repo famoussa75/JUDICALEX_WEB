@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views
 
 
+
 urlpatterns = [
     path('login/', views.signIn, name='login'),
     path('profile/', views.profile, name='profile'),
@@ -16,5 +17,12 @@ urlpatterns = [
     path('notifications/delete/', views.delete_notifications, name='delete_notifications'),
     path('notifications/mark-as-read/<int:notification_id>/', views.mark_as_read, name='mark_as_read'),
 
+    path("post/<int:post_id>/edit/", views.edit_post, name="edit_post"),
+    path("post/<int:post_id>/delete/", views.delete_post, name="delete_post"),
+
+    path('accounts/confirm-email/<key>/', views.AutoLoginConfirmEmailView.as_view(), name="account_confirm_email"),
+
 
 ]
+
+

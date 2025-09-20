@@ -197,7 +197,7 @@
                                                     <div class="card-body d-flex flex-column align-items-start">
                                                         <strong class="d-inline-block mb-2 text-primary">{{ category_post.3.category }}</strong>
                                                         <h3 class="mb-0">
-                                                            <a class="text-dark" href="{% url 'post_detail' category_post.3.id %}">{{ category_post.3.title }}</a>
+                                                            <a class="text-dark" href="{% url 'blog.post_detail' category_post.3.id %}">{{ category_post.3.title }}</a>
                                                         </h3>
                                                         <div class="mb-1 text-muted">{{ category_post.3.created_at }}</div>
                                                         <p class="card-text mb-auto">{{ category_post.3.content|truncatewords:5 }}</p>

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head><meta charset="utf-8"></head>
+<body style="font-family: Arial, sans-serif; background:#f6f7fb; margin:0; padding:20px;">
+  <div style="max-width:600px; margin:auto; background:#fff; border-radius:8px; padding:24px; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+    <div style="text-align:center; margin-bottom:16px;">
+      <img src="http://judicalex-gn.org/static/start/assets/statics/eJustice_Logo_white.png" alt="JudicaLex" style="height:56px;">
+    </div>
+
+    <h2 style="color:#143642;">Confirmez votre adresse e-mail</h2>
+
+    <p>Bonjour <strong>{{ user.first_name|default:user.username }}</strong>,</p>
+
+    <p>Merci de vous être inscrit sur <strong>Judicalex</strong>. Pour activer votre compte, cliquez sur le bouton ci-dessous :</p>
+
+    <p style="text-align:center; margin:28px 0;">
+      <a href="{{ activate_url }}" style="display:inline-block; padding:12px 22px; border-radius:6px; background:#DFB23D; color:#143642; text-decoration:none; font-weight:700;">
+        ✅ Confirmer mon e-mail
+      </a>
+    </p>
+
+    <p style="color:#666; font-size:13px;">
+      Si vous n’avez pas demandé cette inscription, ignorez simplement ce message.
+    </p>
+
+    <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
+    <p style="font-size:12px; color:#999;">© Judicalex GN - www.judicalex-gn.org</p>
+  </div>
+</body>
+</html>

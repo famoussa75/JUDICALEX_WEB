@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "debug_toolbar",
     # Django apps
     'django.contrib.sites',
 
@@ -57,6 +56,8 @@ INSTALLED_APPS = [
     'emploi',
     'entreprise',
     'divers',
+    'jurisprudence',
+    'backoffice',
     'rest_framework',
     'rest_framework.authtoken',
     
@@ -77,7 +78,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-     "debug_toolbar.middleware.DebugToolbarMiddleware",
      # Allauth middleware requis
     'allauth.account.middleware.AccountMiddleware',
 ]
@@ -91,7 +91,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -136,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SITE_ID = 1
+SITE_ID = 2
 
 
 # Internationalization
@@ -173,12 +172,9 @@ EMAIL_PORT = 465                       # Port SMTP (utilisez 465 pour SSL, ou 58
 EMAIL_USE_TLS = False                   # Utilisez TLS si le port est 587, sinon mettez EMAIL_USE_SSL à True
 EMAIL_USE_SSL = True                  # Utilisez SSL si le port est 465
 EMAIL_HOST_USER = 'contact@judicalex-gn.org' # Votre adresse email
-EMAIL_HOST_PASSWORD = 'Jx@2024!'      # Mot de passe de l'email
+EMAIL_HOST_PASSWORD = 'Jud@2025!'      # Mot de passe de l'email
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER       # Adresse utilisée pour l’envoi des emails
 
-# Paramètres pour le debug (si vous êtes en développement)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Utilise la console pour voir les emails en mode debug
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Utilise la console pour voir les emails en mode debug
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -186,9 +182,17 @@ SOCIALACCOUNT_PROVIDERS = {
             'client_id': '187515087001-ti3f89lqaacl0hsagicideq5bjkfve7s.apps.googleusercontent.com',
             'secret': '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',
             'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
         }
     }
 }
+
 
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
@@ -200,3 +204,19 @@ ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Active la confirmation d’email
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = "mandatory"  # email obligatoire et doit être vérifié
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[Judicialex] "
+SOCIALACCOUNT_EMAIL_VERIFICATION = "none"  # pas de vérif email via social login
+# Pour forcer l'envoi en multipart (texte + html)
+ACCOUNT_EMAIL_CONFIRMATION_TEMPLATE = "users/email/email_confirmation_message.html"
+
+# Par défaut, allauth gère déjà les emails
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
+ACCOUNT_USERNAME_REQUIRED = True
+
+
+ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"

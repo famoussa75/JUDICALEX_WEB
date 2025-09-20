@@ -7,14 +7,19 @@ from django.utils.http import urlencode
 from urllib.parse import urlparse, parse_qs, urlunparse
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
-from .forms import AccountForm, PasswordChangeForm, ProfileForm
-from .models import Account, Notification
+from .forms import AccountForm, ContributionRequestForm, PasswordChangeForm, ProfileForm
+from .models import Account, ContributionRequest, Notification
 from role.models import AffaireRoles,SuivreAffaire
 from start.models import Juridictions
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import re
+from blog.models import Post
+from blog.forms import PostForm
+from django.core.paginator import Paginator
 
+# users/views.py
+from allauth.account.views import ConfirmEmailView
 
 
 from django.core.mail import send_mail
@@ -30,6 +35,7 @@ from django.contrib.auth.forms import SetPasswordForm
 
 import smtplib
 from email.mime.text import MIMEText
+from allauth.account.models import EmailAddress
 
 
 # Create your views here.
@@ -75,70 +81,70 @@ def signIn(request):
     else:
        return redirect('home')
 
+
 def signUp(request):
     if request.method == 'POST':
         form = AccountForm(request.POST)
-        
+
         if form.is_valid():
             email = form.cleaned_data['email']
             password = form.cleaned_data['password']
             confirm_password = form.cleaned_data['confirm_password']
-            
-            # Vérifiez si l'email existe déjà
-            if Account.objects.filter(email=email).exists():
-                messages.error(request, "Désolé cet email est déjà utilisé.")
-                return redirect('home')  # Redirection vers la page d'inscription
-            
-            # Validation de la correspondance des mots de passe
+
+            existing_user = Account.objects.filter(email=email).first()
+
+            if existing_user:
+                if existing_user.is_active:
+                    messages.error(request, "Désolé, cet email est déjà utilisé.")
+                    return redirect('home')
+                else:
+                    # Si l'utilisateur existe mais n'a pas confirmé son email
+                    email_address = EmailAddress.objects.filter(user=existing_user, email=email).first()
+                    if email_address:
+                        email_address.send_confirmation(request)
+                    messages.success(request, "Vous n'avez pas encore confirmé votre email. Un nouveau mail a été envoyé.")
+                    return redirect('home')
+
             if password != confirm_password:
                 messages.error(request, "Les mots de passe ne correspondent pas.")
                 return redirect('home')
 
-            # Validation de la complexité du mot de passe
-            if len(password) < 8:
-                messages.error(request, "Le mot de passe doit comporter au moins 8 caractères.")
-                return redirect('home')
-            
-            if not re.search(r'[A-Z]', password):
-                messages.error(request, "Le mot de passe doit contenir au moins une lettre majuscule.")
-                return redirect('home')
-            
-            if not re.search(r'[a-z]', password):
-                messages.error(request, "Le mot de passe doit contenir au moins une lettre minuscule.")
-                return redirect('home')
-            
-            if not re.search(r'\d', password):
-                messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
-                return redirect('home')
-            
-            if not re.search(r'[!@#$%^&*(),.?":{}|<>]', password):
-                messages.error(request, "Le mot de passe doit contenir au moins un caractère spécial.")
-                return redirect('home')
-            
-            # Créez l'utilisateur
+            # Créer l'utilisateur désactivé
             user = form.save(commit=False)
-            user.set_password(password)  # Hash le mot de passe
-            
-            # Déterminer si l'utilisateur est un superadmin
-            if not Account.objects.exists():  # Aucun utilisateur n'existe, donc c'est le superadmin
+            user.set_password(password)
+            user.is_active = False
+
+            # Superadmin si premier utilisateur
+            if not Account.objects.exists():
                 user.is_superuser = True
                 user.is_staff = True
-            
+                user.is_active = True
+
             user.save()
 
-            # Ajouter l'utilisateur au groupe 'Visiteur' si ce n'est pas un superadmin
+            # Ajouter au groupe Visiteur si pas superadmin
             if not user.is_superuser:
-                group, created = Group.objects.get_or_create(name='Visiteur')
+                group, _ = Group.objects.get_or_create(name='Visiteur')
                 group.user_set.add(user)
-            
-            login(request, user)  # Connecter l'utilisateur après l'inscription
-            messages.success(request, "Félicitation! vous êtes inscri sur judicalex-gn !")
-            return redirect('home')  # Redirection vers la page d'accueil après l'inscription
-        
+
+            # Créer EmailAddress et envoyer confirmation
+            email_address, _ = EmailAddress.objects.get_or_create(
+                user=user,
+                email=user.email,
+                primary=True,
+                verified=False
+            )
+            email_address.send_confirmation(request)
+
+            messages.success(request, "Un email de confirmation vous a été envoyé.")
+            return redirect('home')
     else:
         form = AccountForm()
-    
+
     return redirect('home')
+
+
+
 
 def signOut(request):
     logout(request)
@@ -265,33 +271,83 @@ def usersControl(request):
 @login_required
 def profile(request):
     account = request.user  # L'utilisateur actuellement connecté
+    contribution_form = ContributionRequestForm()
 
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=account)
-        if form.is_valid():
-            form.save()
+    # ----- Formulaire de profil -----
+    if request.method == 'POST' and 'update_profile' in request.POST:
+        profile_form = ProfileForm(request.POST, request.FILES, instance=account)
+        if profile_form.is_valid():
+            profile_form.save()
             messages.success(request, 'Votre profil a été mis à jour !')
             return redirect('profile')
         else:
-            messages.error(request, 'Veuillez corriger les erreurs ci-dessous.')
-            for field, errors in form.errors.items():
+            messages.error(request, 'Veuillez corriger les erreurs dans votre profil.')
+            for field, errors in profile_form.errors.items():
                 for error in errors:
                     print(f"Erreur dans le champ {field}: {error}")
     else:
-        form = ProfileForm(instance=account)
+        profile_form = ProfileForm(instance=account)
 
-    # Notifications de l'utilisateur connecté
+    # ----- Formulaire de demande de contribution -----
+    if not request.user.groups.filter(name="Contributeur").exists():
+        demande_existante = ContributionRequest.objects.filter(demandeur=request.user).exists()
+        if request.method == 'POST' and 'demande_contribution' in request.POST:
+            if demande_existante:
+                messages.info(request, "Vous avez déjà soumis une demande de contribution. Elle est en cours de traitement.")
+            else:
+                contribution_form = ContributionRequestForm(request.POST, request.FILES)
+                if contribution_form.is_valid():
+                    contribution_request = contribution_form.save(commit=False)
+                    contribution_request.demandeur = request.user
+                    contribution_request.save()
+                    messages.success(request, 'Votre demande de contribution a été envoyée !')
+                    return redirect('profile')
+                else:
+                    messages.error(request, 'Veuillez corriger les erreurs dans le formulaire de contribution.')
+    else:
+        contribution_form = ContributionRequestForm()
+
+    # ----- Vérification si Contributeur -----
+    user_is_contributeur = request.user.groups.filter(name="Contributeur").exists()
+
+    # ----- Gestion des contributions (create) -----
+    post_form = PostForm()
+    if user_is_contributeur and request.method == 'POST' and 'create_contribution' in request.POST:
+        post_form = PostForm(request.POST, request.FILES)
+        if post_form.is_valid():
+            post = post_form.save(commit=False)
+            post.author = request.user
+            post.type = 'contribution'
+            post.status = request.POST.get('status')
+            post.save()
+            messages.success(request, "Votre article a été publiée avec succès !")
+            return redirect('profile')
+        else:
+            messages.error(request, "Veuillez corriger les erreurs dans votre contribution.")
+
+    # ----- Notifications et affaires suivies -----
     notifications = Notification.objects.filter(recipient=account)
-
-    # Affaires suivies de l'utilisateur connecté
     mesAffairesSuivies = SuivreAffaire.objects.select_related('affaire__role__juridiction').filter(account=account)
 
+    # ----- Contributions de l’utilisateur -----
+    user_posts = Post.objects.filter(author=request.user).order_by('-id')
+
+    # Pagination
+    paginator = Paginator(user_posts, 5)  # 5 posts par page
+    page_number = request.GET.get("page")
+    page_obj_user_post = paginator.get_page(page_number)
+
     context = {
-        'form': form,
+        'form': profile_form,
+        'contribution_form': contribution_form,
+        'post_form': post_form,
         'mesAffairesSuivies': mesAffairesSuivies,
         'notifications': notifications,
+        'user_is_contributeur': user_is_contributeur,
+        'page_obj_user_post': page_obj_user_post
     }
     return render(request, 'users/profile.html', context)
+
 
 @login_required
 def change_password(request):
@@ -364,3 +420,51 @@ def delete_notifications(request):
     # Supprimer toutes les notifications non lues pour cet utilisateur
     Notification.objects.filter(recipient=request.user).delete()
     return redirect('profile')
+
+
+@login_required
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+
+    if request.method == 'POST':
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Votre article a été mise à jour avec succès !")
+            return redirect('profile')
+        else:
+            messages.error(request, "Veuillez corriger les erreurs dans votre contribution.")
+    else:
+        form = PostForm(instance=post)
+
+    return render(request, 'posts/edit_post.html', {'form': form, 'post': post})
+
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id, author=request.user)
+
+    if request.method == 'POST':
+        post.delete()
+        messages.success(request, "Votre article a été supprimée avec succès !")
+        return redirect('profile')
+
+    return render(request, 'posts/confirm_delete.html', {'post': post})
+
+
+
+class AutoLoginConfirmEmailView(ConfirmEmailView):
+    def post(self, *args, **kwargs):
+        # Appelle la logique d’allauth
+        response = super().post(*args, **kwargs)
+
+        # Récupère l'utilisateur lié à l'email
+        if self.object and self.object.email_address.user:
+            user = self.object.email_address.user
+            user.is_active = True  # active le compte
+            user.save()
+
+            # Auto-login avec backend spécifié
+            login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
+
+        return response

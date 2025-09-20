@@ -1,0 +1,13 @@
+{% for ad in ads %}
+  <a href="{% url 'ad_click' ad.pk %}" target="_blank">
+    <img src="{{ ad.image.url }}" alt="{{ ad.title }}" class="img-fluid mb-2">
+  </a>
+{% empty %}
+  <!-- Pas de publicité disponible -->
+{% endfor %}
+
+
+<div class="sidebar">
+  {% load ad_tags %}
+  {% show_ads "sidebar" %}
+</div>

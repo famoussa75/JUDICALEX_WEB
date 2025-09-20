@@ -6,6 +6,10 @@
 
 {% block content %}
 {% load static %}
+{% load social_extras %}
+{% load user_extras %}
+
+
 
 <style>
     .post-preview {
@@ -64,43 +68,10 @@
         </span>
       </div> 
     -->
-    <!-- PUB CAROUSSEL -->
-    <div id="carouselExample" class="carousel slide mt-0 mb-4" data-bs-ride="carousel" style="background: rgba(20, 54, 66, 0.50); padding: 25px 40px 25px 40px;">
-        <div class="carousel-inner">
-        
-            <!-- Slide 1 -->
-            <div class="carousel-item active">
-            <div class="d-flex justify-content-center" style="gap: 80px;">
-                <img src="/static/start/assets/statics/pub1.jpg" 
-                    alt="Pub 1" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub2.png" 
-                    alt="Pub 2" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub3.png" 
-                    alt="Pub 3" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-            </div>
-            </div>
-        
-            <!-- Slide 2 -->
-            <div class="carousel-item">
-            <div class="d-flex justify-content-center" style="gap: 80px;">
-                <img src="/static/start/assets/statics/pub-smartylex1.jpg" 
-                    alt="Pub 1" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub-smartylex2.jpg" 
-                    alt="Pub 2" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-                <img src="/static/start/assets/statics/pub-smartylex3.jpg" 
-                    alt="Pub 3" 
-                    style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
-            </div>
-            </div>
-        
-            
-        </div>
-    </div>
+
+
+     <!-- PUB HAUT DE PAGE -->
+     {% include 'start/partials/pub_header.html' %}
 
      <!-- ACTUALITÉS SECTION -->
      <div class="container my-5">
@@ -110,250 +81,88 @@
         </h1>
 
         <!-- Carte Actualité 1 -->
+        
+        {% if last_post_news %}
+            
         <div class="col-md-12 mb-2">
             <div class="card p-3" style="border: none; box-shadow: none;">
                 <div class="row g-3"> <!-- row séparé pour les colonnes -->
                     <div class="col-md-7">
-                        <img src="/static/start/assets/statics/actu1.png" 
+                        <img src="{{ last_post_news.first.image.url }}" 
                             class="card-img-top" 
                             alt="Actu 1" 
                             style="height: 400px; object-fit: cover; border-radius: 15px; overflow: hidden;">
                     </div>
                     <div class="col-md-5 d-flex flex-column">
                         <div>
+                            {% if last_post_news.first.author|has_group:"Contributeur" %}
                             <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
                                 <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                    <img src="/static/start/assets/statics/djoma.svg" 
-                                        alt="Djoma FM" 
-                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                    Djoma FM
+                                    {% if last_post_news.first.author.photo %}
+                                        <img src="{{ last_post_news.first.author.photo.url }}"
+                                            alt="{{ last_post_news.first.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% elif last_post_news.first.author|social_avatar %}
+                                        <img src="{{ last_post_news.first.author|social_avatar }}"
+                                            alt="{{ last_post_news.first..author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% else %}
+                                        <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                                            alt="{{ last_post_news.first.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                    {% endif %}
+                
+                                    {{ last_post_news.first.author }}
                                 </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ last_post_news.first.created_at|timesince }} </a>
+                                  <!-- Photo de profil -->  
                             </div>
+                            {% else %}
+                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                
+                                        <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                                            alt="{{ post.author.username }}"
+                                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                
+                                   Judicalex Guinée
+                                </span>
+                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ last_post_news.first.created_at|timesince }} </a>
+                                  <!-- Photo de profil -->  
+                            </div>
+                
+                            {% endif %}
                             <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire
+                                {{ last_post_news.first.title|truncatechars:120 }}
                             </h5>
                             <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
+                                {{ last_post_news.first.short_content|default:last_post_news.first.content|striptags|truncatechars:160 }}
                             </p>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-3">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;">
-                                <i class="fa fa-comment"></i> 12 commentaires
-                            </span>
-                            <a href="{% url 'post_detail' 1 %}" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> {{ last_post_news.first.comments.count }} commentaire(s)</span>
+                            <a href="{% url 'blog.post_detail' last_post_news.first.slug %}" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        {% endif %}
         
     
         <div class="row g-4 mb-4">
-        
-        <!-- Carte Actualité 1 -->
-        <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-            <img src="/static/start/assets/statics/actu1.png" 
-                class="card-img-top" 
-                alt="Actu 1" 
-                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-            
-            <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                    </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-            </div>
-            </div>
-        </div>
-    
-        <!-- Carte Actualité 2 -->
-        <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-            <img src="/static/start/assets/statics/actu2.png" 
-                class="card-img-top" 
-                alt="Actu 1" 
-                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-            
-            <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                    </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-            </div>
-            </div>
-        </div>
-    
-        <!-- Carte Actualité 3 -->
-        <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-            <img src="/static/start/assets/statics/actu3.png" 
-                class="card-img-top" 
-                alt="Actu 1" 
-                style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-            
-            <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                    </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-            </div>
-            </div>
-        </div>
+            {% for post in last_post_news %}
+                    
+            <!-- Carte Actualité 1 -->
+            {% include "blog/partials/post_single.html" %}
+
+            {% empty %}
+                <p>Aucun article disponible</p>
+            {% endfor %}
     
         </div>
 
-        <div class="row g-4">
-        
-            <!-- Carte Actualité 1 -->
-            <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu1.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-                </div>
-            </div>
-            </div>
-        
-            <!-- Carte Actualité 2 -->
-            <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu2.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-                </div>
-            </div>
-            </div>
-        
-            <!-- Carte Actualité 3 -->
-            <div class="col-md-4">
-            <div class="card p-3" style="border: none; box-shadow: none;">
-                <img src="/static/start/assets/statics/actu3.png" 
-                    class="card-img-top" 
-                    alt="Actu 1" 
-                    style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                    <!-- Ligne Creator + Time -->
-                
-                <div class="">
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        <img src="/static/start/assets/statics/djoma.svg" 
-                            alt="Djoma FM" 
-                            style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                        Djoma FM
-                        </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                    </div>
-                <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                    Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                    Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                </p>
-                <!-- Ligne Commentaires + Lire plus -->
-                <div class="d-flex justify-content-between align-items-center">
-                    <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                    <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                </div>
-                </div>
-            </div>
-            </div>
-        
-        </div>
 
     </div>
 
@@ -361,235 +170,99 @@
 
         <div class="col-md-12 row">
        
-            <div class="col-md-8">
+            <div class="col-md-9">
                 <div class="row g-4 mb-4">
                 
+                    {% for post in old_post_news %}
+                    
                     <!-- Carte Actualité 1 -->
-                    <div class="col-md-4">
-                        <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu1.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                                <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                    <img src="/static/start/assets/statics/djoma.svg" 
-                                        alt="Djoma FM" 
-                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                    Djoma FM
-                                </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                            </p>
-                            <!-- Ligne Commentaires + Lire plus -->
-                            <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                
-                    <!-- Carte Actualité 2 -->
-                    <div class="col-md-4">
-                        <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu2.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                                <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                    <img src="/static/start/assets/statics/djoma.svg" 
-                                        alt="Djoma FM" 
-                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                    Djoma FM
-                                </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                            </p>
-                            <!-- Ligne Commentaires + Lire plus -->
-                            <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                
-                    <!-- Carte Actualité 3 -->
-                    <div class="col-md-4">
-                        <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu3.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                                <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                                <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                    <img src="/static/start/assets/statics/djoma.svg" 
-                                        alt="Djoma FM" 
-                                        style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                    Djoma FM
-                                </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                            <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                                Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                            <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                            </p>
-                            <!-- Ligne Commentaires + Lire plus -->
-                            <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
+                    {% include "blog/partials/post_single.html" %}
+
+                    {% empty %}
+                        <p>Aucun article disponible</p>
+                    {% endfor %}
             
                 </div>
+                <!-- Pagination news -->
+                <nav>
+                    <ul class="pagination">
+                    {% if old_post_news.has_previous %}
+                        <li class="page-item"><a class="page-link" href="?news_page={{ old_post_news.previous_page_number }}">Précédent</a></li>
+                    {% endif %}
+                
+                    {% for num in old_post_news.paginator.page_range %}
+                        <li class="page-item {% if old_post_news.number == num %}active{% endif %}">
+                        <a class="page-link" href="?news_page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endfor %}
+                
+                    {% if old_post_news.has_next %}
+                        <li class="page-item"><a class="page-link" href="?news_page={{ old_post_news.next_page_number }}">Suivant</a></li>
+                    {% endif %}
+                    </ul>
+                </nav>
 
-                <div class="row g-4">
-                
-                    <!-- Carte Actualité 1 -->
-                    <div class="col-md-4">
-                    <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu1.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                            <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                        <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                            <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                <img src="/static/start/assets/statics/djoma.svg" 
-                                    alt="Djoma FM" 
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                Djoma FM
-                                </span>
-                            <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                        <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                            Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                        <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                            Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                        </p>
-                        <!-- Ligne Commentaires + Lire plus -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                
-                    <!-- Carte Actualité 2 -->
-                    <div class="col-md-4">
-                    <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu2.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                            <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                        <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                            <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                <img src="/static/start/assets/statics/djoma.svg" 
-                                    alt="Djoma FM" 
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                Djoma FM
-                                </span>
-                            <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                        <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                            Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                        <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                            Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                        </p>
-                        <!-- Ligne Commentaires + Lire plus -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                
-                    <!-- Carte Actualité 3 -->
-                    <div class="col-md-4">
-                    <div class="card" style="border: none; box-shadow: none;">
-                        <img src="/static/start/assets/statics/actu3.png" 
-                            class="card-img-top" 
-                            alt="Actu 1" 
-                            style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
-                            <!-- Ligne Creator + Time -->
-                        
-                        <div class="">
-                        <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                            <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                                <img src="/static/start/assets/statics/djoma.svg" 
-                                    alt="Djoma FM" 
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px;">
-                                Djoma FM
-                                </span>
-                            <a href="#" style="color: gray; font-weight: 700;">Il y'a 10 minutes</a>
-                            </div>
-                        <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
-                            Le rôle d’audience : Une pièce maitresse de la procédure judiciaire             </h5>
-                        <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                            Dans l’univers judiciaire, chaque étape a son importance. Parmi elles, le rôle d’audience occupe une place centrale. Il s’agit d’un document officiel qui liste les affaires inscrites pour être entendues lors d’une audience devant un...
-                        </p>
-                        <!-- Ligne Commentaires + Lire plus -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> 12 commentaires</span>
-                            <a href="#" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                
-                </div>
             </div>
             
-            <div class="col-md-4">
-
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime1.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 657px; width: 463; object-fit: cover;">
-                    </div>
-
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime2.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 420px; width: 463; object-fit: cover;">
-                    </div>
-
-                </div>
+           <!-- PUB LATERAL -->
+            <div class="col-md-3">
+                {% include 'start/partials/pub_lateral.html' %}
             </div>
+
 
         </div>
+        {% if last_post_contrib %}
+        <div class="container my-4">
+            <h2 class="text-left mb-4"
+                    style="
+                    font-family: 'Jost', sans-serif; 
+                    font-size: 36px; 
+                    font-weight: 700; 
+                    color: #fff;
+                    padding: 12px 24px;
+                    border-radius: 10px;
+                    background: linear-gradient(60deg, #2C3E50 0%,  #ECF0F1 100%);
+                    color: #fff;
+                    
+
+                    letter-spacing: 1px;
+                    ">
+                Contributions
+            </h2>
+        
+            <div class="row g-4 mb-4">
+            
+                
+                {% for post in last_post_contrib %}
+                
+                    <!-- Carte Actualité 1 -->
+                    {% include "blog/partials/post_single.html" %}
+
+                {% endfor %}
+            
+        
+            </div>
+            <!-- Pagination contributions -->
+            <nav>
+                <ul class="pagination">
+                {% if last_post_contrib.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?contrib_page={{ last_post_contrib.previous_page_number }}">Précédent</a></li>
+                {% endif %}
+            
+                {% for num in last_post_contrib.paginator.page_range %}
+                    <li class="page-item {% if last_post_contrib.number == num %}active{% endif %}">
+                    <a class="page-link" href="?contrib_page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endfor %}
+            
+                {% if last_post_contrib.has_next %}
+                    <li class="page-item"><a class="page-link" href="?contrib_page={{ last_post_contrib.next_page_number }}">Suivant</a></li>
+                {% endif %}
+                </ul>
+            </nav>
+
+        </div>
+    {% endif %}
 
     </div>
    

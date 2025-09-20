@@ -1,0 +1,125 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Publicité {% endblock title %}
+
+{% block content %}
+
+<div class="pagetitle">
+  <h1>Gestion publicités</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+      <li class="breadcrumb-item">Publicité</li>
+      <li class="breadcrumb-item active">Liste</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="py-5 bg-light">
+  <div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class=""> <i class="bi bi-megaphone-fill"></i> Toutes les publicités</h2>
+      <a href="{% url 'ad_create' %}" class="btn btn-success">
+        <i class="bi bi-plus-circle me-1"></i> Nouvelle publicité
+      </a>
+    </div>
+
+    <div class="table-responsive shadow-sm rounded-0">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-primary">
+          <tr>
+            <th>#</th>
+            <th>Image</th>
+            <th>Titre</th>
+            <th>Position</th>
+            <th>Actif</th>
+            <th>Impressions</th>
+            <th>Clics</th>
+            <th>Date de création</th>
+            <th>Date debut</th>
+            <th>Date fin</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ad in page_obj %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>
+              <img src="{{ ad.image.url }}" alt="{{ ad.title }}" width="80" class="rounded">
+            </td>
+            <td class="fw-semibold">{{ ad.title }}</td>
+            <td><span class="badge bg-info">{{ ad.get_position_display }}</span></td>
+            <td>
+              {% if ad.is_active %}
+                <span class="badge bg-success">Oui</span>
+              {% else %}
+                <span class="badge bg-secondary">Non</span>
+              {% endif %}
+            </td>
+            <td>{{ ad.impressions }}</td>
+            <td>{{ ad.clicks }}</td>
+            <td>{{ ad.created_at|date:"d/m/Y H:i" }}</td>
+            <td>{{ ad.start_date|date:"d/m/Y H:i" }}</td>
+            <td>{{ ad.end_date|date:"d/m/Y H:i" }}</td>
+            <td>
+              <a href="{% url 'ad_edit' ad.pk %}" class="btn btn-sm btn-outline-primary me-1">
+                <i class="bi bi-pencil-square"></i>
+              </a>
+              <a href="{% url 'ad_delete' ad.pk %}" class="btn btn-sm btn-outline-danger">
+                <i class="bi bi-trash"></i>
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="9" class="text-center text-muted">Aucune publicité enregistrée.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Précédent</span></li>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const adLink = document.getElementById("ad-link");
+    if (adLink) {
+      adLink.classList.add("bg-primary", "text-white");   // activation visuelle
+    }
+  });
+</script>
+
+{% endblock %}

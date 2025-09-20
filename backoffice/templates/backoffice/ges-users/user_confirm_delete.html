@@ -1,0 +1,41 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Confirmation {% endblock title %}
+
+{% block content %}
+
+<div class="pagetitle">
+    <h1>Gestion utilisateurs</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item">RH</li>
+        <li class="breadcrumb-item active">Comptes utilisateurs</li>
+      </ol>
+    </nav>
+  </div>
+
+<section class="section py-4">
+    <div class="card border-0 shadow-sm rounded-4">
+      <div class="card-body p-4">
+        <h2 class="h5 text-danger mb-3">Supprimer l’utilisateur</h2>
+        <p>Voulez-vous vraiment supprimer <strong>{{ user_obj.username }}</strong> ?</p>
+        <form method="post">
+          {% csrf_token %}
+          <button class="btn btn-danger">Oui, supprimer</button>
+          <a href="{% url 'user.list' %}" class="btn btn-outline-secondary">Annuler</a>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const rhLink = document.getElementById("rh-link");
+      if (rhLink) {
+        rhLink.classList.add("bg-primary", "text-white");   // activation visuelle
+      }
+    });
+  </script>
+
+{% endblock %}

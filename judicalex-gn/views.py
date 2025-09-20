@@ -374,6 +374,12 @@ def send_contact_email(request):
 def about_us(request):
     return render(request, 'start/about.html')
 
+def condition_generale(request):
+    return render(request, 'start/contrat/condition_general.html')
+
+def politique(request):
+    return render(request, 'start/contrat/politique_confidentialite.html')
+
 
 @api_view(['GET'])
 def notificationAPIView(request):

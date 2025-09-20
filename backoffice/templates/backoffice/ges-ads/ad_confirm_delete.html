@@ -1,0 +1,62 @@
+{% extends 'backoffice/tools/base.html' %}
+
+{% block title %} Confirmation {% endblock title %}
+{% block content %}
+
+<div class="pagetitle">
+  <h1>Gestion publicités</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+      <li class="breadcrumb-item">Publicité</li>
+      <li class="breadcrumb-item active">Suppression</li>
+    </ol>
+  </nav>
+</div>
+
+<section class="section py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0 rounded-4">
+          <!-- Header -->
+          <div class="card-header bg-danger text-white rounded-top-4">
+            <h4 class="mb-0">
+              <i class="bi bi-exclamation-triangle-fill me-2"></i> Confirmation de suppression
+            </h4>
+          </div>
+
+          <!-- Body -->
+          <div class="card-body text-center p-4">
+            <p class="fs-5 mb-4">
+              Voulez-vous vraiment supprimer la publicité <br>
+              <strong class="text-danger">« {{ ad.title }} »</strong> ?
+            </p>
+
+            <!-- Form -->
+            <form method="post" class="d-flex justify-content-center gap-3">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger px-4">
+                <i class="bi bi-trash me-1"></i> Oui, supprimer
+              </button>
+              <a href="{% url 'ad_list' %}" class="btn btn-outline-secondary px-4">
+                <i class="bi bi-x-circle me-1"></i> Annuler
+              </a>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const adLink = document.getElementById("ad-link");
+    if (adLink) {
+      adLink.classList.add("bg-primary", "text-white");   // activation visuelle
+    }
+  });
+</script>
+
+{% endblock %}
