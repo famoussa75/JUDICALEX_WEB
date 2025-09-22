@@ -31,6 +31,7 @@ def is_admin(user):
 @login_required
 @user_passes_test(is_admin)
 def post_list(request):
+    
     # 🔎 Récupérer la recherche
     query = request.GET.get("q", "").strip()
 

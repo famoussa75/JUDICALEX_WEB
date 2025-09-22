@@ -161,8 +161,6 @@ INTERNAL_IPS = [
     # ...
 ]
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 # Email configuration
@@ -220,3 +218,7 @@ ACCOUNT_USERNAME_REQUIRED = True
 
 
 ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'

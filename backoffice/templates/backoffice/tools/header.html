@@ -124,14 +124,37 @@
               
               &nbsp;
 
-              {# Avatar #}
+              {% load static %}
+
+              {# Avatar utilisateur #}
               {% if accounts.google %}
-                <span class="avatar" style="background-image: url('{{ accounts.google.0.extra_data.picture }}'); border: 2px #143642 solid; border-radius: 20px;"></span>
-              {% elif user.photo and user.photo.url %}
-                <span class="avatar" style="background-image: url('{{ user.photo.url }}'); border: 2px #143642 solid; border-radius: 20px;"></span>
+                  <span class="avatar" style="
+                      width: 50px;
+                      height: 50px;
+                      display: inline-block;
+                      background-image: url('{{ accounts.google.0.extra_data.picture }}');
+                      background-size: cover;
+                      background-position: center;
+                      border: 2px #143642 solid;
+                      border-radius: 50%;
+                  "></span>
+              
+              {% elif user.photo %}
+                  <span class="avatar" style="
+                      width: 50px;
+                      height: 50px;
+                      display: inline-block;
+                      background-image: url('{{ user.photo.url }}');
+                      background-size: cover;
+                      background-position: center;
+                      border: 2px #143642 solid;
+                      border-radius: 50%;
+                  "></span>
+              
               {% else %}
                 <span class="avatar" style="background-image: url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'); border: 2px #143642 solid; border-radius: 20px;"></span>
               {% endif %}
+          
 
           </a><!-- End Profile Iamge Icon -->
 

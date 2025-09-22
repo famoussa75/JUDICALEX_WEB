@@ -2,6 +2,8 @@ from django.urls import path, include
 from . import views
 from . import views_users as uviews
 from . import views_groups as gviews
+from django.conf import settings
+from django.conf.urls.static import static
 
 
 urlpatterns = [

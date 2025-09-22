@@ -31,6 +31,7 @@ def user_list(request):
     params = request.GET.copy(); params.pop("page", None)
     querystring = params.urlencode()
 
+
     return render(request, "backoffice/ges-users/user_list.html", {
         "page_obj": page_obj,
         "is_paginated": page_obj.has_other_pages(),
