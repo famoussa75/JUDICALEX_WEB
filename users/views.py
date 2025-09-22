@@ -136,7 +136,7 @@ def signUp(request):
             )
             email_address.send_confirmation(request)
 
-            messages.success(request, "Un email de confirmation vous a été envoyé.")
+            messages.success(request, "Un email de confirmation vous a été envoyé. Vérifiez également votre dossier spam ou courrier indésirable.")
             return redirect('home')
     else:
         form = AccountForm()

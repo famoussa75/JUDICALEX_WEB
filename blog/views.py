@@ -2,10 +2,13 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from .models import Comment, Post
 from .forms import CommentForm
 from django.core.paginator import Paginator
 from backoffice.models import Ad
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 def post_list(request):
     last_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[:6]
@@ -67,3 +70,37 @@ def post_detail(request, slug):
         'ads_lateral': ads_lateral,
     }
     return render(request, 'blog/post_detail.html', context)
+
+
+@login_required
+def comment_edit(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if comment.user != request.user:
+        messages.error(request, "Vous n'avez pas la permission de modifier ce commentaire.")
+        return redirect('blog.post_detail', slug=comment.post.slug)
+
+    if request.method == 'POST':
+        new_content = request.POST.get('content')
+        if new_content:
+            comment.content = new_content
+            comment.save()
+            messages.success(request, "Votre commentaire a été modifié avec succès.")
+    return redirect('blog.post_detail', slug=comment.post.slug)
+
+
+
+@login_required
+def comment_delete(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if comment.user != request.user:
+        messages.error(request, "Vous n'avez pas la permission de supprimer ce commentaire.")
+        return redirect('blog.post_detail', slug=comment.post.slug)
+
+    if request.method == 'POST':
+        comment.delete()
+        messages.success(request, "Votre commentaire a été supprimé avec succès.")
+        return redirect('blog.post_detail', slug=comment.post.slug)
+
+    return redirect('blog.post_detail', slug=comment.post.slug)

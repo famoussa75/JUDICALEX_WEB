@@ -78,7 +78,7 @@
   
                     <!-- Aperçu -->
                     <p class="text-muted mb-3">
-                      {{ post.short_content|default:post.content|striptags|truncatechars:120 }}
+                      {{ post.content|striptags|truncatechars:120|safe }}
                     </p>                    
   
                     <!-- Statut + Groupes -->

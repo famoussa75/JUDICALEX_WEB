@@ -129,7 +129,7 @@
         <!-- Contenu -->
         <div class="px-4 px-md-5 pb-4 pb-md-5">
           <div class="post-content fs-5 lh-lg" style="text-align: justify;">
-            {{ post.content|striptags|linebreaks }}
+            {{ post.content|safe }}
           </div>
   
           <!-- Barre d’actions -->

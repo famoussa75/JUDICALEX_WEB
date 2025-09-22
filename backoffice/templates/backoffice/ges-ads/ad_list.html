@@ -46,7 +46,14 @@
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>
-              <img src="{{ ad.image.url }}" alt="{{ ad.title }}" width="80" class="rounded">
+              {% if ad.image %}
+                <img src="{{ ad.image.url }}" 
+                     alt="{{ ad.title }}" 
+                     style="width:150px; height:auto; object-fit:cover; display:block;" 
+                     class="rounded border">
+              {% else %}
+                <span class="text-muted">Pas d’image</span>
+              {% endif %}
             </td>
             <td class="fw-semibold">{{ ad.title }}</td>
             <td><span class="badge bg-info">{{ ad.get_position_display }}</span></td>

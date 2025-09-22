@@ -136,7 +136,7 @@
                                 {{ last_post_news.first.title|truncatechars:120 }}
                             </h5>
                             <p class="card-text" style="font-family: Jost; font-size: 15px; color: #555;">
-                                {{ last_post_news.first.short_content|default:last_post_news.first.content|striptags|truncatechars:160 }}
+                                {{ last_post_news.first.content|striptags|truncatechars:900|safe }}
                             </p>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-4">
@@ -176,7 +176,7 @@
                     {% for post in old_post_news %}
                     
                     <!-- Carte Actualité 1 -->
-                    {% include "blog/partials/post_single.html" %}
+                    {% include "blog/partials/post_single_mini.html" %}
 
                     {% empty %}
                         <p>Aucun article disponible</p>
