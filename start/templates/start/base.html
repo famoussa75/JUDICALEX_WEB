@@ -322,7 +322,8 @@
                             Nom d'utilisateur
                         </label>
                         <input id="name" type="text" class="form-control"
-                            name="username" value="" required autocomplete="name" autofocus>
+                            name="username" value="" required autocomplete="name" autofocus pattern="^\S+$"
+                            title="Les espaces ne sont pas autorisés">
 
                       </div>
                       <div class="mb-3">
