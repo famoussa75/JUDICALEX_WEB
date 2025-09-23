@@ -8,10 +8,11 @@
                 <div class="carousel-item {% if forloop.first %}active{% endif %}">
                     <div class="d-flex justify-content-center" style="gap: 80px;">
             {% endif %}
-
+                    <a href="{% url 'ad_click' ad.id %}" target="_blank" class="ad-link" data-ad-id="{{ ad.id }}">
                         <img src="{{ ad.image.url }}" 
                              alt="{{ ad.title|default:'Publicité' }}" 
                              style="width: 450px; height: 180px; border-radius: 10px; object-fit: cover;">
+                    </a>
 
             {% if forloop.counter|divisibleby:3 or forloop.last %}
                     </div>
@@ -24,3 +25,22 @@
     </div>
 
 </div>
+
+<script>
+    $(document).ready(function(){
+    
+        // Compter impressions dès que la page est chargée
+        $('.ad-link img').each(function(){
+            const adId = $(this).closest('.ad-link').data('ad-id');
+            $.get("{% url 'ad_impression' %}", {ad_id: adId});
+        });
+    
+        // Compter les clics
+        $('.ad-link').on('click', function(){
+            const adId = $(this).data('ad-id');
+            $.get("{% url 'ad_impression' %}", {ad_id: adId}); // facultatif, si tu veux compter impression+clic
+            // La redirection se fait naturellement via le href
+        });
+    
+    });
+    </script>

@@ -12,6 +12,8 @@ from django.utils import timezone
 from django.http import HttpResponseRedirect
 from .models import Ad
 from .forms import AdForm
+from django.http import JsonResponse
+
 
 
 # Create your views here.
@@ -243,6 +245,13 @@ def ad_click(request, pk):
     ad.clicks += 1
     ad.save(update_fields=["clicks"])
     return HttpResponseRedirect(ad.link)
+
+def ad_impression(request):
+    ad_id = request.GET.get('ad_id')
+    ad = get_object_or_404(Ad, id=ad_id)
+    ad.impressions += 1
+    ad.save()
+    return JsonResponse({'status': 'ok', 'impressions': ad.impressions})
 
 @login_required
 def comment_create(request, slug):

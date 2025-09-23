@@ -38,6 +38,7 @@ urlpatterns = [
     path("<int:pk>/edit/", views.ad_edit, name="ad_edit"),
     path("<int:pk>/delete/", views.ad_delete, name="ad_delete"),
     path("<int:pk>/click/", views.ad_click, name="ad_click"),
+    path('ad-impression/', views.ad_impression, name='ad_impression'),
 
     # Comments internal
     path("comment_internal/create/<slug:slug>/", views.comment_create, name="comment_create"),
