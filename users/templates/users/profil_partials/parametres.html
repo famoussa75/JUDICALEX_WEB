@@ -25,22 +25,56 @@
         <div class="card mb-4">
           <div class="card-header"><b>Informations personnelles</b></div>
           <div class="card-body">
+            <div class="row g-3 mb-2">
+              <div class="col-md-6">
+                <label class="form-label">Nom d'utilisateur</label>
+                <input type="text" name="username" value="{{ request.user.username }}" class="form-control">
+              </div>
+            </div>
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label">Prénom</label>
-                <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control">
+                <input type="text" name="first_name" value="{{ request.user.first_name }}" class="form-control" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Nom</label>
-                <input type="text" name="last_name" value="{{ request.user.last_name }}" class="form-control">
+                <input type="text" name="last_name" value="{{ request.user.last_name }}" class="form-control" required>
               </div>
               <div class="col-md-6">
                 <label class="form-label">Email</label>
-                <input type="email" name="email" value="{{ request.user.email }}" class="form-control">
+                <input type="email" name="email" value="{{ request.user.email }}" class="form-control" required readonly>
               </div>
               <div class="col-md-6">
-                <label class="form-label">Téléphone</label>
-                <input type="text" name="tel1" value="{{ request.user.tel1 }}" class="form-control">
+                <label class="form-label">Profession</label>
+                <select name="profession" class="form-control" required>
+                    <option value="" {% if not request.user.profession %}selected{% endif %}>
+                        -- Sélectionnez une profession --
+                    </option>
+                    {% for value, label in professions %}
+                        <option value="{{ value }}"
+                            {% if request.user.profession == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+              <div class="col-md-6">
+                  <label class="form-label">Téléphone 1</label>
+                  <input type="tel" id="tel1" name="tel1" value="{{ request.user.tel1|default:'' }}" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                  <label class="form-label">Téléphone 2</label>
+                  <input type="tel" id="tel2" name="tel2" value="{{ request.user.tel2|default:'' }}" class="form-control" required>
+              </div>
+          
+              <div class="col-md-6">
+                <label class="form-label">Adresse</label>
+                <input type="text" name="adresse" value="{{ request.user.adresse|default:'' }}" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nationalité</label>
+                <input type="text" name="nationnalite" value="{{ request.user.nationnalite }}" class="form-control" required>
               </div>
             </div>
           </div>
@@ -66,7 +100,7 @@
         {% endif %}
   
         <!-- SECTION 4 : Notifications -->
-        <div class="card mb-4">
+        <!-- <div class="card mb-4">
           <div class="card-header"><b>Notifications</b></div>
           <div class="card-body">
             <div class="form-check mb-2">
@@ -78,10 +112,10 @@
               <label class="form-check-label">Notifications par SMS</label>
             </div>
           </div>
-        </div>
+        </div> -->
   
         <!-- SECTION 5 : Comptes connectés (Google / OAuth) -->
-        {% if request.user.socialaccount_set.exists %}
+        <!-- {% if request.user.socialaccount_set.exists %}
         <div class="card mb-4">
           <div class="card-header"><b>Comptes connectés</b></div>
           <div class="card-body d-flex justify-content-between align-items-center">
@@ -89,14 +123,17 @@
             <a href="" class="btn btn-outline-danger btn-sm">Dissocier Google</a>
           </div>
         </div>
-        {% endif %}
+        {% endif %} -->
   
         <!-- BOUTONS DE CONFIRMATION -->
         <div class="d-flex justify-content-between">
           <button class="btn btn-primary" name="update_profile">Mettre à jour</button>
-          <a href=" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')">Supprimer le compte</a>
+          <!-- <a href=" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer votre compte ?')">Supprimer le compte</a> -->
         </div>
   
       </form>
     </div>
 </div>
+
+
+  

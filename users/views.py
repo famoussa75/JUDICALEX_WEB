@@ -8,7 +8,7 @@ from urllib.parse import urlparse, parse_qs, urlunparse
 from django.contrib.auth.models import User, Group
 from django.contrib.auth import authenticate, login, logout
 from .forms import AccountForm, ContributionRequestForm, PasswordChangeForm, ProfileForm
-from .models import Account, ContributionRequest, Notification
+from .models import Account, ContributionRequest, Notification, ProfessionChoices
 from role.models import AffaireRoles,SuivreAffaire
 from start.models import Juridictions
 from django.contrib.auth.decorators import login_required
@@ -281,12 +281,19 @@ def profile(request):
             messages.success(request, 'Votre profil a été mis à jour !')
             return redirect('profile')
         else:
+            # Message général
             messages.error(request, 'Veuillez corriger les erreurs dans votre profil.')
+
+            # Boucler sur chaque champ et ses erreurs
             for field, errors in profile_form.errors.items():
                 for error in errors:
-                    print(f"Erreur dans le champ {field}: {error}")
+                    if field == "__all__":
+                        messages.error(request, f"Erreur générale : {error}")
+                    else:
+                        messages.error(request, f"Erreur dans {field} : {error}")
     else:
         profile_form = ProfileForm(instance=account)
+
 
     # ----- Formulaire de demande de contribution -----
     if not request.user.groups.filter(name="Contributeur").exists():
@@ -336,6 +343,7 @@ def profile(request):
     paginator = Paginator(user_posts, 5)  # 5 posts par page
     page_number = request.GET.get("page")
     page_obj_user_post = paginator.get_page(page_number)
+    professions = ProfessionChoices.choices  # ✅ pas besoin de query
 
     context = {
         'form': profile_form,
@@ -344,7 +352,8 @@ def profile(request):
         'mesAffairesSuivies': mesAffairesSuivies,
         'notifications': notifications,
         'user_is_contributeur': user_is_contributeur,
-        'page_obj_user_post': page_obj_user_post
+        'page_obj_user_post': page_obj_user_post,
+        'professions': professions,
     }
     return render(request, 'users/profile.html', context)
 
