@@ -1,5 +1,56 @@
 {% load static %}
 
+<style>
+/* ================= Style global du footer ================= */
+.footer a {
+    color: var(--Blanc, #FFF);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+.footer a:hover {
+    color: var(--Jaune, #DFB23D);
+}
+
+/* Réduction de la taille du texte pour tablettes et mobiles */
+@media (max-width: 991px) {
+    .footer h1.navbar-brand {
+        font-size: 14px;
+    }
+    .footer .logo-img {
+        height: 35px;
+    }
+    .footer .list-inline {
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+    .footer h1.navbar-brand {
+        font-size: 12px;
+        font-weight: 600;
+    }
+    .footer .logo-img {
+        height: 30px;
+    }
+    .footer .row {
+        flex-direction: column !important;
+        text-align: center !important;
+    }
+    .footer .list-inline {
+        padding-left: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        justify-content: center;
+        align-items: center;
+    }
+    .footer .list-inline-item {
+        display: block;
+    }
+}
+</style>
 
 <footer class="footer footer-transparent d-print-none p-2" style="background: var(--Bleu, #143642); color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-style: normal; font-weight: 700; line-height: normal;">
     <div class="container-xl">
@@ -21,8 +72,6 @@
                             <a href="#" class="">Copyright&copy; 2024 Judicalex Tous droits reservés</a>
                         </h1>
                     </li>
-                   
-                   
                 </ul>
             </div>
             <div class="col-12 col-lg-auto mt-3 mt-lg-0">
@@ -36,7 +85,6 @@
                             |&nbsp;&nbsp;République de Guinée
                         </h1>
                     </li>
-                    
                 </ul>
             </div>
         </div>

@@ -103,22 +103,24 @@
               <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;">
 
                  
-                  <div class="row">
+                <div class="row">
                    
-                    <div class="col-5 d-flex flex-column align-items-center justify-content-between" style="height: 100%;">
-  
-                      <!-- Image principale -->
-                      <img src="{% static 'start/assets/statics/illustrations/login.svg' %}" alt="" height="400px" style="object-fit: cover;">
+                  <!-- Colonne image (cachée sur petit écran) -->
+                  <div class="col-5 d-none d-md-flex flex-column align-items-center justify-content-between" style="height: 100%;">
                     
-                      <!-- Logo en bas à gauche -->
-                      <div class="w-100 d-flex justify-content-center mt-5">
-                        <a href="#" class="navbar-brand navbar-brand-autodark">
-                          <img src="{% static 'start/assets/statics/eJustice_Logo_white.png' %}" width="130" height="42" alt="Logo" class="navbar-brand-image">
-                        </a>
-                      </div>
+                    <!-- Image principale -->
+                    <img src="{% static 'start/assets/statics/illustrations/login.svg' %}" alt="" height="400px" style="object-fit: cover;">
+                    
+                    <!-- Logo en bas à gauche -->
+                    <div class="w-100 d-flex justify-content-center mt-5">
+                      <a href="#" class="navbar-brand navbar-brand-autodark">
+                        <img src="{% static 'start/assets/statics/eJustice_Logo_white.png' %}" width="130" height="42" alt="Logo" class="navbar-brand-image">
+                      </a>
                     </div>
+                  </div>
+
                     
-                    <div class="col-7">
+                    <div class="col-12 col-md-7">
                       <h1 class="text-center mb-4" style="color: var(--Bleu, #143642);font-family: Jost;font-size: 24px;font-style: normal;font-weight: 700; line-height: normal;">
                         <!-- Download SVG icon from http://tabler-icons.io/i/user -->
                            CONNECTEZ - VOUS
@@ -249,12 +251,9 @@
             {% csrf_token %}
               <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;">       
                   <div class="row">
-                    <div class="col-5 d-flex flex-column align-items-center justify-content-between" style="height: 100%;">
+                    <div class="col-5 d-none d-md-flex flex-column align-items-center justify-content-between" style="height: 100%;">
 
-                      <h1 class="text-center mb-4" style="color: var(--Bleu, #143642);font-family: Jost;font-size: 24px;font-style: normal;font-weight: 700; line-height: normal;">
-                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                          INSCRIVEZ - VOUS
-                      </h1>
+                      
     
                       <!-- Image principale -->
                       <img src="{% static 'start/assets/statics/illustrations/register.svg' %}" alt="" height="400px" style="object-fit: cover;">
@@ -266,7 +265,12 @@
                         </a>
                       </div>
                     </div>
-                    <div class="col-7">
+                    <div class="col-12 col-md-7">
+
+                      <h1 class="text-center mb-4" style="color: var(--Bleu, #143642);font-family: Jost;font-size: 24px;font-style: normal;font-weight: 700; line-height: normal;">
+                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
+                          INSCRIVEZ - VOUS
+                      </h1>
 
                           {% if request.GET.msg_error_register %}
                           

@@ -1,55 +1,62 @@
-<div class="row g-3">
-    <div class="col-md-12 position-relative pub-slider" style="border-radius:10px; overflow:hidden;">
-      {% for ad in ads_lateral %}
-        <img src="{{ ad.image.url }}" 
-             alt="{{ ad.title }}" 
-             class="fade-pub {% if forloop.first %}active{% endif %}">
-      {% endfor %}
+<div class="row g-0">
+    <div class="col-12 position-relative pub-slider">
+        {% for ad in ads_lateral %}
+            <img src="{{ ad.image.url }}"
+                 alt="{{ ad.title }}"
+                 class="fade-pub {% if forloop.first %}active{% endif %}">
+        {% endfor %}
     </div>
-  </div>
-  
-  <style>
-  /* Conteneur du slider */
-  .pub-slider {
-      width: 100%;
-      max-width: 363px;    /* largeur max pour ton design */
-      height: 900px;       /* hauteur fixe ou tu peux mettre auto pour responsive */
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-  }
-  
-  /* Images du slider */
-  .pub-slider img.fade-pub {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;  /* remplit le conteneur sans étirer, recadre si nécessaire */
-      transition: opacity 1s ease-in-out;
-      opacity: 0;
-  }
-  
-  /* Image active */
-  .pub-slider img.fade-pub.active {
-      opacity: 1;
-      z-index: 1;
-  }
-  </style>
-  
-  <script>
-  document.addEventListener("DOMContentLoaded", function() {
-      const pubs = document.querySelectorAll(".pub-slider .fade-pub");
-      let index = 0;
-  
-      if (pubs.length > 1) {
-          setInterval(() => {
-              pubs[index].classList.remove("active");
-              index = (index + 1) % pubs.length;
-              pubs[index].classList.add("active");
-          }, 10000); // change toutes les 10s
-      }
-  });
-  </script>
-  
+</div>
+
+<style>
+/* Conteneur du slider */
+.pub-slider {
+    width: 100%;           /* prend toute la largeur de la colonne */
+    max-width: 100%;       /* limite à 100% pour supprimer espace droit */
+    height: 700px;         /* tu peux mettre auto si tu veux responsive vertical */
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+    margin: 0 auto;        /* centré si colonne plus large */
+}
+
+/* Images du slider */
+.pub-slider img.fade-pub {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;     /* remplit le conteneur sans déformation */
+    transition: opacity 1s ease-in-out;
+    opacity: 0;
+}
+
+/* Image active */
+.pub-slider img.fade-pub.active {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* Pour mobile : adapter la hauteur */
+@media (max-width: 768px) {
+    .pub-slider {
+        height: 400px;      /* hauteur plus petite sur mobile */
+    }
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const pubs = document.querySelectorAll(".pub-slider .fade-pub");
+    let index = 0;
+
+    if (pubs.length > 1) {
+        setInterval(() => {
+            pubs[index].classList.remove("active");
+            index = (index + 1) % pubs.length;
+            pubs[index].classList.add("active");
+        }, 10000); // change toutes les 10s
+    }
+});
+</script>
