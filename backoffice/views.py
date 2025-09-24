@@ -6,14 +6,14 @@ from blog.models import Comment, InternalComment, Post
 from blog.forms import InternalCommentForm, PostForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
-from users.models import ContributionRequest
+from users.models import Account, ContributionRequest, Notification
 from django.db.models import Q
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from .models import Ad
 from .forms import AdForm
 from django.http import JsonResponse
-
+from .utils import create_notification
 
 
 # Create your views here.
@@ -21,8 +21,7 @@ from django.http import JsonResponse
 def login(request):
      return render(request, 'backoffice/auth/login.html')
 
-def index(request):
-     return render(request, 'backoffice/home/home-1.html')
+
 
 # Vérifie si user est admin ou staff
 def is_admin(user):
@@ -31,7 +30,6 @@ def is_admin(user):
 
 # Liste des articles
 @login_required
-@user_passes_test(is_admin)
 def post_list(request):
     
     # 🔎 Récupérer la recherche
@@ -39,7 +37,14 @@ def post_list(request):
 
     # ⚡ Base queryset
 
-    posts = Post.objects.select_related("author").all().order_by("-created_at")
+    if request.user.groups.filter(name="Pigiste").exists():
+        # Sinon → uniquement ses posts
+        posts = Post.objects.select_related("author").filter(author=request.user).order_by("-created_at")
+       
+    else:
+         # Si admin → tous les posts
+        posts = Post.objects.select_related("author").all().order_by("-created_at")
+       
 
     if query:
         posts = posts.filter(
@@ -67,7 +72,6 @@ def post_list(request):
 
 
 @login_required
-@user_passes_test(is_admin)
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
 
@@ -78,7 +82,7 @@ def post_detail(request, slug):
     page_number = request.GET.get("page")
     comments = paginator.get_page(page_number)
 
-    comments_int = InternalComment.objects.all().order_by("-created_at")
+    comments_int = InternalComment.objects.filter(post=post).order_by("-created_at")
     paginator_int = Paginator(comments_int, 5)  # 5 commentaires par page
     page_number_int = request.GET.get("page")
     internal_comments = paginator_int.get_page(page_number_int)
@@ -96,12 +100,26 @@ def post_detail(request, slug):
 
 # Créer un article
 @login_required
-@user_passes_test(is_admin)
 def post_create(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            post = form.save(commit=False)   # On récupère l'objet sans enregistrer
+            post.author = request.user       # Auteur = utilisateur connecté
+            post.status = "draft"            # Exemple : statut par défaut "draft"
+            post.save()
+
+            # Notifier tous les utilisateurs sauf celui qui a soumis
+            recipients = Account.objects.exclude(id=request.user.id).exclude(groups__name__in=["Visiteur", "Contributeur"])
+            for recipient in recipients:
+                create_notification(
+                    recipient=recipient,
+                    sender=request.user,
+                    type="info",
+                    message=f"Nouvel article soumis : {post.title}",
+                    objet_cible=post.id,
+                    url=reverse("post_detail", args=[post.slug])
+                )
             return redirect("post_list")
     else:
         form = PostForm()
@@ -110,7 +128,6 @@ def post_create(request):
 
 # Modifier un article
 @login_required
-@user_passes_test(is_admin)
 def post_update(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.method == "POST":
@@ -125,13 +142,65 @@ def post_update(request, slug):
 
 # Supprimer un article
 @login_required
-@user_passes_test(is_admin)
 def post_delete(request, slug):
     post = get_object_or_404(Post, slug=slug)
     if request.method == "POST":
         post.delete()
         return redirect("post_list")
     return render(request, "backoffice/ges-news/post_confirm_delete.html", {"post": post})
+
+
+@login_required
+@user_passes_test(is_admin)
+def post_publish(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Vérification de l'autorisation : auteur ou admin
+    if post.author != request.user and not request.user.is_staff:
+        messages.error(request, "Vous n’avez pas la permission de publier cet article.")
+        return redirect("post_detail", slug=post.slug)
+
+    # Mettre à jour le statut
+    post.status = "published"
+    post.save()
+
+     # Notifier l’auteur
+    create_notification(
+        recipient=post.author,
+        sender=request.user,
+        type="success",
+        message=f"Votre article '{post.title}' a été approuvé et publié",
+        objet_cible=post.id,
+        url=reverse("post_detail", args=[post.slug])
+    )
+
+    messages.success(request, "L’article a été publié avec succès ✅")
+    return redirect("post_detail", slug=post.slug)
+
+@login_required
+def post_unpublish(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Seuls les administrateurs peuvent dépublier
+    if not request.user.groups.filter(name="Administrateur").exists():
+        messages.error(request, "Vous n’avez pas la permission de retirer cet article de la publication.")
+        return redirect("post_detail", slug=post.slug)
+
+    post.status = "draft"
+    post.save()
+
+     # Notifier l’auteur
+    create_notification(
+        recipient=post.author,
+        sender=request.user,
+        type="warning",
+        message=f"Votre article '{post.title}' a été retiré de la publication",
+        objet_cible=post.id,
+        url=reverse("post_detail", args=[post.slug])
+    )
+
+    messages.success(request, "L’article a été retiré de la publication.")
+    return redirect("post_detail", slug=post.slug)
 
 
 # Liste des demandes
@@ -184,6 +253,15 @@ def approuver_demande(request, demande_id):
     demande.status = "approved"
     demande.save()
     # Ajouter l’utilisateur dans le groupe Contributeur
+
+     # Notifier Demandeur
+    create_notification(
+        recipient=demande.demandeur,
+        sender=request.user,
+        type="success",
+        message=f"Votre demande a été approuvée. Bienvenue dans l'équipe des contributeurs !",
+        url='profile/'
+    )
     from django.contrib.auth.models import Group
     contributeur_group, created = Group.objects.get_or_create(name="Contributeur")
     demande.demandeur.groups.add(contributeur_group)
@@ -198,6 +276,15 @@ def rejeter_demande(request, demande_id):
     demande = get_object_or_404(ContributionRequest, id=demande_id)
     demande.status = "rejected"
     demande.save()
+     # Notifier Demandeur (refus poli)
+    create_notification(
+        recipient=demande.demandeur,
+        sender=request.user,
+        type="warning",
+        message="Votre demande de contribution n’a pas été retenue pour le moment. Nous vous remercions pour votre intérêt et vous encourageons à réessayer ultérieurement.",
+        url='profile/'
+    )
+
     messages.warning(request, f"La demande de {demande.demandeur.username} a été rejetée.")
     return redirect("liste_demandes")
 
@@ -265,6 +352,18 @@ def comment_create(request, slug):
             comment.post = post
             comment.user = request.user
             comment.save()
+
+            # Notifier tous les utilisateurs sauf celui qui a soumis
+            recipients = Account.objects.exclude(id=request.user.id).exclude(groups__name__in=["Visiteur", "Contributeur"])
+            for recipient in recipients:
+                create_notification(
+                    recipient=recipient,
+                    sender=request.user,
+                    type="info",
+                    message=f"Nouvelle observation dans l'article : {post.title}",
+                    objet_cible=post.id,
+                    url=reverse("post_detail", args=[post.slug])
+                )
             messages.success(request, "Commentaire créé avec succès !")
         else:
             messages.error(request, "Veuillez corriger les erreurs dans votre commentaire.")
@@ -281,3 +380,44 @@ def comment_delete(request, comment_id, slug):
         messages.success(request, "Commentaire supprimé !")
         return redirect("post_detail", slug=post.slug)
     return render(request, "backoffice/ges-news/comment_confirm_delete.html", {"comment": comment})
+
+
+@login_required
+def read_notification(request, pk):
+    notif = get_object_or_404(Notification, pk=pk, recipient=request.user)
+    notif.is_read = True
+    notif.save()
+    # Redirige vers l'URL de la notification si elle existe, sinon vers l'accueil
+    return redirect(notif.url or 'home')
+
+@login_required
+def notifications_list(request):
+    # Récupère toutes les notifications de l'utilisateur connecté
+    notifications_qs = request.user.notifications.all()
+    paginator = Paginator(notifications_qs, 10)  # 10 notifications par page
+    page_number = request.GET.get('page')
+    notifications = paginator.get_page(page_number)
+
+    return render(request, 'backoffice/ges-users/notifications_list.html', {
+        'notifications': notifications
+    })
+
+@login_required
+def mark_all_notifications_read(request):
+    # Marque toutes les notifications comme lues
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return redirect('notifications_list')
+
+@login_required
+def notifications_delete_all(request):
+    """Supprime toutes les notifications de l'utilisateur connecté."""
+    user_notifications = request.user.notifications.all()
+    
+    if user_notifications.exists():
+        count = user_notifications.count()
+        user_notifications.delete()
+        messages.success(request, f"Toutes vos {count} notifications ont été supprimées.")
+    else:
+        messages.info(request, "Vous n'avez aucune notification à supprimer.")
+    
+    return redirect('notifications_list')  # Redirige vers la liste des notifications

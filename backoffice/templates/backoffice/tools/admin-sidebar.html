@@ -86,7 +86,7 @@
   <ul class="sidebar-nav" id="sidebar-nav" >
 
     <li class="nav-item" >
-      <a class="nav-link collapsed " id="accueil-link" href="{% url 'backoffice.index' %}">
+      <a class="nav-link collapsed " id="accueil-link" href="{% url 'home' %}">
         <i class="bi bi-speedometer2"></i>
         <span>Tableau de bord</span>
       </a>
@@ -154,7 +154,7 @@
   
     <li class="nav-item">
       <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-database"></i><span>Base professionelle</span><i class="bi bi-chevron-down ms-auto"></i>
+        <i class="bi bi-database"></i><span>Base de données</span><i class="bi bi-chevron-down ms-auto"></i>
       </a>
       <ul id="icons-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
         <li>
@@ -175,12 +175,6 @@
       </ul>
     </li><!-- End Base de données pro Nav -->
   
-    <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
-        <i class="bi bi-person-circle"></i>
-        <span>Changer mot de passe</span>
-      </a>
-    </li><!-- End Profile Page Nav -->
   
     <!-- <li class="nav-item">
       <a class="nav-link collapsed" href="#">
@@ -190,7 +184,7 @@
     </li> -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed" href="#">
+      <a class="nav-link collapsed" href="{% url 'notifications_list' %}">
         <i class="bi bi-bell"></i>
         <span>Notifications</span>
       </a>

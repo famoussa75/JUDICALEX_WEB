@@ -23,10 +23,54 @@
   <!-- End Header -->
 
   <!-- ======= Sidebar ======= -->
-    {% include 'backoffice/tools/admin-sidebar.html' %}
+  {% load user_extras %}
+  {% if request.user|has_group:"Administrateur" %}
+
+      {% include 'backoffice/tools/admin-sidebar.html' %}
+
+  {% elif request.user|has_group:"Pigiste" %}
+
+      {% include 'backoffice/tools/pigiste-sidebar.html' %}
+
+  {% elif request.user|has_group:"Collaborateur" %}
+
+      {% include 'backoffice/tools/collaborateur-sidebar.html' %}
+
+  {% endif %}
+
   <!-- End Sidebar-->
 
   <main id="main" class="main">
+
+    {% for message in messages %}
+    <div>
+      {% if message.tags == "error" %}
+      <div class="alert alert-danger alert-dismissible fade show rounded-5 bg-danger" role="alert">
+        <strong  style="color: white;">{{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      
+      {% elif message.tags == "success" %}
+      <div class="alert alert-success alert-dismissible fade show rounded-5 bg-success" role="alert">
+        <strong style="color: white;">
+          {{ message }}
+          <i class="fa fa-check-circle"></i>
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      {% elif message.tags == "info" %}
+      <div class="alert alert-info alert-dismissible fade show rounded-5 bg-info" role="alert">
+        <strong style="color: white;">
+          {{ message }}
+          <i class="fa fa-check-circle"></i>
+        </strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+
+      {% endif %}
+    </div>
+    {% endfor %}
 
     {% block content %}{% endblock %}
 

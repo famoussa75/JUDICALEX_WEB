@@ -300,14 +300,17 @@
                   {% csrf_token %}
 
                   <div class="mb-3">
-                    {{ contribution_form.nom.label_tag }}
-                    {{ contribution_form.nom }}
+                    <label for="id_nom" class="form-label">Nom</label>
+                    <input type="text" name="nom" id="id_nom" class="form-control" value="{{ request.user.first_name|default:'' }} {{ request.user.last_name|default:'' }}" required readonly >
+                   
                   </div>
-
+                  
                   <div class="mb-3">
-                    {{ contribution_form.email.label_tag }}
-                    {{ contribution_form.email }}
+                    <label for="id_email" class="form-label">Email</label>
+                    <input type="email" name="email" id="id_email" class="form-control" value="{{ request.user.email|default:'' }}" required readonly >
+
                   </div>
+                  
 
                   <div class="mb-3">
                     {{ contribution_form.sujet.label_tag }}

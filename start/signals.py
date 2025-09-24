@@ -7,13 +7,24 @@ from role.models import Decisions, SuivreAffaire
 @receiver(post_save, sender=Account)
 def notify_new_user(sender, instance, created, **kwargs):
     if created:
-        print(f"Signal déclenché pour {instance.first_name}")
-        Notification.objects.create(
-            recipient=instance,
-            type='success',
-            message=f"Bienvenue, {instance.first_name} !",
-            url='profile/'
-        )
+       # Vérifier si l'utilisateur est dans le groupe "Visiteur"
+        if instance.groups.filter(name="Visiteur").exists():
+            Notification.objects.create(
+                recipient=instance,
+                type='info',
+                message=f"Bienvenue {instance.first_name}, merci de rejoindre notre plateforme !",
+                url='profile/'
+            )
+
+        # Vérifier si l'utilisateur est dans le groupe "Contributeur"
+        else :
+            Notification.objects.create(
+                recipient=instance,
+                type='success',
+                message=f"Bienvenue {instance.first_name} !",
+                url=''
+            )
+
 
 
 @receiver(post_save, sender=Decisions)

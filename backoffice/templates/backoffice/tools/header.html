@@ -32,83 +32,66 @@
             <i class="bi bi-search"></i>
           </a>
         </li><!-- End Search Icon-->
-
         <li class="nav-item dropdown">
-
           <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-            <i class="bi bi-bell"></i>
-            <span class="badge bg-primary badge-number">4</span>
-          </a><!-- End Notification Icon -->
-
+              <i class="bi bi-bell"></i>
+              {% if unread_count > 0 %}
+                  <span class="badge bg-primary badge-number">{{ unread_count }}</span>
+              {% endif %}
+          </a>
+      
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
-            <li class="dropdown-header">
-              You have 4 new notifications
-              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">View all</span></a>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-exclamation-circle text-warning"></i>
-              <div>
-                <h4>Lorem Ipsum</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>30 min. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-x-circle text-danger"></i>
-              <div>
-                <h4>Atque rerum nesciunt</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>1 hr. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-check-circle text-success"></i>
-              <div>
-                <h4>Sit rerum fuga</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>2 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-
-            <li class="notification-item">
-              <i class="bi bi-info-circle text-primary"></i>
-              <div>
-                <h4>Dicta reprehenderit</h4>
-                <p>Quae dolorem earum veritatis oditseno</p>
-                <p>4 hrs. ago</p>
-              </div>
-            </li>
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
-
-          </ul><!-- End Notification Dropdown Items -->
-
-        </li><!-- End Notification Nav -->
-
-
+              <li class="dropdown-header">
+                  {% if unread_count > 0 %}
+                      Vous avez {{ unread_count }} nouvelle{{ unread_count|pluralize }}
+                  {% else %}
+                      Aucune nouvelle notification
+                  {% endif %}
+                  <a href="{% url 'notifications_list' %}">
+                      <span class="badge rounded-pill bg-primary p-2 ms-2">Voir tout</span>
+                  </a>
+              </li>
+      
+              {% for notif in unread_notifications %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li class="notification-item">
+                      {% if notif.type == 'info' %}
+                          <i class="bi bi-info-circle text-primary"></i>
+                      {% elif notif.type == 'success' %}
+                          <i class="bi bi-check-circle text-success"></i>
+                      {% elif notif.type == 'warning' %}
+                          <i class="bi bi-exclamation-circle text-warning"></i>
+                      {% elif notif.type == 'error' %}
+                          <i class="bi bi-x-circle text-danger"></i>
+                      {% else %}
+                          <i class="bi bi-bell text-secondary"></i>
+                      {% endif %}
+                      <div>
+                          <h4>{{ notif.message|truncatechars:30 }}</h4>
+                          {% if notif.url %}
+                              <a href="{% url 'read_notification' notif.pk %}">Voir</a>
+                          {% else %}
+                              <a href="{% url 'read_notification' notif.pk %}">Marquer comme lu</a>
+                          {% endif %}
+                          <p>{{ notif.timestamp|timesince }} ago</p>
+                      </div>
+                  </li>
+              {% empty %}
+                  <li><hr class="dropdown-divider"></li>
+                  <li class="text-muted px-3 py-2 text-center">...</li>
+              {% endfor %}
+      
+              <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-footer">
+                  <a href="{% url 'notifications_list' %}">Voir toutes les notifications</a>
+              </li>
+          </ul>
+      </li>
+      
+      
+      
+        
+        
         <li class="nav-item dropdown pe-3">
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">

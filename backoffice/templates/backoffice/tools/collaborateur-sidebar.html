@@ -1,0 +1,129 @@
+<style>
+    :root{
+      --sb-bg: #143642;         /* fond sidebar */
+      --sb-bg-hover: #0f2a32;   /* fond au survol/ouvert */
+      --sb-text: #e6f0f3;       /* texte par défaut */
+      --sb-muted: #c9d8de;      /* texte atténué */
+    }
+  
+    /* Conteneur */
+    #sidebar.sidebar{
+      background: var(--sb-bg);
+      min-height: 100vh;
+    }
+  
+    /* Titre de section */
+    #sidebar .nav-heading{
+      color: var(--sb-muted);
+      font-size: .75rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin: .75rem 0 .25rem;
+    }
+  
+    /* Liens de 1er niveau */
+    #sidebar-nav .nav-link{
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: var(--sb-text);
+      background: transparent;
+      border-radius: .5rem;
+      padding: .6rem .75rem;
+      transition: background-color .2s ease, color .2s ease;
+      text-decoration: none;
+    }
+    #sidebar-nav .nav-link:hover,
+    #sidebar-nav .nav-link:focus{
+      background: var(--sb-bg-hover);
+      color: #fff;
+      outline: 0;
+    }
+    /* Actif / menu ouvert */
+    #sidebar-nav .nav-link[aria-expanded="true"],
+    #sidebar-nav .nav-link:not(.collapsed){
+      background: rgba(255,255,255,.06);
+      color: #fff;
+    }
+  
+    /* Chevron animé */
+    #sidebar-nav .nav-link .bi-chevron-down{
+      margin-left: auto;
+      transition: transform .2s ease;
+    }
+    #sidebar-nav .nav-link[aria-expanded="true"] .bi-chevron-down{
+      transform: rotate(180deg);
+    }
+  
+    /* Sous-menu */
+    #sidebar-nav .nav-content{
+      margin-left: .25rem;
+      padding-left: .25rem;
+      border-left: 1px solid rgba(255,255,255,.08);
+    }
+    #sidebar-nav .nav-content a{
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      color: var(--sb-muted);
+      border-radius: .375rem;
+      padding: .5rem 1rem .5rem 2rem;
+      text-decoration: none;
+      transition: background-color .2s ease, color .2s ease;
+    }
+    #sidebar-nav .nav-content a:hover,
+    #sidebar-nav .nav-content a.active{
+      color: #fff;
+      background: rgba(255,255,255,.06);
+    }
+  </style>
+  
+  
+  
+  
+  <aside id="sidebar" class="sidebar">
+  
+    <ul class="sidebar-nav" id="sidebar-nav" >
+  
+      <li class="nav-item" >
+        <a class="nav-link collapsed " id="accueil-link" href="{% url 'home' %}">
+          <i class="bi bi-speedometer2"></i>
+          <span>Tableau de bord</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+    
+      <li class="nav-item">
+        <a class="nav-link collapsed" id="news-link" href="{% url 'post_list' %}">
+          <i class="bi bi-newspaper"></i><span>News</span>
+        </a>
+      </li><!-- End News Nav -->
+    
+    
+      <li class="nav-heading">EXTRA</li>
+
+    
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <i class="bi bi-person-circle"></i>
+          <span>Changer de mot de passe</span>
+        </a>
+      </li><!-- End Profile Page Nav -->
+    
+      <!-- <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <i class="bi bi-gear"></i>
+          <span>Paramètre</span>
+        </a>
+      </li> -->
+  
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'notifications_list' %}">
+          <i class="bi bi-bell"></i>
+          <span>Notifications</span>
+        </a>
+      </li>
+    
+    </ul>
+    
+  
+  </aside>

@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group, Permission
 from users.models import Account
 from .models import Ad
 
+
 # --- Mixin pour appliquer automatiquement les classes Bootstrap ---
 class BootstrapFormMixin:
     def _bootstrapify(self):
@@ -123,9 +124,6 @@ class GroupForm(BootstrapFormMixin, forms.ModelForm):
 
 
 
-# ads/forms.py
-from django import forms
-from .models import Ad
 
 class AdForm(forms.ModelForm):
     class Meta:

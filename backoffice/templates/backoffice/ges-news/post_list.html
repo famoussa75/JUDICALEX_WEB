@@ -2,6 +2,9 @@
 
 {% block title %} Liste Générale {% endblock title %}
 
+{% load user_extras %}
+
+
 {% block content %}
 
 <style>
@@ -20,7 +23,7 @@
     <h1>Gestion des articles</h1>
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="{% url 'backoffice.index' %}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
         <li class="breadcrumb-item">News</li>
         <li class="breadcrumb-item active">Articles</li>
       </ol>
@@ -34,9 +37,12 @@
         <h2 class="h4 fw-bold mb-0">
           <i class="bi bi-journal-text me-2"></i> Liste des articles
         </h2>
+        {% if request.user|has_group:"Administrateur" or request.user|has_group:"Pigiste" %}
         <a href="{% url 'post_create' %}" class="btn btn-success rounded-pill shadow-sm">
           <i class="bi bi-plus-circle me-1"></i> Nouvel Article
         </a>
+      {% endif %}
+      
       </div>
       <form method="get" class="d-flex ms-auto" role="search" style="max-width: 380px;">
         <input
@@ -106,6 +112,9 @@
                       {% empty %}
                         <span class="badge rounded-pill bg-light text-muted">Aucun groupe</span>
                       {% endfor %}
+                      <span class="badge rounded-pill bg-primary-light text-dark">
+                        <i class="bi bi-person me-1"></i>{{ post.author.first_name }} {{ post.author.last_name }}
+                      </span>
                     </div>
                   </div>
                 </a>

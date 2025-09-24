@@ -269,7 +269,12 @@ document.addEventListener("DOMContentLoaded", function() {
                                         <i class="fa fa-bell"></i>
                                     </div>
                                     <div class="notification-content">
-                                        <p class="notification-message">${notification.message}</p>
+                                        <p class="notification-message">
+                                        ${notification.message.length > 30 
+                                            ? notification.message.substring(0, 30) + "..." 
+                                            : notification.message}
+                                        </p>
+
                                     </div>
                                 </div>
                             </a>`;

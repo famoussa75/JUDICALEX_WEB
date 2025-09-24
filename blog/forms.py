@@ -24,7 +24,7 @@ class CommentForm(forms.ModelForm):
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["title", "content", "image", "category", "status"]  # author retiré
+        fields = ["title", "content", "image", "category"]  # author retiré
     
 
 

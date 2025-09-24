@@ -17,6 +17,7 @@ import re
 from blog.models import Post
 from blog.forms import PostForm
 from django.core.paginator import Paginator
+from backoffice.utils import create_notification
 
 # users/views.py
 from allauth.account.views import ConfirmEmailView
@@ -297,7 +298,7 @@ def profile(request):
 
     # ----- Formulaire de demande de contribution -----
     if not request.user.groups.filter(name="Contributeur").exists():
-        demande_existante = ContributionRequest.objects.filter(demandeur=request.user).exists()
+        demande_existante = ContributionRequest.objects.filter(demandeur=request.user, status='pending').exists()
         if request.method == 'POST' and 'demande_contribution' in request.POST:
             if demande_existante:
                 messages.info(request, "Vous avez déjà soumis une demande de contribution. Elle est en cours de traitement.")
@@ -307,6 +308,17 @@ def profile(request):
                     contribution_request = contribution_form.save(commit=False)
                     contribution_request.demandeur = request.user
                     contribution_request.save()
+                     # --- Notifier tous les administrateurs ---
+                    admins = Account.objects.filter(groups__name="Administrateur")
+                    for admin in admins:
+                        create_notification(
+                            recipient=admin,
+                            sender=request.user,
+                            type="info",
+                            message=f"{request.user.get_full_name()} a soumis une nouvelle demande de contribution.",
+                            objet_cible=contribution_request.id,
+                            url=reverse("details_demande", args=[contribution_request.id])  # lien vers l'admin pour voir la demande
+                        )
                     messages.success(request, 'Votre demande de contribution a été envoyée !')
                     return redirect('profile')
                 else:
@@ -333,7 +345,12 @@ def profile(request):
             messages.error(request, "Veuillez corriger les erreurs dans votre contribution.")
 
     # ----- Notifications et affaires suivies -----
-    notifications = Notification.objects.filter(recipient=account)
+    _notifications = Notification.objects.filter(recipient=account)
+    paginator = Paginator(_notifications, 15)  # 10 notifications par page
+
+    page_number = request.GET.get("page")
+    notifications = paginator.get_page(page_number)
+
     mesAffairesSuivies = SuivreAffaire.objects.select_related('affaire__role__juridiction').filter(account=account)
 
     # ----- Contributions de l’utilisateur -----
