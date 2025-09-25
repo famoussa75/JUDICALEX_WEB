@@ -319,6 +319,15 @@ def profile(request):
                             objet_cible=contribution_request.id,
                             url=reverse("details_demande", args=[contribution_request.id])  # lien vers l'admin pour voir la demande
                         )
+
+                       # Notifier Demandeur
+                        create_notification(
+                            recipient=request.user,
+                            sender=request.user,
+                            type="success",
+                            message=f"Votre demande a été enregistrée avec succès. Vous recevrez une réponse prochainement.",
+                            url='profile/'
+                        )
                     messages.success(request, 'Votre demande de contribution a été envoyée !')
                     return redirect('profile')
                 else:

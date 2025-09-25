@@ -30,12 +30,30 @@
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
               <tr>
-                <th>Username</th><th>Nom</th><th>Email</th><th>Actif</th><th class="text-end">Actions</th>
+                <th>Photo</th><th>Username</th><th>Nom</th><th>Email</th><th>Actif</th><th class="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               {% for u in page_obj.object_list %}
                 <tr>
+                  <td>
+                    {% if u.socialaccount_set.all %}
+                      <span class="avatar"
+                            style="background-image: url('{{ u.socialaccount_set.first.extra_data.picture }}');
+                                   border: 2px #143642 solid; border-radius: 20px; width:40px; height:40px; display:inline-block;">
+                      </span>
+                    {% elif u.photo and u.photo.url %}
+                      <span class="avatar"
+                            style="background-image: url('{{ u.photo.url }}');
+                                   border: 2px #143642 solid; border-radius: 20px; width:40px; height:40px; display:inline-block;">
+                      </span>
+                    {% else %}
+                      <span class="avatar"
+                            style="background-image: url('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+                                   border: 2px #143642 solid; border-radius: 20px; width:40px; height:40px; display:inline-block;">
+                      </span>
+                    {% endif %}
+                  </td>
                   <td class="fw-semibold">{{ u.username }}</td>
                   <td>{{ u.first_name }} {{ u.last_name }}</td>
                   <td>

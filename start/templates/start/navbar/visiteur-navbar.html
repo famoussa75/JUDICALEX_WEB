@@ -1,5 +1,27 @@
 {% load static %}
 {% load socialaccount %}
+<style>
+  header.navbar {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  min-height: 50px; /* optionnel */
+}
+
+.navbar-brand img {
+  max-height: 35px !important; /* réduit le logo */
+}
+
+.navbar-nav.menu .nav-link {
+  font-size: 14px; /* un peu plus petit */
+  padding: 6px 10px; /* réduit le padding vertical */
+}
+
+.login_button, .signup_button {
+  padding: 4px 10px; /* réduit l’épaisseur des boutons */
+  font-size: 13px;
+}
+
+</style>
 
 <style>
   /* ================= Style global du menu ================= */
