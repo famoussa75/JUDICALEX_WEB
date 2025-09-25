@@ -291,6 +291,7 @@ def rejeter_demande(request, demande_id):
 
 # ads/views.py
 
+@login_required
 def ad_list(request):
     ads = Ad.objects.all().order_by("-created_at")
     paginator = Paginator(ads, 6)  # 6 pubs par page
@@ -298,6 +299,7 @@ def ad_list(request):
     page_obj = paginator.get_page(page_number)
     return render(request, "backoffice/ges-ads/ad_list.html", {"page_obj": page_obj})
 
+@login_required
 def ad_create(request):
     if request.method == "POST":
         form = AdForm(request.POST, request.FILES)
@@ -308,6 +310,7 @@ def ad_create(request):
         form = AdForm()
     return render(request, "backoffice/ges-ads/ad_form.html", {"form": form})
 
+@login_required
 def ad_edit(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
     if request.method == "POST":
@@ -319,6 +322,7 @@ def ad_edit(request, pk):
         form = AdForm(instance=ad)
     return render(request, "backoffice/ges-ads/ad_form.html", {"form": form})
 
+@login_required
 def ad_delete(request, pk):
     ad = get_object_or_404(Ad, pk=pk)
     if request.method == "POST":
