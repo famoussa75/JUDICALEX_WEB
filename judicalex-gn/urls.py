@@ -14,10 +14,7 @@ urlpatterns = [
     path('gestion-messages/<int:pk>/<str:action>/', ges_message, name='gestion_messages_edit'),
 
     path('divers/', include('divers.urls')),
-    path('entreprise/', include('entreprise.urls')),
-    path('emploi/', include('emploi.urls')),
     path('role/', include('role.urls')),
-    path('jurisprudence/', include('jurisprudence.urls')),
     path('magistrats/', include('magistrats.urls')),
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),

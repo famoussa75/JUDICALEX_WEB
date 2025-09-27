@@ -171,7 +171,7 @@
         <div class="container-fluid" style="padding: 0 20px;">
 
             <div class="row col-md-12">
-                <div class="col-md-3 col-lg-3">
+                <div class="col-12 col-md-3">
                     <!-- Page title -->
                     <div class="page-header d-print-none mb-2">
                         <div class="row align-items-center">
@@ -430,7 +430,7 @@
                     <!-- Page title -->
                               
                 </div>
-                <div class="col-md-7 col-lg-7">
+                <div class="col-12 col-md-7">
                     <div class="row align-items-center" style="margin-bottom: 55px; margin-top: 3px;">
                         <div class="col">
                             <div class="d-flex align-items-center mb-1">
@@ -526,7 +526,7 @@
                                                             <div class="list-inline-item">
                                                                 <!-- Download SVG icon from http://tabler-icons.io/i/license -->
                                                                 
-                                                                <b>Section :</b> {{role.section}}
+                                                                <b>Section :</b> {{role.get_section_display}}
                                                             </div>
                                                            
                                                         </div>
@@ -552,46 +552,69 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                             {% endfor %}
 
                             <!-- Pagination -->
                             <div class="card">
                                 <div class="card-body">
-                                  <ul class="pagination ">
-                                    {% if roles.has_previous %}
-                                    
-                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ roles.previous_page_number }}" tabindex="-1" aria-disabled="true">
-                                          <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18" /></svg>
-                                          précédent
-                                        </a>
-                                      </li>
-                                    {% endif %}
-                                    {% for num in roles.paginator.page_range %}
-                                        {% if roles.number == num %}
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ num }}</span>
-                                            </li>
-                                        {% else %}
+                                    <ul class="pagination">
+                                        {% if roles.has_previous %}
                                             <li class="page-item">
-                                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                                                <a class="page-link" href="?page={{ roles.previous_page_number }}">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
+                                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+                                                         stroke-linecap="round" stroke-linejoin="round">
+                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                         <polyline points="15 6 9 12 15 18" />
+                                                    </svg>
+                                                    Précédent
+                                                </a>
                                             </li>
                                         {% endif %}
-                                       
-                                    {% endfor %}
-                                    {% if roles.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ roles.next_page_number }}">
-                                                suivant <!-- Icon -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18" /></svg>
-
-                                            </a>
-                                        </li>
-                                     
-                                    {% endif %}
-                                  
-                                  </ul>
+                                    
+                                        {# Toujours afficher la première page #}
+                                        {% if roles.number > 3 %}
+                                            <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+                                            {% if roles.number > 4 %}
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    
+                                        {# Afficher 2 pages avant et après la page courante #}
+                                        {% for num in roles.paginator.page_range %}
+                                            {% if num >= roles.number|add:"-2" and num <= roles.number|add:"2" %}
+                                                {% if num == roles.number %}
+                                                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                                {% else %}
+                                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    
+                                        {# Toujours afficher la dernière page #}
+                                        {% if roles.number < roles.paginator.num_pages|add:"-2" %}
+                                            {% if roles.number < roles.paginator.num_pages|add:"-3" %}
+                                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ roles.paginator.num_pages }}">{{ roles.paginator.num_pages }}</a></li>
+                                        {% endif %}
+                                    
+                                        {% if roles.has_next %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ roles.next_page_number }}">
+                                                    Suivant
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" 
+                                                         viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" 
+                                                         stroke-linecap="round" stroke-linejoin="round">
+                                                         <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                         <polyline points="9 6 15 12 9 18" />
+                                                    </svg>
+                                                </a>
+                                            </li>
+                                        {% endif %}
+                                    </ul>
+                                    
                                 
                                 </div>
                             </div>
@@ -766,47 +789,68 @@
                              
                             {% endfor %}
 
-                            <!-- Pagination results -->
+                           <!-- Pagination results -->
                             <div class="card">
                                 <div class="card-body">
-                                  <ul class="pagination ">
+                                <ul class="pagination">
                                     {% if results.has_previous %}
-                                    
-                                     <li class="page-item">
-                                        <a class="page-link" href="?page={{ results.previous_page_number }}&q={{query}}" tabindex="-1" aria-disabled="true">
-                                          <!-- Download SVG icon from http://tabler-icons.io/i/chevron-left -->
-                                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="15 6 9 12 15 18" /></svg>
-                                          précédent
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ results.previous_page_number }}&q={{ query }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <polyline points="15 6 9 12 15 18" />
+                                        </svg>
+                                        Précédent
                                         </a>
-                                      </li>
+                                    </li>
                                     {% endif %}
+                            
+                                    {# Toujours afficher la première page #}
+                                    {% if results.number > 3 %}
+                                    <li class="page-item"><a class="page-link" href="?page=1&q={{ query }}">1</a></li>
+                                    {% if results.number > 4 %}
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    {% endif %}
+                                    {% endif %}
+                            
+                                    {# Afficher 2 pages avant et après la page courante #}
                                     {% for num in results.paginator.page_range %}
-                                        {% if results.number == num %}
-                                            <li class="page-item active">
-                                                <span class="page-link">{{ num }}</span>
-                                            </li>
+                                    {% if num >= results.number|add:"-2" and num <= results.number|add:"2" %}
+                                        {% if num == results.number %}
+                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                         {% else %}
-                                            <li class="page-item">
-                                                <a class="page-link" href="?page={{ num }}&q={{query}}">{{ num }}</a>
-                                            </li>
+                                        <li class="page-item"><a class="page-link" href="?page={{ num }}&q={{ query }}">{{ num }}</a></li>
                                         {% endif %}
-                                       
-                                    {% endfor %}
-                                    {% if results.has_next %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ results.next_page_number }}&q={{query}}">
-                                                suivant <!-- Icon -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><polyline points="9 6 15 12 9 18" /></svg>
-
-                                            </a>
-                                        </li>
-                                     
                                     {% endif %}
-                                  
-                                  </ul>
-                                
+                                    {% endfor %}
+                            
+                                    {# Toujours afficher la dernière page #}
+                                    {% if results.number < results.paginator.num_pages|add:"-2" %}
+                                    {% if results.number < results.paginator.num_pages|add:"-3" %}
+                                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    {% endif %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ results.paginator.num_pages }}&q={{ query }}">{{ results.paginator.num_pages }}</a></li>
+                                    {% endif %}
+                            
+                                    {% if results.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ results.next_page_number }}&q={{ query }}">
+                                        Suivant
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <polyline points="9 6 15 12 9 18" />
+                                        </svg>
+                                        </a>
+                                    </li>
+                                    {% endif %}
+                                </ul>
                                 </div>
                             </div>
+  
                            
                         </div>
                         {% endif %}
@@ -820,21 +864,8 @@
 
                 </div>
 
-                <div class="col-md-2 col-lg-2 row g-3">
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime1.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 657px; width: 463; object-fit: cover;">
-                    </div>
-
-                    <div class="col-md-12">
-                        <img src="/static/start/assets/statics/pub-anime2.gif" 
-                        class="" 
-                        alt="Actu 1" 
-                        style="height: 420px; width: 463; object-fit: cover;">
-                    </div>
-
+                <div class="col-12 col-md-2 px-0"> <!-- supprime padding horizontal -->
+                    {% include 'start/partials/pub_lateral.html' %}
                 </div>
             </div>
         </div>

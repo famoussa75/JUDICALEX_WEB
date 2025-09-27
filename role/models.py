@@ -3,6 +3,7 @@ from django.db import models
 from django.utils import timezone
 from start.models import Juridictions
 from users.models import Account
+from greffe.models import Account as Account_greffe
 from django.utils.translation import gettext_lazy as _
 
 
@@ -45,7 +46,7 @@ class Roles(models.Model):
     subtituts = models.TextField(null=True, blank=True, verbose_name=_('Subtitut')) 
     juridiction = models.ForeignKey(Juridictions,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Juridiction'))
     created_at = models.DateTimeField(null=True, blank=True,auto_now=True, verbose_name=_('Date de creation'))
-    created_by = models.ForeignKey(Account,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
+    created_by = models.ForeignKey(Account_greffe,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
     statut = models.TextField(null=True, blank=True,choices=STATUT, default="En-attente", verbose_name=_('Statut'))
  
 
@@ -75,7 +76,7 @@ class AffaireRoles(models.Model):
     civileResponsables = models.TextField(null=True, blank=True, verbose_name=_('Civiles Responsables'))
     role = models.ForeignKey(Roles, on_delete=models.CASCADE,null=True, blank=True, verbose_name=_('Role'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Date creation'))
-    created_by = models.ForeignKey(Account,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
+    created_by = models.ForeignKey(Account_greffe,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
 
 
 class Decisions(models.Model):
@@ -123,7 +124,7 @@ class Decisions(models.Model):
     statut = models.TextField(null=True, blank=True,choices=STATUT, default="Creer", verbose_name=_('Statut'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Date creation'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Date modification'))
-    created_by = models.ForeignKey(Account,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
+    created_by = models.ForeignKey(Account_greffe,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
 
 class DecisionHistory(models.Model):
     original = models.ForeignKey(Decisions, on_delete=models.CASCADE, related_name="historiques")
@@ -140,7 +141,7 @@ class DecisionHistory(models.Model):
     dispositif = models.TextField(null=True, blank=True)
     prochaineAudience = models.DateField(null=True, blank=True)
     modified_at = models.DateTimeField(auto_now_add=True)
-    modified_by = models.ForeignKey(Account, blank=True, null=True, on_delete=models.SET_NULL)
+    modified_by = models.ForeignKey(Account_greffe, blank=True, null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return f"Historique de {self.original} - {self.created_at.strftime('%d/%m/%Y %H:%M')}"
@@ -197,7 +198,7 @@ class Enrollement(models.Model):
     typeAudience = models.TextField(null=True, blank=True,choices=TYPE_AUDIENCE,verbose_name=_('Type d\'audience'))
     section = models.TextField(null=True, blank=True,choices=TYPE_SECTION,verbose_name=_('Section'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Date creation'))
-    created_by = models.ForeignKey(Account,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
+    created_by = models.ForeignKey(Account_greffe,blank=True, null=True, on_delete=models.CASCADE, verbose_name=_('Creer par'))
     statut = models.TextField(null=True, blank=True,choices=STATUT, default="Creer", verbose_name=_('Statut'))
     motifAnnulation = models.TextField(null=True, blank=True, verbose_name=_('Motif annulation'))
 
@@ -228,11 +229,3 @@ class EnrollementHistory(models.Model):
     class Meta:
         ordering = ['-modified_at']
 
-
-class MessageDefilant(models.Model):
-    contenu = models.TextField("Contenu du message")
-    actif = models.BooleanField("Afficher ce message", default=True)
-    date_creation = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.contenu[:50]

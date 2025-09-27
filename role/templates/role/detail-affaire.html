@@ -7,40 +7,45 @@
 {% load static %}
 
 
-<div class="page-wrapper">
-    <div class="mb-4" style="display: flex; align-items: center; background: var(--Bleu, #143642); padding: 7px 17px; gap: 10px; width: 100%;">
-        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
-            Procédures
-        </span>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
-        </svg>
+    <div class="page-wrapper">
+        <div class="mb-4 d-flex flex-wrap align-items-center gap-2 px-3 py-2" 
+        style="background: var(--Bleu, #143642); border-radius: 4px;">
 
-        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+    <span class="text-white fw-bold" style="font-family: Jost; font-size: 1rem;">
+        Procédures
+    </span>
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="0.8em" height="1.2em" viewBox="0 0 10 17" fill="white">
+        <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z"/>
+    </svg>
+
+    <a href="{% url 'role.index' %}" class="text-decoration-none">
+        <span class="text-white fw-bold" style="font-family: Jost; font-size: 1rem;">
             Rôles d'audiences
         </span>
+    </a>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
-        </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" width="0.8em" height="1.2em" viewBox="0 0 10 17" fill="white">
+        <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z"/>
+    </svg>
 
-        <a href="{% url 'role.detail' affaire.role.idRole %}">
-            <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
-            Rôle d'audience de {{affaire.role.typeAudience}} du {{affaire.role.dateEnreg}}
-            </span>
-        </a>
-
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
-        </svg>
-        
-        <span style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 16px; font-weight: 700;">
-            Dêcisions affaire N° {{ affaire.numAffaire }} 
+    <a href="{% url 'role.detail' affaire.role.idRole %}" class="text-decoration-none">
+        <span class="text-white fw-bold" style="font-family: Jost; font-size: 1rem;">
+            Rôle d'audience de {{ affaire.role.typeAudience }} du {{ affaire.role.dateEnreg }}
         </span>
+    </a>
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="0.8em" height="1.2em" viewBox="0 0 10 17" fill="white">
+        <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z"/>
+    </svg>
+
+    <span class="fw-bold" style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 1rem;">
+        Décisions affaire N° {{ affaire.numAffaire }}
+    </span>
     </div>
+
     <div class="page-body">
-        <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
+        <div class="container-fluid">
             <div class="row g-3">
                 <!-- <div class="col-2">
                     <div class="card" style="padding: 8px;">
@@ -61,120 +66,110 @@
                 </div> -->
                 <div class="col-12 animate-bottom">
                     <div class="card card-body">
-                        <div class="row">
-                            <div class="col-4">
-                                <p class="h3">{{ affaire.role.juridiction }}</p>
-                                <p class="h4 text-muted" >NUA : {{ affaire.numAffaire }}</p>
-                                <p class="h4" >AFFAIRE N° : {{ affaire.numRg }}</p>
-                                <p class="h4">{{ affaire.role.section }}</p>
-                                <p class="h4">{{ affaire.role.get_typeAudience_display }}</p>
-
+                        <div class="row text-center text-md-start">
+                            <!-- Bloc gauche -->
+                            <div class="col-12 col-md-4 mb-3">
+                                <p class="fs-4 fw-bold">{{ affaire.role.juridiction }}</p>
+                                <p class="fs-5 text-muted">NUA : {{ affaire.numAffaire }}</p>
+                                <p class="fs-5">N° RG : {{ affaire.numRg }}</p>
+                                <p class="fs-5">{{ affaire.role.get_section_display }}</p>
+                                <p class="fs-5">{{ affaire.role.get_typeAudience_display }}</p>
+                
                                 {% if is_suivi %}
-                                    <span class="badge bg-success text-light" style="font-size: 14px;">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="white" d="M23 10a2 2 0 0 0-2-2h-6.32l.96-4.57c.02-.1.03-.21.03-.32c0-.41-.17-.79-.44-1.06L14.17 1L7.59 7.58C7.22 7.95 7 8.45 7 9v10a2 2 0 0 0 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73zM1 21h4V9H1z"/></svg>
-                                        &nbsp;Vous suivez cette affaire
+                                    <span class="badge bg-success text-light fs-5 d-inline-flex align-items-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="me-1">
+                                            <path fill="white" d="M23 10a2 2 0 0 0-2-2h-6.32l.96-4.57c.02-.1.03-.21.03-.32c0-.41-.17-.79-.44-1.06L14.17 1L7.59 7.58C7.22 7.95 7 8.45 7 9v10a2 2 0 0 0 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73zM1 21h4V9H1z"/>
+                                        </svg>
+                                        Vous suivez cette affaire
                                     </span>
                                 {% endif %}
-                                    
                             </div>
-                            <div class="col-md-4">
-                                <p class="h3 text-center text-primary" style="text-decoration: underline;">Ministère de la Justice et du droit de l'Homme</p>
+                
+                            <!-- Bloc centre -->
+                            <div class="col-12 col-md-4 mb-3 text-center">
+                                <p class="fs-4 fw-bold text-primary text-decoration-underline">
+                                    Ministère de la Justice et du Droit de l'Homme
+                                </p>
                             </div>
-                            <div class="col-4 text-center">
-                                <p class="h4">REPUBLIQUE DE GUINEE</p>
-                                <address>
-                                    Travail - Justice - Solidarite<br>
+                
+                            <!-- Bloc droite -->
+                            <div class="col-12 col-md-4 mb-3 text-center">
+                                <p class="fs-5 fw-bold">REPUBLIQUE DE GUINÉE</p>
+                                <address class="mb-0">
+                                    Travail - Justice - Solidarité
                                 </address>
-                            </div>
-                            <hr>
-                            <p class="h2" style="margin-bottom:-20px ;text-decoration-line:underline;text-align:center ;">DÉCISIONS RENDUES</p><br><br>
-
-                            <div class="row col-12 my-5">
-                                <div class="col-6">
-                                    {% if affaire.role.president %}
-                                        <p class="h4" style="text-decoration-line:underline">PRESIDENT(E) : {{ affaire.role.president }}</p>
-                                    {% endif %}
-
-                                    {% if affaire.role.greffier %}
-                                        <p class="h4" style="text-decoration-line:underline">GREFFIER(E) : {{ affaire.role.greffier }}</p>
-                                    {% endif %}
-                                </div>
-
-                                <div class="col-6">
-                                    {% if affaire.demandeurs %}
-                                        <p class="h4" style="text-decoration-line:underline">PARTIES : {{ affaire.demandeurs }} <mark>C/</mark> {{ affaire.defendeurs }}</p>
-                                    {% endif %}
-
-                                    {% if affaire.objet %}
-                                        <p class="h4" style="margin-bottom:-20px ; text-decoration-line:underline">OBJET : {{ affaire.objet }}</p><br>
-                                    {% endif %}
-                                </div>
-
                             </div>
                         </div>
-                       
-                        <table class="table table-transparent table-responsive mb-5">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" style="width: 1%;font-size: small;">N°</th>
-                                    <th class="text-center" style="font-size:small;text-align: center;">Type de décision</th>
-                                    <th class="text-center" style="font-size:small;">Décision DU</th>
-                                    <th style="font-size:small;">Président(e)</th>
-                                    <th style="font-size:small;">Greffier(ère)</th>
-                                    <th style="font-size:small;">Décision</th>
-                                    <th style="font-size:small;">Prochaine Audience</th>
-
-                                </tr>
-                            </thead>
-                                
-                            
-                            {% for decision in decisions  %}
-                                                                
-                            <tr>
-                                <td class="text-center">{{forloop.counter}}</td>
-
-                                <td class="text-center">
-                                    <p class="strong mb-1">{{decision.typeDecision}}</p>
-                                </td>
-
-                                <td class="text-center">{{ decision.dateDecision|default:"Non défini" }}</td>
-                               
-                                <td>
-                                    <p class="strong mb-1">{{decision.president}}</p>
-                                </td>
-                                <td>
-                                    <p class="strong mb-1">{{decision.greffier}}</p>
-                                </td>
-                                <td>
-                                    <p class="strong mb-1" style="white-space: pre-wrap;">{{decision.decision}}</p>
-                                </td>
-                                <td>
-                                    <span class="strong mb-1 bg-secondary p-2" style="color: white;">{{decision.prochaineAudience|default:"Non défini"}}</span>
-                                </td>
-                              
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="7" class="text-center"><h3>Aucune décision disponible</h3></td>
-                            </tr>
-                            {% endfor %}
-
-                        </table>
-                        <!-- <div class="row">
-                            <div class="col-6">
-
+                
+                        <hr>
+                        <p class="fs-3 fw-bold text-center text-decoration-underline mb-4">
+                            DÉCISIONS RENDUES
+                        </p>
+                
+                        <div class="row g-3 my-4">
+                            <!-- Bloc Président & Greffier -->
+                            <div class="col-12 col-md-6">
+                                {% if affaire.role.president %}
+                                    <p class="fs-4 text-decoration-underline"><b>PRESIDENT(E) :</b> {{ affaire.role.president }}</p>
+                                {% endif %}
+                
+                                {% if affaire.role.greffier %}
+                                    <p class="fs-4 text-decoration-underline"><b>GREFFIER(E) :</b> {{ affaire.role.greffier }}</p>
+                                {% endif %}
                             </div>
-                            <div class="col-6 text-end">
-                                <p class="h5">Conakry, {{role.created_at}}</p>
-                                <address style="font-size:12px ;">
-                                    La Greffiere
-                                </address>
+                
+                            <!-- Bloc Parties & Objet -->
+                            <div class="col-12 col-md-6">
+                                {% if affaire.demandeurs %}
+                                    <p class="fs-4 text-decoration-underline">
+                                        <b>PARTIES : </b>{{ affaire.demandeurs }} <mark>C/</mark> {{ affaire.defendeurs }}
+                                    </p>
+                                {% endif %}
+                
+                                {% if affaire.objet %}
+                                    <p class="fs-4 text-decoration-underline"><b>OBJET :</b> {{ affaire.objet }}</p>
+                                {% endif %}
                             </div>
-                        </div> -->
-                        
-
+                        </div>
+                
+                        <!-- Tableau responsive -->
+                        <div class="table-responsive mb-5">
+                            <table class="table table-bordered table-striped align-middle">
+                                <thead class="table-light">
+                                    <tr class="text-center">
+                                        <th style="font-size:small;">N°</th>
+                                        <th style="font-size:small;">Audience du</th>
+                                        <th style="font-size:small;">Type de décision</th>
+                                        <th style="font-size:small;">Décision</th>
+                                        <th style="font-size:small;">Prochaine Audience</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for decision in decisions %}
+                                        <tr>
+                                            <td class="text-center">{{ forloop.counter }}</td>
+                                            <td class="text-center">{{ decision.dateDecision|default:"Non défini" }}</td>
+                                            <td class="text-center">{{ decision.typeDecision }}</td>
+                                            <td style="white-space: pre-wrap;">{{ decision.decision }}</td>
+                                            <td class="text-center">
+                                                <span class="badge bg-secondary">
+                                                    {{ decision.prochaineAudience|default:"Non défini" }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">
+                                                <h5 class="text-muted">Aucune décision disponible</h5>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
+                
             </div>
         </div>
     </div>

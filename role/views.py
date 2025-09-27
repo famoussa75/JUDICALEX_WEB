@@ -24,6 +24,9 @@ from operator import attrgetter
 from django.db.models.functions import Coalesce
 from django.db.models import IntegerField
 
+from backoffice.models import Ad
+
+
 
 import uuid
 
@@ -57,6 +60,10 @@ def index(request):
 
     juridictions = Juridictions.objects.all()
     query = []
+
+    ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
+    ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
+
     context = {
         'selected_year': year,
         'available_years': available_years,
@@ -65,7 +72,10 @@ def index(request):
         'total_affaire_items':total_affaire_items,
         'juridictions':juridictions,
         'query':query,
-        'today':today
+        'today':today,
+        'ads_header':ads_header,
+        'ads_lateral':ads_lateral,
+
     }
     
     return render(request, 'role/index.html',context)

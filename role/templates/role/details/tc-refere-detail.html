@@ -8,30 +8,35 @@
 
 
 <div class="page-wrapper">
-    <div class="mb-4" style="display: flex; align-items: center; background: var(--Bleu, #143642); padding: 7px 17px; gap: 10px; width: 100%;">
-        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
+    <div class="mb-4 d-flex flex-wrap align-items-center gap-2 px-3 py-2"
+        style="background: var(--Bleu, #143642); border-radius: 4px;">
+
+        <span class="text-white fw-bold" style="font-family: Jost; font-size: 1rem;">
             Procédures
         </span>
-        
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="0.8em" height="1.2em" viewBox="0 0 10 17" fill="white">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z"/>
         </svg>
 
-        <span style="color: var(--Blanc, #FFF); font-family: Jost; font-size: 16px; font-weight: 700;">
-            Rôles d'audiences
-        </span>
+        <a href="{% url 'role.index' %}" class="text-decoration-none">
+            <span class="text-white fw-bold" style="font-family: Jost; font-size: 1rem;">
+                Rôles d'audiences
+            </span>
+        </a>
 
-        <svg xmlns="http://www.w3.org/2000/svg" width="10" height="17" viewBox="0 0 10 17" fill="none">
-            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z" fill="white"/>
+        <svg xmlns="http://www.w3.org/2000/svg" class="mx-1" width="0.8em" height="1.2em" viewBox="0 0 10 17" fill="white">
+            <path d="M2.22229 16.5L7.77771 10.7857L10 8.5L7.77771 6.21433L2.22229 0.5L0 2.78567L5.55543 8.5L0 14.2143L2.22229 16.5Z"/>
         </svg>
-        
-        <span style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 16px; font-weight: 700;">
+
+        <span class="fw-bold" style="color: var(--Jaune, #DFB23D); font-family: Jost; font-size: 1rem;">
             Rôle d'audience de référé du {{role.dateEnreg}}
         </span>
     </div>
+
     <div class="page-body">
 
-        <div class="container-fluid" style="padding-left: 100px; padding-right: 100px;">
+        <div class="container-fluid" >
             <div class="row g-3">
                 <!-- <div class="col-2">
                     <div class="card" style="padding: 8px;">
@@ -51,178 +56,153 @@
                     </div>
                 </div> -->
                 <div class="col-12 animate-bottom">
-                    <div class="card card-body">
-                        <div class="row">
-                            <div class="col-3 text-center">
-                                <p class="h3" style="margin-bottom:-25px ;">COUR D'APPEL DE CONAKRY</p><br>
-                                <p style="margin-bottom:-20px ;">..............</p><br>
-                                <p class="h3" >Tribunal du Commerce de Conakry</p><br>
-                                <p class="h3">{{role.section}}</p>
-                            </div>
-                            <div class="col-9 text-end">
-                                <p class="h3">REPUBLIQUE DE GUINEE</p>
-                                <address>
-                                    Travail - Justice - Solidarite<br>
-                                </address>
-                            </div>
-                            <div class="col-12 my-5" style="text-align:center ;">
-                                <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline">ROLE
-                                    D'AUDIENCE DE RÉFÉRÉ DU {{role.dateEnreg}}
-                                </p><br>
-                                <p class="h3" style="margin-bottom:-20px ;text-decoration-line:underline;">COMPOSITION DU 
-                                    TRIBUNAL</p><br>
-                                <p class="h3" style="margin-bottom:-20px;margin-right: 28px;"><span
-                                        style="text-decoration-line:underline;">PRESIDENT(E) :</span>
-                                    <span>{{role.president}}</span>
-                                </p>
-                                <br>
-                                <p class="h3" style="margin-bottom:-20px ;margin-right: 45px;"><span
-                                        style="text-decoration-line:underline">GREFFIER(E) :</span>
-                                    <span>{{role.greffier}}</span>
-                                </p><br>
-
-                            </div>
+                    <div class="card card-body shadow-sm">
+                  
+                      <!-- En-tête -->
+                      <div class="row align-items-center text-center text-md-start">
+                        <div class="col-12 col-md-6">
+                          <p class="h5 mb-1">COUR D'APPEL DE CONAKRY</p>
+                          <p class="text-muted mb-1">Tribunal du Commerce de Conakry</p>
+                          <p class="fw-bold">{{ role.get_section_display }}</p>
                         </div>
-                        <div class="card-header">
-                            <span class="dropdown">
-                                <button class="btn dropdown-toggle align-text-top show" data-bs-boundary="viewport" data-bs-toggle="dropdown" aria-expanded="true">Actions</button>
-                                <div class="dropdown-menu dropdown-menu-end " data-popper-placement="bottom-end" style="position: absolute; inset: 0px 0px auto auto; margin: 0px; transform: translate3d(97px, 38px, 0px);">
-                                    <a href="#" class="dropdown-item" id="suivre_affaire">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/arrow-forward-up -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
-                                            height="24" viewBox="0 0 24 24" stroke-width="2"
-                                            stroke="currentColor" fill="none" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M15 13l4 -4l-4 -4m4 4h-11a4 4 0 0 0 0 8h1" />
-                                        </svg>&nbsp;Suivre
-                                    </a>
-                                    <a href="#" class="dropdown-item" id="ne_pas_suivre_affaire">
-                                       <!-- Download SVG icon from http://tabler-icons.io/i/x -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                                        &nbsp;Ne plus suivre
-                                     </a>
-                                   
-                                </div>
-                            </span>
-                             <!-- Champ de recherche -->
-                             <form class="d-flex ms-auto" method="get" style="float: right;" style="max-width: 500px;">
-                                {% csrf_token %}
-                                <input type="text" class="form-control me-2" name="search" id="recherche-objet" placeholder="Rechercher un objet..." >
-                                <button class="btn btn-primary" type="submit">
-                                    Rechercher
-                                </button>
-                            </form>
+                        <div class="col-12 col-md-6 text-md-end ">
+                          <p class="fw-bold mb-1">RÉPUBLIQUE DE GUINÉE</p>
+                          <address class="mb-0">
+                            <small>Travail - Justice - Solidarité</small>
+                          </address>
                         </div>
-
-                        <table class="table table-transparent table-responsive">
-                            <thead>
-                                <tr>
-                                    <th class="w-4">
-                                        <input id="select-all" class="form-check-input m-0 align-middle" type="checkbox" aria-label="Select all invoices" >
-                                    </th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">N°</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">NUA</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">RG</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Demandeurs</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Défendeurs</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Objet</th>
-                                    <th style="font-size: 12px; font-family: Jost;font-weight: 700;">Décisions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% regroup page_obj by categorie as grouped_affaires %}
-                        
-                                {% for group in grouped_affaires %}
-                                <tr class="text-center
-                                    {% if group.grouper == 'Nouvelles Affaires' %} bg-success-lt
-                                    {% elif group.grouper == 'Affaires Encours' %} bg-warning-lt
-                                    {% endif %}">
-                                    <td colspan="8"><b class="text-primary">📌 {{ group.grouper }}</b></td>
-                                </tr>
-                            
-                                    {% for affaire in group.list %}
-                                        <tr>
-                                             <td>
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <input class="form-check-input m-0 align-middle me-2 row-checkbox" type="checkbox" aria-label="Select invoice" value="{{ affaire.id }}">
-                                                
-                                                    {% for a in affaireSuivis %}
-                                                        {% if a.affaire_id == affaire.id %}
-                                                            <span class="badge bg-success text-light">déjà suivi</span>
-                                                        {% endif %}
-                                                    {% endfor %}
-                                                </div>
-                                                    
-                                            </td>
-                                            <td class="text-center">{{ affaire.numOrdre }}</td>
-                                            <td class="text-center"><b>{{ affaire.numAffaire }}</b></td>
-                                            <td class="text-center">{{ affaire.numRg }}</td>
-                                            <td>{{ affaire.demandeurs }}</td>
-                                            <td>{{ affaire.defendeurs }}</td>
-                                            <td>{{ affaire.objet }}</td>
-                                            <td>
-                                                <a href="{% url 'affaires.details' affaire.idAffaire %}" title="décisions">
-                                                    Décisions
-                                                    <!-- Download SVG icon from http://tabler-icons.io/i/arrow-big-right -->
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24"
-                                                        height="24" viewBox="0 0 24 24" stroke-width="2"
-                                                        stroke="currentColor" fill="none" stroke-linecap="round"
-                                                        stroke-linejoin="round">
-                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                        <path
-                                                            d="M4 9h8v-3.586a1 1 0 0 1 1.707 -.707l6.586 6.586a1 1 0 0 1 0 1.414l-6.586 6.586a1 1 0 0 1 -1.707 -.707v-3.586h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1z" />
-                                                    </svg>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
+                      </div>
+                  
+                      <!-- Infos audience -->
+                      <div class="text-center my-4">
+                        <p class="h3 text-decoration-underline mb-2">
+                          RÔLE D'AUDIENCE DE RÉFÉRÉ DU {{ role.dateEnreg }}
+                        </p>
+                        <p class="h3 text-decoration-underline mb-2">COMPOSITION DU TRIBUNAL</p>
+                        <p class="mb-1"><span class="fw-bold">PRÉSIDENT(E) :</span> {{ role.president }}</p>
+                        <p class="mb-1"><span class="fw-bold">GREFFIER(E) :</span> {{ role.greffier }}</p>
+                      </div>
+                  
+                      <!-- Actions + Recherche -->
+                      <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                        <div class="dropdown mb-2">
+                          <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            Actions
+                          </button>
+                          <div class="dropdown-menu dropdown-menu-end">
+                            <a href="#" class="dropdown-item" id="suivre_affaire">
+                              <i class="fas fa-eye"></i> Suivre
+                            </a>
+                            <a href="#" class="dropdown-item" id="ne_pas_suivre_affaire">
+                              <i class="fas fa-eye-slash"></i> Ne plus suivre
+                            </a>
+                          </div>
+                        </div>
+                  
+                        <form class="d-flex mb-2" method="get">
+                          <input type="text" class="form-control form-control-sm me-2"
+                                 name="search" id="recherche-objet" placeholder="Rechercher un objet...">
+                          <button class="btn btn-sm btn-primary">Rechercher</button>
+                        </form>
+                      </div>
+                  
+                      <!-- Table responsive -->
+                      <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle">
+                          <thead class="table-light text-center">
+                            <tr>
+                              <th><input id="select-all" class="form-check-input" type="checkbox"></th>
+                              <th>N°</th>
+                              <th>NUA</th>
+                              <th>RG</th>
+                              <th>Demandeurs</th>
+                              <th>Défendeurs</th>
+                              <th>Objet</th>
+                              <th>Décisions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% regroup page_obj by categorie as grouped_affaires %}
+                            {% for group in grouped_affaires %}
+                            <tr class="table-active text-center">
+                                <td colspan="8">
+                                    <b class="text-primary">
+                                        {% if group.grouper == 'Nouvelles Affaires' %}
+                                            ⚖️ {{ group.grouper }}
+                                        {% elif group.grouper == 'Affaires Encours' %}
+                                            ⏳ {{ group.grouper }}
+                                        {% else %}
+                                            ⚖️ {{ group.grouper }}
+                                        {% endif %}
+                                    </b>
+                                </td>
+                            </tr>
+                            {% for affaire in group.list %}
+                            <tr>
+                              <td>
+                                <input class="form-check-input me-2 row-checkbox" type="checkbox" value="{{ affaire.id }}">
+                                {% for a in affaireSuivis %}
+                                  {% if a.affaire_id == affaire.id %}
+                                    <span class="badge bg-success">Déjà suivi</span>
+                                  {% endif %}
                                 {% endfor %}
-                            </tbody>
+                              </td>
+                              <td class="text-center">{{ affaire.numOrdre }}</td>
+                              <td class="text-center"><b>{{ affaire.numAffaire }}</b></td>
+                              <td class="text-center">{{ affaire.numRg }}</td>
+                              <td>{{ affaire.demandeurs }}</td>
+                              <td>{{ affaire.defendeurs }}</td>
+                              <td>{{ affaire.objet }}</td>
+                              <td class="text-center">
+                                <a href="{% url 'affaires.details' affaire.idAffaire %}" class="btn btn-sm btn-outline-primary">
+                                  Décisions <i class="fas fa-arrow-right"></i>
+                                </a>
+                              </td>
+                            </tr>
+                            {% endfor %}
+                            {% endfor %}
+                          </tbody>
                         </table>
-                        
-                        <!-- Pagination unique -->
-                        <div class="pagination mt-3 d-flex justify-content-center">
-                            <ul class="pagination">
-                                {% if page_obj.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled"><span class="page-link">Précédent</span></li>
-                                {% endif %}
-                        
-                                {% for num in page_obj.paginator.page_range %}
-                                    {% if page_obj.number == num %}
-                                        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                                    {% endif %}
-                                {% endfor %}
-                        
-                                {% if page_obj.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a>
-                                    </li>
-                                {% else %}
-                                    <li class="page-item disabled"><span class="page-link">Suivant</span></li>
-                                {% endif %}
-                            </ul>
+                      </div>
+                  
+                      <!-- Pagination -->
+                      <nav class="d-flex justify-content-center my-3">
+                        <ul class="pagination pagination-sm">
+                          {% if page_obj.has_previous %}
+                          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Précédent</a></li>
+                          {% else %}
+                          <li class="page-item disabled"><span class="page-link">Précédent</span></li>
+                          {% endif %}
+                  
+                          {% for num in page_obj.paginator.page_range %}
+                          {% if page_obj.number == num %}
+                          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                          <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                          {% endif %}
+                          {% endfor %}
+                  
+                          {% if page_obj.has_next %}
+                          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Suivant</a></li>
+                          {% else %}
+                          <li class="page-item disabled"><span class="page-link">Suivant</span></li>
+                          {% endif %}
+                        </ul>
+                      </nav>
+                  
+                      <!-- Footer -->
+                      <div class="row mt-4">
+                        <div class="col-12 text-end">
+                          <p class="small mb-0">Conakry, {{ role.created_at|date:"j F Y" }}</p>
+                          <address class="text-muted mb-0" style="font-size: 0.85rem;">
+                            Le/La Greffier(e)
+                          </address>
                         </div>
-                        <div class="row">
-                            <div class="col-6">
-
-                            </div>
-                            <div class="col-6 text-end">
-                                <p class="h5">Conakry, {{ role.created_at|date:"j F Y" }}</p>
-                                <address style="font-size:12px ;">
-                                    Le/La Greffier(e)
-                                </address>
-                            </div>
-                        </div>
-
+                      </div>
+                  
                     </div>
-                </div>
+                  </div>
+                  
             </div>
         </div>
     </div>

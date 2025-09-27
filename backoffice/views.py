@@ -14,6 +14,10 @@ from .models import Ad
 from .forms import AdForm
 from django.http import JsonResponse
 from .utils import create_notification
+from django.contrib.auth.models import Group
+from django.core.mail import send_mail
+from django.conf import settings
+
 
 
 # Create your views here.
@@ -253,6 +257,8 @@ def approuver_demande(request, demande_id):
     demande.status = "approved"
     demande.save()
     # Ajouter l’utilisateur dans le groupe Contributeur
+    contributeur_group, created = Group.objects.get_or_create(name="Contributeur")
+    demande.demandeur.groups.add(contributeur_group)
 
      # Notifier Demandeur
     create_notification(
@@ -262,13 +268,110 @@ def approuver_demande(request, demande_id):
         message=f"Votre demande a été approuvée. Bienvenue dans l'équipe des contributeurs !",
         url='profile/'
     )
-    from django.contrib.auth.models import Group
-    contributeur_group, created = Group.objects.get_or_create(name="Contributeur")
-    demande.demandeur.groups.add(contributeur_group)
-
+    sendPositiveMail(request, demande)
     messages.success(request, f"La demande de {demande.demandeur.username} a été approuvée.")
     return redirect("liste_demandes")
 
+def sendPositiveMail(request, demande):
+
+    subject = "Félicitations ! Votre demande de contribution a été approuvée"
+
+    html_message = f"""
+    <html>
+    <head>
+      <style>
+        body {{
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333333;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            background-color: #143642; /* Couleur principale de Judicalex */
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }}
+        .header img {{
+            max-height: 50px;
+        }}
+        .content {{
+            padding: 30px 20px;
+        }}
+        .content h1 {{
+            font-size: 24px;
+            color: #143642;
+            margin-bottom: 20px;
+        }}
+        .content p {{
+            font-size: 16px;
+            margin-bottom: 15px;
+        }}
+        .button {{
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            background-color: #DFB23D;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }}
+        .footer {{
+            background-color: #f1f1f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #555555;
+        }}
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="http://judicalex-gn.org/static/start/assets/statics/eJustice_Logo.png" alt="Judicalex Logo">
+        </div>
+        <div class="content">
+          <h1>Félicitations {demande.demandeur.first_name} ! 🎉</h1>
+          <p>Votre demande de contribution a été approuvée. Vous faites désormais partie du groupe <strong>Contributeur</strong>.</p>
+          <p>En tant que contributeur, vous pouvez :</p>
+          <ul>
+            <li>Proposer de nouvelles articles</li>
+            <li>Accéder aux ressources réservées aux contributeurs</li>
+          </ul>
+          <p>N'hésitez pas à consulter votre profil pour commencer :</p>
+          <a href="https://judicalex-gn.org"  class="button">Accéder à mon profil</a>
+          <p>Merci pour votre engagement et bienvenue dans l'équipe !</p>
+        </div>
+        <div class="footer">
+          &copy; {demande.demandeur.date_joined.year} Judicalex. Tous droits réservés.
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    send_mail(
+        subject,
+        '',  # message texte brut laissé vide si on ne veut pas du fallback simple
+        settings.DEFAULT_FROM_EMAIL,
+        [demande.demandeur.email],
+        fail_silently=False,
+        html_message=html_message
+    )
+
+
+    
 # Rejeter une demande
 @login_required
 @user_passes_test(is_admin)
@@ -285,8 +388,109 @@ def rejeter_demande(request, demande_id):
         url='profile/'
     )
 
+    sendNegativeMail(request, demande)
+
     messages.warning(request, f"La demande de {demande.demandeur.username} a été rejetée.")
     return redirect("liste_demandes")
+
+
+def sendNegativeMail(request, demande):
+
+    subject = "Notification concernant votre demande de contribution"
+
+    html_message = f"""
+    <html>
+    <head>
+      <style>
+        body {{
+            font-family: 'Arial', sans-serif;
+            background-color: #f7f7f7;
+            color: #333333;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }}
+        .header {{
+            background-color: #143642; /* rouge pour rejet */
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }}
+        .header img {{
+            max-height: 50px;
+        }}
+        .content {{
+            padding: 30px 20px;
+        }}
+        .content h1 {{
+            font-size: 24px;
+            color: #B00020;
+            margin-bottom: 20px;
+        }}
+        .content p {{
+            font-size: 16px;
+            margin-bottom: 15px;
+        }}
+        .button {{
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            background-color: #DFB23D;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }}
+        .footer {{
+            background-color: #f1f1f1;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #555555;
+        }}
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <img src="http://judicalex-gn.org/static/start/assets/statics/eJustice_Logo.png" alt="Judicalex Logo">
+        </div>
+        <div class="content">
+          <h1>Bonjour {demande.demandeur.first_name},</h1>
+          <p>Nous avons examiné votre demande de contribution, mais malheureusement elle n'a pas été approuvée pour le moment.</p>
+          <p>Vous pouvez :</p>
+          <ul>
+            <li>Vérifier les critères de contribution.</li>
+            <li>Réessayer plus tard avec des propositions améliorées.</li>
+          </ul>
+          <p>Pour plus d'informations, vous pouvez consulter notre site :</p>
+          <a href="https://judicalex-gn.org" class="button">Consulter Judicalex</a>
+          <p>Nous vous remercions pour votre intérêt et votre engagement.</p>
+        </div>
+        <div class="footer">
+          &copy; {demande.demandeur.date_joined.year} Judicalex. Tous droits réservés.
+        </div>
+      </div>
+    </body>
+    </html>
+    """
+
+    send_mail(
+        subject,
+        '',  # message texte brut
+        settings.DEFAULT_FROM_EMAIL,
+        [demande.demandeur.email],
+        fail_silently=False,
+        html_message=html_message
+    )
 
 
 # ads/views.py
