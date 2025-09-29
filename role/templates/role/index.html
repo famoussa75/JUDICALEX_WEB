@@ -499,9 +499,9 @@
                                                 <div class="row">
                                                     <div class="col">
                                                      {% if user.is_authenticated %}
-                                                        <h3 class="mb-0"><a  href="{% url 'role.detail' role.idRole %}">{{role.juridiction}} - Rôle du {{role.dateEnreg}}</a></h3>
+                                                        <h3 class="mb-0"><a  href="{% url 'role.detail' role.idRole %}">{{role.juridiction}} - Rôle du {{role.typeAudience}} du {{role.dateEnreg}}</a></h3>
                                                     {% else %}
-                                                        <h3 class="mb-0"><a  href="#" data-bs-toggle="modal" data-bs-target="#modal-login">{{role.juridiction}} - Rôle du {{role.dateEnreg}}</a></h3>
+                                                        <h3 class="mb-0"><a  href="#" data-bs-toggle="modal" data-bs-target="#modal-login">{{role.juridiction}} - Rôle du {{role.typeAudience}} du {{role.dateEnreg}}</a></h3>
                                                     {% endif %}
                                                     </div>
                                                     <div class="col-auto fs-4 text-green">

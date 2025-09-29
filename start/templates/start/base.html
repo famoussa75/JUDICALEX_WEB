@@ -94,9 +94,11 @@
    <!-- Modal login -->
   <div id="modal-login" tabindex="-1" role="dialog" aria-hidden="true" {% if request.GET.msg_error_login %} aria-modal="true"  class="modal modal-blur fade modal-back show" {% else %} class="modal modal-blur fade" {% endif %}>
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+     
       <div class="modal-content" >
         
-        
+         <!-- Bouton croix -->
+        <button type="button" class="btn btn-close mb-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
             
           <form class="card card-md"  method="POST" action="{% url 'login' %}" >
             {% csrf_token %}
@@ -246,7 +248,9 @@
   <div id="modal-register" tabindex="-1" role="dialog" aria-hidden="true" {% if request.GET.msg_error_register %} aria-modal="true"  class="modal modal-blur fade modal-back show" {% else %} class="modal modal-blur fade" {% endif %}>
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
       <div class="modal-content" >
-        
+          <!-- Bouton croix -->
+          <button type="button" class="btn btn-close mb-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
+          
           <form class="card card-md"  method="POST" action="{% url 'register' %}" >
             {% csrf_token %}
               <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;">       

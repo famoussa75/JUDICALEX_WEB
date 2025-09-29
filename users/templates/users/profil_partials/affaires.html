@@ -24,6 +24,12 @@
                         Affaire N° <span class="text-primary">{{ affaire.affaire.numAffaire }}</span> du {{ affaire.affaire.role.juridiction }}
                     </a>
                 </h6>
+                <p>
+                  {{ affaire.affaire.demandeurs }} <b class="bg-yellow p-1">C/</b> {{ affaire.affaire.defendeurs }}
+                </p>
+                <p>
+                  <b>Object :</b>  {{ affaire.affaire.objet }}
+                </p>
                 <small class="text-muted">
                     Suivie depuis le {{ affaire.created_at|date:"d/m/Y" }}
                 </small>
