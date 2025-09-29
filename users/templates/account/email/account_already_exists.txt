@@ -1,0 +1,15 @@
+Bonjour {{ user_display }},
+
+Une tentative de connexion a été faite via Google pour l’adresse {{ email }}.
+
+Cependant, un compte existe déjà avec cet email sur Judicialex.
+
+👉 Si c’était vous :
+- Connectez-vous avec vos identifiants habituels.
+- Puis associez votre compte Google depuis votre profil.
+
+👉 Si ce n’était pas vous :
+- Ignorez ce message. Votre compte reste sécurisé.
+
+Merci,  
+L’équipe Judicialex
