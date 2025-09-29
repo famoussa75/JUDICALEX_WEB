@@ -14,6 +14,8 @@ from .models import AffaireRoles, Roles, Enrollement, Decisions, SuivreAffaire
 from datetime import datetime, timedelta, date
 from django.db.models import Count, Case, When, Value, CharField, Q, F, OuterRef, Subquery
 from django.utils.html import mark_safe
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 import re
 from time import sleep
 from users.models import Account, Notification
@@ -40,7 +42,7 @@ def index(request):
     available_years = list(range(2024, current_year + 1))
 
     today = datetime.today().strftime('%Y-%m-%d')
-    roles = Roles.objects.filter(dateEnreg__year=year).order_by('-created_at')
+    roles = Roles.objects.filter(dateEnreg__year=year).order_by('-dateEnreg')
     presidents = Presidents.objects.all().order_by('-created_at')
      # Nombre d'objets par page
     objets_par_page = 10
@@ -187,7 +189,7 @@ def colorize_found(query, text):
     return mark_safe(colored_text)
 
    
-
+@login_required
 def roleDetail(request, pk):
     search_query = request.GET.get('search', '')
     role = Roles.objects.filter(idRole=pk).first()
@@ -255,6 +257,7 @@ def roleDetail(request, pk):
     else:
         return HttpResponse("Template non disponible pour cette juridiction/type d'audience")
 
+@login_required
 def detailAffaire(request, idAffaire):
 
 

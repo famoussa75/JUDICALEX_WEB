@@ -5,7 +5,14 @@ from start.models import Juridictions
 from django.utils.timezone import now
 from django.dispatch import receiver
 from django.contrib.auth.models import User, Group
+import os
+import unicodedata
+from django.utils.text import slugify
 
+def contribution_upload_to(instance, filename):
+    name, ext = os.path.splitext(filename)
+    safe_name = slugify(unicodedata.normalize("NFKD", name))
+    return f"contribution_ids/{safe_name}{ext}"
 
 # … (import de Juridictions)
 
@@ -100,7 +107,7 @@ class ContributionRequest(models.Model):
     sujet = models.CharField(max_length=200)
     motivation = models.TextField()
     piece_identite = models.FileField(
-        upload_to="contribution_ids/",
+        upload_to=contribution_upload_to,
         verbose_name="Pièce d'identité (PDF ou image)"
     )
     created_at = models.DateTimeField(default=now)

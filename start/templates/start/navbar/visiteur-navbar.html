@@ -277,6 +277,12 @@
               <span class="nav-link-title"><i class="fa fa-user me-1"></i> Mon espace</span>
             </a>
           </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'backoffice.login' %}" id="link_actualite">
+              <span class="nav-link-title">Professionnel</span>
+            </a>
+          </li>
           {% endif %}
         </ul>
 

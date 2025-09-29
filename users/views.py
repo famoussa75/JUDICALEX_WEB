@@ -53,7 +53,8 @@ def signIn(request):
             auth_user = authenticate(username=user.username, password=password)
             if auth_user is not None:
                 login(request, auth_user)
-                return redirect('home')
+                next_url = request.POST.get("next") or request.GET.get("next") or "home"
+                return redirect(next_url)
             else:
                 error = True
                 msg_error_login = "Email ou mot de passe incorrecte."

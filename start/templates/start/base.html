@@ -101,7 +101,7 @@
           <form class="card card-md"  method="POST" action="{% url 'login' %}" >
             {% csrf_token %}
               <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;">
-
+                <input type="hidden" name="next" value="{{ request.path }}">
                  
                 <div class="row">
                    
@@ -217,7 +217,7 @@
                             </div>
                             
                             <div class="text-center">
-                              <a href="{% provider_login_url 'google' %}">
+                              <a href="{% provider_login_url 'google' process='login' next=request.path %}">
                                   <img src="{% static 'start/assets/statics/g.png' %}" style="width: 30px; height: 30px; flex-shrink: 0; aspect-ratio: 1/1;" alt="">
                               </a>
                               &nbsp;&nbsp;

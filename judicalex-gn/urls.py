@@ -22,7 +22,7 @@ urlpatterns = [
     path('ne-pas-suivre-affaire/', NePasSuivreAffaire, name='ne-pas-suivre-affaire'),
     path('blog/', include('blog.urls')),
     path('rccm/', include('rccm.urls')),
-    path('backoffice/', include('backoffice.urls')),
+    path('professionels/', include('backoffice.urls')),
 
     #API REST FOR FLUTTER APP
     path('api/signin/', api_sign_in, name='api_sign_in'),
