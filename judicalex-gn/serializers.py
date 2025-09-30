@@ -6,6 +6,10 @@ from blog.models import Post, Comment
 from role.models import Decisions, Roles,AffaireRoles, SuivreAffaire
 from users.models import Notification
 
+from django.contrib.auth.models import Group
+
+
+
 
 class NotificationSerializer(serializers.ModelSerializer):
     class Meta:
@@ -15,10 +19,15 @@ class NotificationSerializer(serializers.ModelSerializer):
 class AccountSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(write_only=True, required=False)  # Optionnel, seulement pour validation
     password = serializers.CharField(write_only=True, required=False)  # Optionnel, seulement pour mise à jour
+    groups = serializers.SlugRelatedField(
+        many=True,
+        slug_field="name",
+        read_only=True  # ✅ en lecture seule pour ne pas casser la création
+    )
 
     class Meta:
         model = Account
-        fields = ['id', 'username', 'first_name', 'last_name', 'photo', 'password', 'confirm_password', 'email', 'juridiction', 'is_superuser', 'is_staff']
+        fields = ['id', 'username', 'first_name', 'last_name', 'photo', 'password', 'confirm_password', 'email', 'juridiction', 'is_superuser', 'is_staff', 'groups', ]
         extra_kwargs = {
             'password': {'write_only': True}  # Assurez-vous que le mot de passe n'est pas renvoyé
         }
@@ -71,9 +80,13 @@ class AccountSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    user_first_name = serializers.CharField(source="user.first_name", read_only=True)
+    user_last_name = serializers.CharField(source="user.last_name", read_only=True)
+
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'user', 'content', 'created_at']
+        fields = ['id', 'post', 'user', 'user_first_name', 'user_last_name', 'content', 'created_at']
+
 
     def create(self, validated_data):
         request = self.context.get('request')
@@ -83,10 +96,11 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    author = AccountSerializer(read_only=True)  # auteur du post
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'created_at', 'category', 'comments','image']
+        fields = ['id', 'title', 'content', 'created_at', 'category', 'comments','image', 'author', 'slug']
 
 
 # API ROLES

@@ -112,7 +112,7 @@
                                             style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
                                     {% endif %}
 
-                                    {{ post.author }}
+                                    {{ post.author.first_name }} {{ post.author.last_name }}
                                 </span>
                                 <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
                                 <!-- Photo de profil -->  
