@@ -29,164 +29,289 @@ from django.db.models import IntegerField
 from backoffice.models import Ad
 
 
+import re
+import unicodedata
+
 
 import uuid
 
-# Create your views here.
+
+
 def index(request):
-   
+    # --------------------------
+    # Filtrage par année
+    # --------------------------
     current_year = date.today().year
     year = int(request.GET.get('year', current_year))
-
-    # Générer une liste d'années de 2010 à l'année courante
     available_years = list(range(2024, current_year + 1))
 
-    today = datetime.today().strftime('%Y-%m-%d')
-    roles = Roles.objects.filter(dateEnreg__year=year).order_by('-dateEnreg')
-    presidents = Presidents.objects.all().order_by('-created_at')
-     # Nombre d'objets par page
-    objets_par_page = 10
+    # --------------------------
+    # Récupération des filtres du formulaire
+    # --------------------------
+    selected_juridictions_csc = request.GET.getlist('juridictions_csc')  # ["CSC"] ou [ids]
+    selected_juridictions_ca = request.GET.getlist('juridictions_ca')    # [ids]
+    selected_juridictions_js = request.GET.getlist('juridictions_js')    # [ids]
+    selected_juridictions_tpi = request.GET.getlist('juridictions_tpi')  # [ids]
+    selected_juridictions_jp = request.GET.getlist('juridictions_jp')    # [ids]
 
-    paginator = Paginator(roles, objets_par_page)
+    selected_presidents = request.GET.getlist('presidents[]')              # liste de noms
+    filtre_date = request.GET.get('filtreDate')                          # date précise
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
 
-    # Récupérez le numéro de page à partir de la requête GET
+    # --------------------------
+    # Filtrage des rôles
+    # --------------------------
+    roles = Roles.objects.all().order_by('-dateEnreg')
+
+    # Filtrage par année
+    if year:
+        roles = roles.filter(dateEnreg__year=year)
+
+    # Filtrage Cour Suprême
+    if selected_juridictions_csc:
+        ids = [int(j) for j in selected_juridictions_csc if j.isdigit()]
+        if 'CSC' in selected_juridictions_csc:
+            roles = roles.filter(juridiction__typeTribunal='CSC') | roles.filter(juridiction__id__in=ids)
+        elif ids:
+            roles = roles.filter(juridiction__id__in=ids)
+
+    # Filtrage Cours d’appel
+    if selected_juridictions_ca:
+        ids = [int(j) for j in selected_juridictions_ca if j.isdigit()]
+        if ids:
+            roles = roles.filter(juridiction__id__in=ids)
+
+    # Filtrage Juridictions spécialisées
+    if selected_juridictions_js:
+        ids = [int(j) for j in selected_juridictions_js if j.isdigit()]
+        if ids:
+            roles = roles.filter(juridiction__id__in=ids)
+
+    # Filtrage TPI
+    if selected_juridictions_tpi:
+        ids = [int(j) for j in selected_juridictions_tpi if j.isdigit()]
+        if ids:
+            roles = roles.filter(juridiction__id__in=ids)
+
+    # Filtrage JP
+    if selected_juridictions_jp:
+        ids = [int(j) for j in selected_juridictions_jp if j.isdigit()]
+        if ids:
+            roles = roles.filter(juridiction__id__in=ids)
+
+    # Filtrage par présidents
+    if selected_presidents:
+        roles = roles.filter(president__in=selected_presidents)
+
+    # Filtrage par date précise
+    if filtre_date:
+        roles = roles.filter(dateEnreg=filtre_date)
+
+    # Filtrage par période
+    if start_date and end_date:
+        roles = roles.filter(dateEnreg__range=[start_date, end_date])
+
+    # --------------------------
+    # Pagination
+    # --------------------------
+    paginator = Paginator(roles, 10)  # 10 rôles par page
     page_number = request.GET.get('page')
-    
-    # Obtenez les objets pour la page demandée
     roles = paginator.get_page(page_number)
 
-    total_affaire = {}
-    for role in roles:
-        total_affaire[role.id] = AffaireRoles.objects.filter(role=role).count()
-    total_affaire_items = total_affaire.items()   
+    # --------------------------
+    # Total des affaires pour chaque rôle
+    # --------------------------
+    total_affaire = {role.id: AffaireRoles.objects.filter(role=role).count() for role in roles}
 
+    # --------------------------
+    # Données supplémentaires pour le template
+    # --------------------------
+    presidents = Presidents.objects.all().order_by('-created_at')
     juridictions = Juridictions.objects.all()
-    query = []
-
+    today = datetime.today().strftime('%Y-%m-%d')
     ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
     ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
 
     context = {
         'selected_year': year,
         'available_years': available_years,
-        'roles':roles,
-        'presidents':presidents,
-        'total_affaire_items':total_affaire_items,
-        'juridictions':juridictions,
-        'query':query,
-        'today':today,
-        'ads_header':ads_header,
-        'ads_lateral':ads_lateral,
-
+        'roles': roles,
+        'presidents': presidents,
+        'total_affaire_items': total_affaire.items(),
+        'juridictions': juridictions,
+        'today': today,
+        'ads_header': ads_header,
+        'ads_lateral': ads_lateral,
+        # Retours de sélection
+        'selected_juridictions_csc': selected_juridictions_csc,
+        'selected_juridictions_ca': selected_juridictions_ca,
+        'selected_juridictions_js': selected_juridictions_js,
+        'selected_juridictions_tpi': selected_juridictions_tpi,
+        'selected_juridictions_jp': selected_juridictions_jp,
+        'selected_presidents': selected_presidents,
+        'filtre_date': filtre_date,
+        'start_date': start_date,
+        'end_date': end_date,
     }
-    
-    return render(request, 'role/index.html',context)
 
+    return render(request, 'role/index.html', context)
+
+
+
+# -------------------------------
+# Fonction utilitaire pour normaliser les chaînes
+# -------------------------------
+def normalize_str(s):
+    """Supprime les accents et met en minuscule"""
+    if not s:
+        return ""
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', s)
+        if unicodedata.category(c) != 'Mn'
+    ).lower()
+
+# -------------------------------
+# Surbrillance insensible aux accents et à la casse
+# -------------------------------
+def colorize_found(query, text):
+    if not text or not query:
+        return text or ""
+
+    query_norm = normalize_str(query)
+    text_norm = normalize_str(text)
+
+    matches = []
+    start = 0
+    while True:
+        idx = text_norm.find(query_norm, start)
+        if idx == -1:
+            break
+        matches.append((idx, idx + len(query_norm)))
+        start = idx + len(query_norm)
+
+    if not matches:
+        return text
+
+    result = ""
+    last_idx = 0
+    for start_idx, end_idx in matches:
+        result += text[last_idx:start_idx] + f'<span style="color:red;">{text[start_idx:end_idx]}</span>'
+        last_idx = end_idx
+    result += text[last_idx:]
+
+    return mark_safe(result)
+
+# -------------------------------
+# Vue recherche
+# -------------------------------
 def recherche(request):
     today = datetime.today().strftime('%Y-%m-%d')
     juridictions = Juridictions.objects.all()
     query = request.GET.get('q')  # Récupérer la requête de recherche depuis l'URL
     results = []
-    affaireResults = []
-    total_affaire_items = []
     roleSearch = []
     affaireSearch = []
+    total_affaire_items = []
 
+    # -------------------------------
+    # Recherche
+    # -------------------------------
     if query:
+        # Roles
+        all_roles = Roles.objects.all().order_by('-created_at')
+        roleSearch = []
+        for role in all_roles:
+            # Vérifier chaque champ après normalisation
+            role_texts = [
+                str(role.dateEnreg.strftime('%d/%m/%Y')) if role.dateEnreg else '',
+                role.president or '',
+                role.juge or '',
+                role.greffier or '',
+                role.section or '',
+                role.juridiction.name if role.juridiction else ''
+            ]
+            if any(normalize_str(query) in normalize_str(field) for field in role_texts):
+                roleSearch.append(role)
 
-        roleSearch = Roles.objects.filter(
-            Q(dateEnreg__icontains=query) | 
-            Q(president__icontains=query) | 
-            Q(juge__icontains=query) | 
-            Q(juridiction__name__icontains=query) | 
-            Q(greffier__icontains=query) 
-        ).order_by('-created_at')
+        # AffaireRoles
+        all_affaires = AffaireRoles.objects.all().order_by('-created_at').select_related('role')
+        affaireSearch = []
+        for affaire in all_affaires:
+            affaire_texts = [
+                affaire.numRg or '',
+                affaire.demandeurs or '',
+                affaire.defendeurs or '',
+                affaire.decision or '',
+                affaire.objet or '',
+                affaire.natureInfraction or ''
+            ]
+            if any(normalize_str(query) in normalize_str(field) for field in affaire_texts):
+                affaireSearch.append(affaire)
 
-        affaireSearch = AffaireRoles.objects.filter(
-            Q(numRg__icontains=query) | 
-            Q(demandeurs__icontains=query) | 
-            Q(defendeurs__icontains=query) | 
-            Q(decision__icontains=query) | 
-            Q(objet__icontains=query) 
-        ).order_by('-created_at').select_related('role')
-
-        # Fusionner les deux résultats
-        results = list(affaireSearch) + list(roleSearch)      
-       
-         # Nombre d'objets par page
-        objets_par_page = 8
-
-        paginator = Paginator(results, objets_par_page)
-
-        # Récupérez le numéro de page à partir de la requête GET
-        page_number = request.GET.get('page')
-
-        
-        # Obtenez les objets pour la page demandée
-        results = paginator.get_page(page_number)
-
-        total_affaire = {}
-        for role in roleSearch:
-            total_affaire[role.id] = AffaireRoles.objects.filter(role=role).count()
-        total_affaire_items = total_affaire.items()   
-
-         # Process results to add colorized text
-        for role in roleSearch:
-            if role:
-                role.colored_dateEnreg = colorize_found(query, str(role.dateEnreg.strftime('%d/%m/%Y')))
-                role.colored_president = colorize_found(query, role.president)
-                role.colored_juge = colorize_found(query, role.juge)
-                role.colored_greffier = colorize_found(query, role.greffier)
-                role.colored_section = colorize_found(query, role.section)
-                # Add colorized text for Juridiction if applicable
-                if role.juridiction:
-                    role.colored_juridiction = colorize_found(query, role.juridiction.name)
-                # Process results to add colorized text
-
-
-        for affaire in affaireSearch:
-            if affaire:
-                affaire.colored_demandeurs = colorize_found(query, affaire.demandeurs)
-                affaire.colored_defendeurs = colorize_found(query, affaire.defendeurs)
-                affaire.colored_numRg = colorize_found(query, affaire.numRg) if affaire.numRg is not None else ''
-                affaire.colored_natureInfraction = colorize_found(query, affaire.natureInfraction)
-                affaire.colored_objet = colorize_found(query, affaire.objet)
-
-      
+        # Fusionner les résultats
+        results = list(affaireSearch) + list(roleSearch)
 
     else:
-        results = Roles.objects.all().order_by('-created_at')  # Renvoyer tous les éléments si aucune recherche n'est spécifiée
+        results = Roles.objects.all().order_by('-created_at')
+        roleSearch = results
 
-        objets_par_page = 8
+    # -------------------------------
+    # Pagination
+    # -------------------------------
+    objets_par_page = 8
+    paginator = Paginator(results, objets_par_page)
+    page_number = request.GET.get('page')
+    results = paginator.get_page(page_number)
 
-        paginator = Paginator(results, objets_par_page)
+    # -------------------------------
+    # Total des affaires par rôle
+    # -------------------------------
+    total_affaire = {}
+    for role in roleSearch:
+        total_affaire[role.id] = AffaireRoles.objects.filter(role=role).count()
+    total_affaire_items = total_affaire.items()
 
-        # Récupérez le numéro de page à partir de la requête GET
-        page_number = request.GET.get('page')
-        
-        # Obtenez les objets pour la page demandée
-        results = paginator.get_page(page_number)
+    # -------------------------------
+    # Surbrillance
+    # -------------------------------
+    if query:
+        for role in roleSearch:
+            role.colored_dateEnreg = colorize_found(query, role.dateEnreg.strftime('%d/%m/%Y') if role.dateEnreg else '')
+            role.colored_president = colorize_found(query, role.president)
+            role.colored_juge = colorize_found(query, role.juge)
+            role.colored_greffier = colorize_found(query, role.greffier)
+            role.colored_section = colorize_found(query, role.section)
+            if role.juridiction:
+                role.colored_juridiction = colorize_found(query, role.juridiction.name)
 
-        total_affaire = {}
-        for role in results:
-            total_affaire[role.id] = AffaireRoles.objects.filter(role=role).count()
-        total_affaire_items = total_affaire.items()   
+        for affaire in affaireSearch:
+            affaire.colored_demandeurs = colorize_found(query, affaire.demandeurs)
+            affaire.colored_defendeurs = colorize_found(query, affaire.defendeurs)
+            affaire.colored_numRg = colorize_found(query, affaire.numRg)
+            affaire.colored_natureInfraction = colorize_found(query, affaire.natureInfraction)
+            affaire.colored_objet = colorize_found(query, affaire.objet)
 
+    # -------------------------------
+    # Contexte
+    # -------------------------------
+    presidents = Presidents.objects.all().order_by('-created_at')
+    current_year = date.today().year
+    year = int(request.GET.get('year', current_year))
+    available_years = list(range(2024, current_year + 1))
     context = {
-        'results':results,
-        'roleSearch':roleSearch,
-        'affaireSearch':affaireSearch,
-        'total_affaire_items':total_affaire_items,
-        'juridictions':juridictions,
-        'query':query,
-        'today':today
+        'results': results,
+        'roleSearch': roleSearch,
+        'affaireSearch': affaireSearch,
+        'total_affaire_items': total_affaire_items,
+        'juridictions': juridictions,
+        'presidents': presidents,
+        'available_years': available_years,
+        'query': query,
+        'today': today
     }
-    return render(request, 'role/index.html',context)
+    return render(request, 'role/index.html', context)
 
-
-def colorize_found(query, text):
-    colored_text = re.sub(r'(' + re.escape(query) + r')', r'<span style="color:red;">\1</span>', text, flags=re.IGNORECASE)
-    return mark_safe(colored_text)
 
    
 @login_required

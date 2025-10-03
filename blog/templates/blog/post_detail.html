@@ -148,7 +148,24 @@
                     {% for comment in comments %}
                         <div class="comment mb-3 p-2 bg-light rounded">
                             <p>
-                                <strong><i class="fa fa-user"></i> {{ comment.user.first_name }} {{ comment.user.last_name }}</strong> 
+                                <strong> 
+                                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
+                                        {% if comment.user.photo %}
+                                            <img src="{{ comment.user.photo.url }}"
+                                                alt="{{ comment.user.username }}"
+                                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                        {% elif comment.author|social_avatar %}
+                                            <img src="{{ comment.user|social_avatar }}"
+                                                alt="{{ post.author.username }}"
+                                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                        {% else %}
+                                            <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                                                alt="{{ comment.user.username }}"
+                                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                                        {% endif %}
+
+                                    </span> 
+                                {{ comment.user.first_name }} {{ comment.user.last_name }}</strong> 
                                 - {{ comment.created_at }}
                             </p>
                 
@@ -157,12 +174,18 @@
                             </div>
                 
                             {% if request.user == comment.user %}
-                                <div class="mt-2">
-                                    <button class="btn btn-sm btn-primary" onclick="toggleForm({{ comment.id }})">Modifier</button>
-                                    <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ comment.id }}">
-                                        Supprimer
-                                    </button>
-                                </div>
+                            <div class="mt-2 d-flex justify-content-end gap-2">
+                                <!-- Bouton Modifier -->
+                                <button class="btn btn-sm" onclick="toggleForm({{ comment.id }})" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            
+                                <!-- Bouton Supprimer -->
+                                <button class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#deleteModal{{ comment.id }}" title="Supprimer">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                            
                                 <!-- Modal de confirmation -->
                                 <div class="modal fade" id="deleteModal{{ comment.id }}" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
@@ -205,10 +228,6 @@
                     {% endfor %}
                 </div>
                 
-               
-                
-                
-
                  <!-- Formulaire d'ajout de commentaire -->
                  {% if request.user.is_authenticated %}
                      <h4><i class="fa fa-plus-circle"></i> Ajouter un commentaire</h4>
@@ -238,6 +257,7 @@
             
             
             <div id="similarPostsCarousel" class="carousel slide" data-bs-ride="carousel">
+
                 <div class="carousel-inner">
               
                   {% for post in similar_posts %}

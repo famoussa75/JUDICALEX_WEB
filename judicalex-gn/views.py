@@ -17,7 +17,8 @@ from rest_framework.response import Response
 from datetime import datetime
 from django.contrib.auth import authenticate, login
 from users.models import Account, Notification
-from .serializers import NotificationSerializer,AccountSerializer, AffaireRolesSerializer, DecisionsSerializer, SuivreAffaireSerializer, SuivreAffaireSerializerMesAffaires
+from backoffice.models import Ad
+from .serializers import AdSerializer, NotificationSerializer,AccountSerializer, AffaireRolesSerializer, DecisionsSerializer, SuivreAffaireSerializer, SuivreAffaireSerializerMesAffaires
 from django.contrib.auth import logout
 from blog.models import Post, Comment
 from start.models import MessageDefilant
@@ -29,6 +30,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404
 from email.mime.multipart import MIMEMultipart
+
 
 
 @api_view(['POST'])
@@ -440,4 +442,18 @@ def ges_message(request, pk=None, action=None):
         'form_title': form_title,
         'edit_mode': pk and action == 'edit',
         'instance_id': instance.pk if instance else None,
+    })
+
+
+@api_view(['GET'])
+def ads_list(request):
+    ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
+    ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
+
+    serializer_header = AdSerializer(ads_header, many=True)
+    serializer_lateral = AdSerializer(ads_lateral, many=True)
+
+    return Response({
+        'header': serializer_header.data,
+        'sidebar': serializer_lateral.data
     })

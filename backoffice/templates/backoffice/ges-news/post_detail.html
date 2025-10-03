@@ -232,7 +232,7 @@
               <div class="list-group-item shadow-sm mb-3 rounded-3 border-0">
                 <div class="d-flex justify-content-between align-items-start mb-2">
                   <div>
-                    <strong>{{ comment.user }}</strong>
+                    <strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong>
                     {% if comment.user.is_staff %}
                       <span class="badge bg-info text-dark ms-2">Admin</span>
                     {% endif %}
@@ -303,7 +303,7 @@
                 <div class="list-group-item shadow-sm mb-3 rounded-3 border-0">
                   <div class="d-flex justify-content-between align-items-start mb-2">
                     <div>
-                      <strong>{{ comment.user }}</strong>
+                      <strong>{{ comment.user.first_name }} {{ comment.user.last_name }}</strong>
                       {% if comment.user.is_staff %}
                         <span class="badge bg-info text-dark ms-2">Admin</span>
                       {% endif %}

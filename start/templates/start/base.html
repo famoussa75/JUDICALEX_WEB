@@ -48,11 +48,11 @@
 
    
       {% for message in messages %}
-      <div style="margin-bottom: -20px;">
+      <div class="mb-0">
         {% if message.tags == "error" %}
         <div class="alert alert-danger alert-dismissible fade show rounded-5 bg-danger" role="alert">
           <strong  style="color: white;">{{ message }}</strong>
-          <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         
         {% elif message.tags == "success" %}
@@ -61,7 +61,7 @@
             {{ message }}
             <i class="fa fa-check-circle"></i>
           </strong>
-          <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
         {% elif message.tags == "info" %}
@@ -70,7 +70,7 @@
             {{ message }}
             <i class="fa fa-check-circle"></i>
           </strong>
-          <!-- <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> -->
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
 
         {% endif %}

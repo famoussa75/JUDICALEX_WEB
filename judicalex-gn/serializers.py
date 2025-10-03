@@ -5,10 +5,16 @@ from users.models import Account
 from blog.models import Post, Comment
 from role.models import Decisions, Roles,AffaireRoles, SuivreAffaire
 from users.models import Notification
+from backoffice.models import Ad
+
 
 from django.contrib.auth.models import Group
 
 
+class AdSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ad
+        fields = ['id', 'title', 'image', 'link', 'position', 'active']  # ajouter les champs que tu veux exposer
 
 
 class NotificationSerializer(serializers.ModelSerializer):
@@ -128,7 +134,6 @@ class AffaireRolesSerializer(serializers.ModelSerializer):
             'idAffaire',  # UUIDField
             'numOrdre',  # Numéro d'ordre
             'numRg',     # Numéro Rg
-            'numRp',     # Numéro Rp
             'objet',     # Objet
             'mandatDepot',  # Mandat de dépôt
             'detention',    # Detention

@@ -8,6 +8,7 @@ from django.core.paginator import Paginator
 from backoffice.models import Ad
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from users.models import Notification
 
 
 def post_list(request):
@@ -45,6 +46,7 @@ def post_detail(request, slug):
 
     similar_posts = Post.objects.filter(category = post.category,status='published')
 
+    print(post.author)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
@@ -52,6 +54,33 @@ def post_detail(request, slug):
             comment.post = post
             comment.user = request.user
             comment.save()
+
+
+             # 🔔 Notifier l’auteur du post (sauf si c’est lui qui commente)
+            if post.author != request.user:
+                Notification.objects.create(
+                    recipient=post.author,
+                    type="info",
+                    message=f"{request.user.first_name} {request.user.last_name} a commenté votre article : {post.title}",
+                    url=f"/blog/post/{post.slug}/"
+                )
+
+            # 🔔 Notifier les autres commentateurs uniques (sauf l'auteur du commentaire actuel)
+            other_commenters = (
+                Comment.objects.filter(post=post)
+                .exclude(user=request.user)  # pas l'auteur du commentaire actuel
+                .values_list("user", flat=True)
+                .distinct()
+            )
+
+            for user_id in other_commenters:
+                if user_id != post.author.id:  # éviter double notif à l'auteur déjà notifié
+                    Notification.objects.create(
+                        recipient_id=user_id,
+                        type="info",
+                        message=f"{request.user.first_name} {request.user.last_name} a aussi commenté l'article : {post.title}",
+                        url=f"/blog/post/{post.slug}/"
+                    )
             return redirect('blog.post_detail', slug=slug)
     else:
         form = CommentForm()

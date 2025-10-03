@@ -12,25 +12,39 @@
     </div>
     {% endif %}
     
-    {% for notification in notifications %}
-      <div class="alert d-flex justify-content-between align-items-center 
-                  {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %}">
-        
-        <div>
-          {{ notification.message }}
-          <small class="d-block text-muted">{{ notification.timestamp }}</small>
+    <div class="notifications-container" style="max-height: 500px; overflow-y: auto;">
+      {% for notification in notifications %}
+        <div class="alert d-flex justify-content-between align-items-center 
+                    {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %}">
+          
+          <div>
+            {{ notification.message }}
+            <small class="d-block text-muted">{{ notification.timestamp }}</small>
+          </div>
+      
+          <div class="d-flex gap-2">
+            {% if notification.url %}
+              {% if notification.url != 'profile/' %}
+                <a href="{{ notification.url }}" class="btn btn-sm btn-primary">
+                  <i class="fa fa-eye me-1"></i> Voir
+                </a>
+              {% endif %}
+            {% endif %}
+      
+            {% if not notification.is_read %}
+              <form method="post" action="{% url 'mark_as_read' notification.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-success">
+                  <i class="fa fa-check me-1"></i> Marquer comme lu
+                </button>
+              </form>
+            {% endif %}
+          </div>
         </div>
-  
-        {% if not notification.is_read %}
-        <form method="post" action="{% url 'mark_as_read' notification.id %}">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-sm btn-outline-success">
-            <i class="fa fa-check me-1"></i> Marquer comme lu
-          </button>
-        </form>
-        {% endif %}
-      </div>
-    {% empty %}
-      <p class="text-muted">Aucune notification.</p>
-    {% endfor %}
+      {% empty %}
+        <p class="text-muted">Aucune notification.</p>
+      {% endfor %}
+    </div>
+    
+    
   </div>
