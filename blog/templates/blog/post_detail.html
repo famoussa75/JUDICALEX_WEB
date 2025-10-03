@@ -118,7 +118,7 @@
                                 <!-- Photo de profil -->  
                             </div>
                             {% else %}
-                            <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+                            <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
                                 <span style="font-family: Jost; font-weight: 700; color: #143642;">
 
                                         <img src="{% static 'start/assets/statics/logo-icon.png' %}"
@@ -129,6 +129,28 @@
                                 </span>
                                 <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
                                 <!-- Photo de profil -->  
+                            </div>
+
+                            <div class="d-flex gap-2 mt-2">
+                                <span style="font-family: Jost; font-size: 14px; color: #888;">
+                                    <i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)
+                                </span>
+                                <p style="font-size: 13px; color: gray;">
+                                    <i class="fa fa-share-alt"></i> {{ post.shares }} partage(s)
+                                </p>
+                                <!-- Boutons de partage -->
+                                <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" title="Partager sur Facebook">
+                                    <i class="fab fa-facebook text-primary"></i>
+                                </a>
+                                <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" title="Partager sur X">
+                                    <i class="fab fa-twitter text-info"></i>
+                                </a>
+                                <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" title="Partager sur WhatsApp">
+                                    <i class="fab fa-whatsapp text-success"></i>
+                                </a>
+                                <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" title="Partager sur LinkedIn">
+                                    <i class="fab fa-linkedin text-primary"></i>
+                                </a>
                             </div>
 
                             {% endif %}

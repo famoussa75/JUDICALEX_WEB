@@ -9,6 +9,8 @@ from backoffice.models import Ad
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Notification
+from django.urls import reverse
+from django.http import JsonResponse
 
 
 def post_list(request):
@@ -133,3 +135,26 @@ def comment_delete(request, pk):
         return redirect('blog.post_detail', slug=comment.post.slug)
 
     return redirect('blog.post_detail', slug=comment.post.slug)
+
+
+
+def share_post(request, slug, platform):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Incrémente le compteur de partage
+    post.shares += 1
+    post.save(update_fields=["shares"])
+
+    post_url = request.build_absolute_uri(reverse("blog.post_detail", args=[post.slug]))
+
+    # Redirection selon la plateforme choisie
+    if platform == "facebook":
+        return redirect(f"https://www.facebook.com/sharer/sharer.php?u={post_url}")
+    elif platform == "twitter":
+        return redirect(f"https://twitter.com/intent/tweet?url={post_url}&text={post.title}")
+    elif platform == "whatsapp":
+        return redirect(f"https://api.whatsapp.com/send?text={post.title} - {post_url}")
+    elif platform == "linkedin":
+        return redirect(f"https://www.linkedin.com/sharing/share-offsite/?url={post_url}")
+    
+    return redirect(post_url)  # fallback

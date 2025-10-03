@@ -139,10 +139,34 @@
                                 {{ last_post_news.first.content|striptags|truncatechars:900|safe }}
                             </p>
                         </div>
+                         <!-- Ligne Commentaires + Partage + Lire plus -->
                         <div class="d-flex justify-content-between align-items-center mt-4">
-                            <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> {{ last_post_news.first.comments.count }} commentaire(s)</span>
+                            <span style="font-family: Jost; font-size: 14px; color: #888;">
+                                <i class="fa fa-comment"></i> {{ last_post_news.first.comments.count }} commentaire(s)
+                            </span>
+                           
                             <a href="{% url 'blog.post_detail' last_post_news.first.slug %}" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
                         </div>
+                        <div class="d-flex gap-2 mt-3">
+                            <p style="font-size: 13px; color: gray;">
+                                <i class="fa fa-share-alt"></i> {{ last_post_news.first.shares }} partage(s)
+                            </p>
+                            <!-- Boutons de partage -->
+                            <a href="{% url 'share_post' last_post_news.first.slug 'facebook' %}" target="_blank" title="Partager sur Facebook">
+                                <i class="fab fa-facebook text-primary"></i>
+                            </a>
+                            <a href="{% url 'share_post' last_post_news.first.slug 'twitter' %}" target="_blank" title="Partager sur X">
+                                <i class="fab fa-twitter text-info"></i>
+                            </a>
+                            <a href="{% url 'share_post' last_post_news.first.slug 'whatsapp' %}" target="_blank" title="Partager sur WhatsApp">
+                                <i class="fab fa-whatsapp text-success"></i>
+                            </a>
+                            <a href="{% url 'share_post' last_post_news.first.slug 'linkedin' %}" target="_blank" title="Partager sur LinkedIn">
+                                <i class="fab fa-linkedin text-primary"></i>
+                            </a>
+                        </div>
+
+
                     </div>
                 </div>
             </div>
