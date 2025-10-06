@@ -106,7 +106,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'created_at', 'category', 'comments','image', 'author', 'slug']
+        fields = ['id', 'title', 'content', 'created_at', 'category', 'comments','image', 'author', 'slug', 'status', 'shares']
 
 
 # API ROLES
@@ -134,6 +134,7 @@ class AffaireRolesSerializer(serializers.ModelSerializer):
             'idAffaire',  # UUIDField
             'numOrdre',  # Numéro d'ordre
             'numRg',     # Numéro Rg
+            'numAffaire',     # Numéro Rg
             'objet',     # Objet
             'mandatDepot',  # Mandat de dépôt
             'detention',    # Detention
