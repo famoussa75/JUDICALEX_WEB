@@ -140,21 +140,31 @@ def comment_delete(request, pk):
 
 def share_post(request, slug, platform):
     post = get_object_or_404(Post, slug=slug)
-
-    # Incrémente le compteur de partage
     post.shares += 1
     post.save(update_fields=["shares"])
 
     post_url = request.build_absolute_uri(reverse("blog.post_detail", args=[post.slug]))
+    title = post.title
 
-    # Redirection selon la plateforme choisie
+    # Choisir l’URL de partage (mobile app ou web)
     if platform == "facebook":
-        return redirect(f"https://www.facebook.com/sharer/sharer.php?u={post_url}")
+        app_url = f"fb://facewebmodal/f?href={post_url}"
+        web_url = f"https://www.facebook.com/sharer/sharer.php?u={post_url}"
     elif platform == "twitter":
-        return redirect(f"https://twitter.com/intent/tweet?url={post_url}&text={post.title}")
+        app_url = f"twitter://post?message={title} {post_url}"
+        web_url = f"https://twitter.com/intent/tweet?url={post_url}&text={title}"
     elif platform == "whatsapp":
-        return redirect(f"https://api.whatsapp.com/send?text={post.title} - {post_url}")
+        app_url = f"whatsapp://send?text={title} {post_url}"
+        web_url = f"https://api.whatsapp.com/send?text={title} {post_url}"
     elif platform == "linkedin":
-        return redirect(f"https://www.linkedin.com/sharing/share-offsite/?url={post_url}")
-    
-    return redirect(post_url)  # fallback
+        # LinkedIn n’a pas de schéma d’app universel
+        app_url = web_url = f"https://www.linkedin.com/sharing/share-offsite/?url={post_url}"
+    else:
+        app_url = web_url = post_url
+
+    # Rendre une page qui tente d’ouvrir l’app, sinon fallback web
+    return render(request, "blog/share_redirect.html", {
+        "app_url": app_url,
+        "web_url": web_url,
+    })
+

@@ -132,25 +132,45 @@
                             </div>
 
                             <div class="d-flex gap-2 mt-2">
-                                <span style="font-family: Jost; font-size: 14px; color: #888;">
-                                    <i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)
-                                </span>
-                                <p style="font-size: 13px; color: gray;">
-                                    <i class="fa fa-share-alt"></i> {{ post.shares }} partage(s)
-                                </p>
-                                <!-- Boutons de partage -->
-                                <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" title="Partager sur Facebook">
-                                    <i class="fab fa-facebook text-primary"></i>
-                                </a>
-                                <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" title="Partager sur X">
-                                    <i class="fab fa-twitter text-info"></i>
-                                </a>
-                                <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" title="Partager sur WhatsApp">
-                                    <i class="fab fa-whatsapp text-success"></i>
-                                </a>
-                                <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" title="Partager sur LinkedIn">
-                                    <i class="fab fa-linkedin text-primary"></i>
-                                </a>
+                               
+                                  <!-- Carte Partage avec nombre de partages -->
+                                <div class="share-section mt-3 position-relative">
+                                    <div class="d-flex align-items-center justify-content-end gap-3">
+                                        <!-- Nombre de commentaires -->
+                                        <span style="font-family: Jost; font-size: 14px; color: #888;">
+                                            <i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)
+                                        </span>
+                                    
+                                        <!-- Nombre de partages -->
+                                        <span style="font-size: 13px; color: gray;">
+                                            <i class="fa fa-share-alt"></i> {{ post.shares }} partage(s)
+                                        </span>
+                                    
+                                        <!-- Bouton Partager -->
+                                        <button class="btn-share-pro" onclick="toggleShareOverlay(this)">
+                                            <i class="fa fa-share-alt"></i> Partager
+                                        </button>
+                                    </div>
+                                    
+                                
+                                    <!-- Overlay menu -->
+                                    <div class="share-overlay">
+                                        <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" class="fb" title="Facebook">
+                                            <i class="fab fa-facebook-f"></i>
+                                        </a>
+                                        <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" class="tw" title="X (Twitter)">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                        <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" class="wa" title="WhatsApp">
+                                            <i class="fab fa-whatsapp"></i>
+                                        </a>
+                                        <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" class="li" title="LinkedIn">
+                                            <i class="fab fa-linkedin-in"></i>
+                                        </a>
+                                    </div>
+
+                                </div>
+  
                             </div>
 
                             {% endif %}

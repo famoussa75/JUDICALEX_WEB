@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partage en cours...</title>
+<script>
+    // Tente d’ouvrir l’app
+    window.location.href = "{{ app_url }}";
+
+    // Si rien ne se passe après 1s, ouvre la version web
+    setTimeout(() => {
+        window.location.href = "{{ web_url }}";
+    }, 1000);
+</script>
+</head>
+<body style="font-family: Jost; text-align: center; margin-top: 80px;">
+    <p>⏳ Tentative d’ouverture de l’application...</p>
+    <p>Si rien ne se passe, <a href="{{ web_url }}">cliquez ici</a>.</p>
+</body>
+</html>

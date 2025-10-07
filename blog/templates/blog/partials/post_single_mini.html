@@ -65,27 +65,136 @@
                     <span style="font-family: Jost; font-size: 14px; color: #888;"><i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)</span>
                     <a href="{% url 'blog.post_detail' post.slug %}" style="color: #DFB23D; font-weight: 700;">Lire plus</a>
                     </div>
-                    <div class="d-flex gap-2 mt-3">
-                        <p style="font-size: 13px; color: gray;">
+                     <!-- Carte Partage avec nombre de partages -->
+                    <div class="share-section mt-3 position-relative">
+                        <div class="d-flex justify-content-between align-items-center">
+                        <!-- Nombre de partages -->
+                        <span style="font-size: 13px; color: gray;">
                             <i class="fa fa-share-alt"></i> {{ post.shares }} partage(s)
-                        </p>
-                        <!-- Boutons de partage -->
-                        <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" title="Partager sur Facebook">
-                            <i class="fab fa-facebook text-primary"></i>
+                        </span>
+                    
+                        <!-- Bouton Partager -->
+                        <button class="btn-share-pro" onclick="toggleShareOverlay(this)">
+                            <i class="fa fa-share-alt"></i> Partager
+                        </button>
+                        </div>
+                    
+                        <!-- Overlay menu -->
+                        <div class="share-overlay">
+                        <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" class="fb" title="Facebook">
+                            <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" title="Partager sur X">
-                            <i class="fab fa-twitter text-info"></i>
+                        <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" class="tw" title="X (Twitter)">
+                            <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" title="Partager sur WhatsApp">
-                            <i class="fab fa-whatsapp text-success"></i>
+                        <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" class="wa" title="WhatsApp">
+                            <i class="fab fa-whatsapp"></i>
                         </a>
-                        <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" title="Partager sur LinkedIn">
-                            <i class="fab fa-linkedin text-primary"></i>
+                        <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" class="li" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
                         </a>
+
+                        </div>
                     </div>
                 </div>
             </div>
     </div>
 
-        
+         <!-- ===== CSS ===== -->
+  <style>
+    .share-section {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .btn-share-pro {
+      background: #143642;
+      color: #DFB23D;
+      border: none;
+      border-radius: 25px;
+      font-family: Jost;
+      font-weight: 600;
+      padding: 5px 14px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-share-pro:hover {
+      background: #DFB23D;
+      color: #143642;
+    }
+    
+    /* Overlay menu */
+    .share-overlay {
+      position: absolute;
+      top: -50px; /* ajustable selon carte */
+      right: 0;
+      background: #fff;
+      border-radius: 10px;
+      padding: 8px;
+      display: flex;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    
+    .share-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    
+    .share-overlay a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 16px;
+      transition: transform 0.2s;
+    }
+    .share-overlay a:hover {
+      transform: scale(1.2);
+    }
+    
+    /* Couleurs par réseau */
+    .fb { background: #3b5998; }
+    .tw { background: #1da1f2; }
+    .wa { background: #25d366; }
+    .li { background: #0077b5; }
+    .copy-link { background: #143642; }
+    
+    /* Responsive */
+    @media (max-width: 576px) {
+      .share-overlay {
+        top: 40px;
+        right: 0;
+      }
+    }
+    </style>
+    
+    <!-- ===== JS ===== -->
+    <script>
+    function toggleShareOverlay(btn) {
+      const overlay = btn.parentElement.nextElementSibling;
+      overlay.classList.toggle('show');
+    }
+    
+
+    
+    // Fermer overlay si clic en dehors
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.share-overlay').forEach(menu => {
+        if (!menu.contains(e.target) && !menu.previousElementSibling.contains(e.target)) {
+          menu.classList.remove('show');
+        }
+      });
+    });
+    </script>
    
