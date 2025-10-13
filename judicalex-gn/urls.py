@@ -4,7 +4,7 @@ from start import views
 from django.conf.urls.static import static
 from django.conf import settings
 from role.views import NePasSuivreAffaire,suivreAffaire
-from .views import DeleteNotificationsAPIView, MarkNotificationAsReadAPIView, ads_list, allNotificationAPIView, api_sign_in, api_sign_up, api_sign_out,api_delete_account,api_update_account, condition_generale, detail_affaire_api,get_user,mes_affaires_suivies_api, PostDetailAPIView, PostListAPIView, CommentCreateAPIView, RolesListAPI, ne_pas_suivre_affaire_api, politique, role_detail_api, suivre_affaire_api, send_contact_email, about_us,notificationAPIView, ges_message
+from .views import DeleteNotificationsAPIView, MarkNotificationAsReadAPIView, ads_list, allNotificationAPIView, api_sign_in, api_sign_up, api_sign_out,api_delete_account,api_update_account, condition_generale, create_comment_api, delete_comment_api, detail_affaire_api, get_comments_api,get_user,mes_affaires_suivies_api, PostDetailAPIView, PostListAPIView, RolesListAPI, ne_pas_suivre_affaire_api, politique, role_detail_api, suivre_affaire_api, send_contact_email, about_us,notificationAPIView, ges_message, update_comment_api
 
 
 urlpatterns = [
@@ -35,7 +35,11 @@ urlpatterns = [
 
     path('api/posts/', PostListAPIView.as_view(), name='post_list_api'),
     path('api/posts/<int:pk>/', PostDetailAPIView.as_view(), name='post_detail_api'),
-    path('api/posts/<int:pk>/comment/', CommentCreateAPIView.as_view(), name='add_comment_api'),
+    path('api/posts/<int:post_id>/comments/', create_comment_api, name='create_comment_api'),
+    path('api/posts/<int:post_id>/comments/list/', get_comments_api, name='get_comments_api'),
+    path('api/comments/<int:comment_id>/update/', update_comment_api, name='update_comment_api'),
+    path('api/comments/<int:comment_id>/delete/', delete_comment_api, name='delete_comment_api'),
+
 
     path('api/roles/', RolesListAPI.as_view(), name='roles-list'),
     path('api/role/<int:pk>/', role_detail_api, name='role-detail-api'),

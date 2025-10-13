@@ -6,6 +6,8 @@ from blog.models import Post, Comment
 from role.models import Decisions, Roles,AffaireRoles, SuivreAffaire
 from users.models import Notification
 from backoffice.models import Ad
+from django.templatetags.static import static
+from django.conf import settings
 
 
 from django.contrib.auth.models import Group
@@ -88,18 +90,66 @@ class AccountSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
     user_first_name = serializers.CharField(source="user.first_name", read_only=True)
     user_last_name = serializers.CharField(source="user.last_name", read_only=True)
+    user_photo = serializers.SerializerMethodField()  # ✅ on passe par une méthode
 
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'user', 'user_first_name', 'user_last_name', 'content', 'created_at']
+        fields = [
+            'id',
+            'post',
+            'user',
+            'user_first_name',
+            'user_last_name',
+            'user_photo',
+            'content',
+            'created_at'
+        ]
+        read_only_fields = ['user', 'post', 'created_at']
 
+    def get_user_photo(self, obj):
+        """Retourne la photo de l'utilisateur :
+        - photo uploadée dans ton modèle User
+        - photo Google (via django-allauth)
+        - fallback image statique par défaut
+        """
+        user = obj.user
+        request = self.context.get('request', None)
+
+        # 1️⃣ Photo locale (user.photo)
+        if getattr(user, 'photo', None):
+            try:
+                photo_url = user.photo.url
+                if request:
+                    return request.build_absolute_uri(photo_url)
+                return photo_url
+            except Exception:
+                pass
+
+        # 2️⃣ Photo Google via django-allauth
+        social = getattr(user, 'socialaccount_set', None)
+        if social:
+            social_account = user.socialaccount_set.filter(provider='google').first()
+            if social_account and isinstance(social_account.extra_data, dict):
+                # certaines versions de allauth utilisent 'picture', d'autres 'avatar_url'
+                for key in ['picture', 'avatar_url', 'photo']:
+                    photo = social_account.extra_data.get(key)
+                    if photo:
+                        return photo  # lien direct vers Google
+
+        # 3️⃣ Fallback : image statique par défaut
+        default_static = static('images/default-avatar.png')
+        if request:
+            return request.build_absolute_uri(default_static)
+        site_url = getattr(settings, 'SITE_URL', '')
+        return site_url.rstrip('/') + default_static if site_url else default_static
 
     def create(self, validated_data):
+        """Associe automatiquement l'utilisateur connecté"""
         request = self.context.get('request')
         if request and hasattr(request, "user"):
-            validated_data['user'] = request.user  # Attribuer automatiquement l'utilisateur connecté
+            validated_data['user'] = request.user
         return super().create(validated_data)
-
+    
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     author = AccountSerializer(read_only=True)  # auteur du post

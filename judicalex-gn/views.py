@@ -5,7 +5,7 @@ from django.conf import settings
 from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework import generics, permissions
 from rest_framework import status
 from rest_framework.pagination import PageNumberPagination
@@ -30,10 +30,15 @@ from django.contrib.auth.hashers import make_password
 from django.contrib import messages
 from django.shortcuts import render,redirect,get_object_or_404
 from email.mime.multipart import MIMEMultipart
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.decorators import api_view, permission_classes  # ✅ ajoute ceci
+from rest_framework.permissions import AllowAny
+
 
 
 
 @api_view(['POST'])
+@permission_classes([AllowAny])  # ✅ aucun token requis pour se connecter
 def api_sign_in(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -173,15 +178,110 @@ class PostDetailAPIView(generics.RetrieveAPIView):
     lookup_field = 'pk'
 
 
-class CommentCreateAPIView(generics.CreateAPIView):
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
-    permission_classes = [permissions.IsAuthenticated]  # L'utilisateur doit être authentifié pour ajouter un commentaire
-    
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)  # Associer automatiquement le commentaire à l'utilisateur connecté
+
+@api_view(['POST'])
+def create_comment_api(request, post_id):
+    """
+    Crée un commentaire sur un post.
+    ✅ Authentification par Token
+    ✅ Pas besoin de CSRF
+    """
+    try:
+        data = request.data
+        content = data.get('content')
+
+        if not content:
+            return Response(
+                {'status': 'error', 'message': 'Le contenu du commentaire est requis.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        post = get_object_or_404(Post, id=post_id)
+
+        comment = Comment.objects.create(
+            user=request.user,
+            post=post,
+            content=content
+        )
+
+        # Retour JSON complet avec les infos du commentaire
+        return Response(
+            {
+                'status': 'success',
+                'message': 'Commentaire créé avec succès.',
+                'comment': {
+                    'id': comment.id,
+                    'content': comment.content,
+                    'post_id': post.id,
+                    'user_id': request.user.id,
+                    'created_at': comment.created_at
+                }
+            },
+            status=status.HTTP_201_CREATED
+        )
+
+    except Exception as e:
+        return Response(
+            {'status': 'error', 'message': str(e)},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
+
+@api_view(['GET'])
+def get_comments_api(request, post_id):
+    """
+    ✅ Récupère tous les commentaires d’un post
+    """
+    post = get_object_or_404(Post, id=post_id)
+    comments = Comment.objects.filter(post=post).order_by('-created_at')
+    serializer = CommentSerializer(comments, many=True)
+
+    return Response({
+        'status': 'success',
+        'post_id': post.id,
+        'comments_count': len(serializer.data),
+        'comments': serializer.data
+    }, status=status.HTTP_200_OK)
+
+# 🟡 Modifier un commentaire (seulement par son auteur)
+@api_view(['PUT', 'PATCH'])
+def update_comment_api(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.user != request.user:
+        return Response({
+            'status': 'error',
+            'message': "Vous n'êtes pas autorisé à modifier ce commentaire."
+        }, status=status.HTTP_403_FORBIDDEN)
+
+    serializer = CommentSerializer(comment, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({
+            'status': 'success',
+            'message': 'Commentaire modifié avec succès.',
+            'comment': serializer.data
+        })
+    return Response({'status': 'error', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+
+# 🔴 Supprimer un commentaire (seulement par son auteur)
+@api_view(['DELETE'])
+def delete_comment_api(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.user != request.user:
+        return Response({
+            'status': 'error',
+            'message': "Vous n'êtes pas autorisé à supprimer ce commentaire."
+        }, status=status.HTTP_403_FORBIDDEN)
+
+    comment.delete()
+    return Response({
+        'status': 'success',
+        'message': 'Commentaire supprimé avec succès.'
+    }, status=status.HTTP_204_NO_CONTENT)
 
 class RolesPagination(PageNumberPagination):
     page_size = 10
