@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-d2c38^i8%#(sfpkd(f85e!a0b2wp*ec466l_^ux8(i#q1m@hin
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -93,7 +93,7 @@ ROOT_URLCONF = 'judicalex-gn.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # Assure-toi que 'templates/' est inclus ici
+        'DIRS': [BASE_DIR / 'templates'],  # Assure-toi que 'templates/' est inclus ici
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

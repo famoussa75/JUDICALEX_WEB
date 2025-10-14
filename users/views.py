@@ -38,6 +38,13 @@ import smtplib
 from email.mime.text import MIMEText
 from allauth.account.models import EmailAddress
 
+from allauth.socialaccount.models import SocialApp
+
+def google_login_page(request):
+    app = SocialApp.objects.filter(provider='google').first()
+    return render(request, 'login.html', {'google_app': app})
+
+
 
 # Create your views here.
 def signIn(request):

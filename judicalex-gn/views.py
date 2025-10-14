@@ -34,6 +34,16 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import api_view, permission_classes  # ✅ ajoute ceci
 from rest_framework.permissions import AllowAny
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+def custom_404_view(request, exception):
+    """
+    Vue personnalisée pour gérer les erreurs 404.
+    """
+    logger.warning(f"404: {request.path} depuis {request.META.get('REMOTE_ADDR')} (ref={request.META.get('HTTP_REFERER')})")
+    return render(request, "start/error/404.html", status=404)
 
 
 

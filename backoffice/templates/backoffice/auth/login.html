@@ -11,8 +11,7 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="{% static 'start/assets-backoffice/img/favicon.png' %}" rel="icon">
-  <link href="{% static 'start/assets-backoffice/img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+  <link rel="icon" type="image/x-icon" href="{% static 'start/assets/statics/logo-icon.png' %}">
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -38,6 +37,28 @@
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
 </head>
+
+<style>
+  .btn-judicalex {
+    background-color: #0a2342; /* Bleu nuit profond */
+    border: none;
+    color: #f9d65c; /* Doré clair */
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-judicalex:hover {
+    background-color: #f9d65c; /* Inversion au survol */
+    color: #0a2342;
+    transform: scale(1.03);
+  }
+
+  .btn-judicalex:active {
+    transform: scale(0.98);
+  }
+</style>
 
 <body style="
       background-image: url('/static/start/assets-backoffice/img/login-bg.jpg');
@@ -108,7 +129,7 @@
                       </div>
                     </div>
                     <div class="col-12">
-                      <button class="btn btn-primary w-100" type="submit">Se connecter</button>
+                      <button class="btn btn-judicalex w-100" type="submit">Se connecter</button>
                     </div>
                     <div class="col-12">
                       <!-- <p class="small mb-0">Don't have account? <a href="pages-register.html">Create an account</a></p> -->

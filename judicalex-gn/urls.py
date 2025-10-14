@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from role.views import NePasSuivreAffaire,suivreAffaire
 from .views import DeleteNotificationsAPIView, MarkNotificationAsReadAPIView, ads_list, allNotificationAPIView, api_sign_in, api_sign_up, api_sign_out,api_delete_account,api_update_account, condition_generale, create_comment_api, delete_comment_api, detail_affaire_api, get_comments_api,get_user,mes_affaires_suivies_api, PostDetailAPIView, PostListAPIView, RolesListAPI, ne_pas_suivre_affaire_api, politique, role_detail_api, suivre_affaire_api, send_contact_email, about_us,notificationAPIView, ges_message, update_comment_api
+from django.conf.urls import handler404
 
 
 urlpatterns = [
@@ -65,6 +66,6 @@ urlpatterns = [
 
 ] 
 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+handler404 = 'judicalex-gn.views.custom_404_view'  # adapte le chemin

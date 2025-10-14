@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Page non trouvée - Erreur 404 | Judicalex</title>
+  <style>
+    :root {
+      --primary: #002b5b;
+      --accent: #c5a24b;
+      --bg: #f8f9fa;
+      --text: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .error-code {
+      font-size: 8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.2rem;
+    }
+
+    .error-message {
+      font-size: 1.3rem;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-home {
+      display: inline-block;
+      padding: 0.8rem 1.6rem;
+      background-color: var(--primary);
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      border-radius: 6px;
+      transition: 0.3s ease;
+    }
+
+    .btn-home:hover {
+      background-color: var(--accent);
+      color: var(--primary);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    @media (max-width: 600px) {
+      .error-code {
+        font-size: 5rem;
+      }
+      .error-message {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="logo"><img src="https://judicalex-gn.org/static/start/assets/statics/ejustice_logo_white.png" 
+    alt="Google Logo" style="height:44px; vertical-align:middle; margin-right:8px;"></div>
+
+  <div class="error-code">404</div>
+  <div class="error-message">La page que vous cherchez n’existe pas ou a été déplacée.</div>
+
+  <a href="{% url 'home' %}" class="btn-home">⬅ Retour à l’accueil</a>
+
+  <footer>
+    &copy; {{ now|date:"Y" }} Judicalex — Tous droits réservés
+  </footer>
+</body>
+</html>

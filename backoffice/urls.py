@@ -37,10 +37,10 @@ urlpatterns = [
     path("users/<int:pk>/delete/", uviews.user_delete, name="user.delete"),
 
     # Groups
-    path("groups/", gviews.group_list, name="groups:list"),
-    path("groups/create/", gviews.group_create, name="groups:create"),
-    path("groups/<int:pk>/edit/", gviews.group_update, name="groups:edit"),
-    path("groups/<int:pk>/delete/", gviews.group_delete, name="groups:delete"),
+    path("groups/", gviews.group_list, name="groups.list"),
+    path("groups/create/", gviews.group_create, name="groups.create"),
+    path("groups/<int:pk>/edit/", gviews.group_update, name="groups.edit"),
+    path("groups/<int:pk>/delete/", gviews.group_delete, name="groups.delete"),
 
     # Ads
     path("ads/", views.ad_list, name="ad_list"),
