@@ -471,16 +471,26 @@ def edit_post(request, post_id):
 
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES, instance=post)
+
         if form.is_valid():
-            form.save()
-            messages.success(request, "Votre article a été mise à jour avec succès !")
+            post = form.save(commit=False)
+            
+            # ✅ Gérer le statut
+            post.status = form.cleaned_data.get('status', post.status)
+
+            # ✅ Si aucune nouvelle image n'est envoyée, conserver l'ancienne
+            if not request.FILES.get('image'):
+                post.image = post.image  # ne change rien
+
+            post.save()
+            messages.success(request, "Votre article a été mis à jour avec succès !")
             return redirect('profile')
         else:
-            messages.error(request, "Veuillez corriger les erreurs dans votre contribution.")
+            messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = PostForm(instance=post)
 
-    return render(request, 'posts/edit_post.html', {'form': form, 'post': post})
+    return render(request, 'users/edit_post.html', {'form': form, 'post': post})
 
 
 @login_required
