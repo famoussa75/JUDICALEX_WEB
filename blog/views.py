@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from users.models import Notification
 from django.urls import reverse
-from django.http import JsonResponse
+from django.http import Http404, JsonResponse
 
 
 def post_list(request):
@@ -42,65 +42,71 @@ def post_list(request):
     return render(request, 'blog/post_list.html', context)
 
 def post_detail(request, slug):
-    post = Post.objects.filter(slug=slug).first()
-    comments = post.comments.all()
-    category_post = Post.objects.filter(category=post.category).order_by('-created_at')[:4]
+    post = Post.objects.filter(slug=slug, status='published').first()
 
-    similar_posts = Post.objects.filter(category = post.category,status='published')
+    if post:
+        comments = post.comments.all()
+        category_post = Post.objects.filter(category=post.category).order_by('-created_at')[:4]
 
-    print(post.author)
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.user = request.user
-            comment.save()
+        similar_posts = Post.objects.filter(category = post.category,status='published')
 
 
-             # 🔔 Notifier l’auteur du post (sauf si c’est lui qui commente)
-            if post.author != request.user:
-                Notification.objects.create(
-                    recipient=post.author,
-                    type="info",
-                    message=f"{request.user.first_name} {request.user.last_name} a commenté votre article : {post.title}",
-                    url=f"/blog/post/{post.slug}/"
-                )
+        if request.method == "POST":
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.post = post
+                comment.user = request.user
+                comment.save()
 
-            # 🔔 Notifier les autres commentateurs uniques (sauf l'auteur du commentaire actuel)
-            other_commenters = (
-                Comment.objects.filter(post=post)
-                .exclude(user=request.user)  # pas l'auteur du commentaire actuel
-                .values_list("user", flat=True)
-                .distinct()
-            )
 
-            for user_id in other_commenters:
-                if user_id != post.author.id:  # éviter double notif à l'auteur déjà notifié
+                # 🔔 Notifier l’auteur du post (sauf si c’est lui qui commente)
+                if post.author != request.user:
                     Notification.objects.create(
-                        recipient_id=user_id,
+                        recipient=post.author,
                         type="info",
-                        message=f"{request.user.first_name} {request.user.last_name} a aussi commenté l'article : {post.title}",
+                        message=f"{request.user.first_name} {request.user.last_name} a commenté votre article : {post.title}",
                         url=f"/blog/post/{post.slug}/"
                     )
-            return redirect('blog.post_detail', slug=slug)
-    else:
-        form = CommentForm()
 
+                # 🔔 Notifier les autres commentateurs uniques (sauf l'auteur du commentaire actuel)
+                other_commenters = (
+                    Comment.objects.filter(post=post)
+                    .exclude(user=request.user)  # pas l'auteur du commentaire actuel
+                    .values_list("user", flat=True)
+                    .distinct()
+                )
+
+                for user_id in other_commenters:
+                    if user_id != post.author.id:  # éviter double notif à l'auteur déjà notifié
+                        Notification.objects.create(
+                            recipient_id=user_id,
+                            type="info",
+                            message=f"{request.user.first_name} {request.user.last_name} a aussi commenté l'article : {post.title}",
+                            url=f"/blog/post/{post.slug}/"
+                        )
+                return redirect('blog.post_detail', slug=slug)
+        else:
+            form = CommentForm()
+
+        
+        ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
+        ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
+
+        context = {
+            'post': post,
+            'comments': comments,
+            'form': form,
+            'category_post':category_post,
+            'similar_posts':similar_posts,
+            'ads_header': ads_header,
+            'ads_lateral': ads_lateral,
+        }
+        return render(request, 'blog/post_detail.html', context)
     
-    ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
-    ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
-
-    context = {
-        'post': post,
-        'comments': comments,
-        'form': form,
-        'category_post':category_post,
-        'similar_posts':similar_posts,
-        'ads_header': ads_header,
-        'ads_lateral': ads_lateral,
-    }
-    return render(request, 'blog/post_detail.html', context)
+    else:
+        # 🚫 Article non publié ou inexistant → page 404
+        raise Http404("L'article demandé est introuvable ou n'est pas publié.")
 
 
 @login_required

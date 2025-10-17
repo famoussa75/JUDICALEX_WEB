@@ -60,6 +60,12 @@ def signIn(request):
             auth_user = authenticate(username=user.username, password=password)
             if auth_user is not None:
                 login(request, auth_user)
+                # Si "Se rappeler de moi" n'est pas coché, la session expire à la fermeture du navigateur
+                if not request.POST.get('remember'):
+                    request.session.set_expiry(0)  # session temporaire
+                else:
+                    request.session.set_expiry(60 * 60 * 24 * 30)  # 30 jours
+
                 next_url = request.POST.get("next") or request.GET.get("next") or "home"
                 return redirect(next_url)
             else:
@@ -328,14 +334,14 @@ def profile(request):
                             url=reverse("details_demande", args=[contribution_request.id])  # lien vers l'admin pour voir la demande
                         )
 
-                       # Notifier Demandeur
-                        create_notification(
-                            recipient=request.user,
-                            sender=request.user,
-                            type="success",
-                            message=f"Votre demande a été enregistrée avec succès. Vous recevrez une réponse prochainement.",
-                            url='profile/'
-                        )
+                    # Notifier Demandeur
+                    create_notification(
+                        recipient=request.user,
+                        sender=request.user,
+                        type="success",
+                        message=f"Votre demande a été enregistrée avec succès. Vous recevrez une réponse prochainement.",
+                        url='profile/'
+                    )
                     messages.success(request, 'Votre demande de contribution a été envoyée !')
                     return redirect('profile')
                 else:
@@ -354,9 +360,31 @@ def profile(request):
             post = post_form.save(commit=False)
             post.author = request.user
             post.type = 'contribution'
-            post.status = request.POST.get('status')
             post.save()
-            messages.success(request, "Votre article a été publiée avec succès !")
+             # --- Notifier tous les administrateurs ---
+            admins = Account.objects.filter(groups__name="Administrateur")
+            for admin in admins:
+                create_notification(
+                    recipient=admin,
+                    sender=request.user,
+                    type="info",
+                    message=f"{request.user.get_full_name()} a soumis une nouvelle demande de contribution.",
+                    objet_cible=post.id,
+                    url=reverse("post_detail", args=[post.slug])  # lien vers l'admin pour voir la demande
+                )
+
+            # Notifier Demandeur
+            create_notification(
+                recipient=request.user,
+                sender=request.user,
+                type="success",
+                message = (
+                    "Votre article a été soumis avec succès et est actuellement en cours de vérification. "
+                    "Notre équipe éditoriale l’examinera dans un délai maximum de 48 heures avant sa publication."
+                ),
+                url='profile/'
+            )
+            messages.success(request, "Votre article a été soumis avec succès !")
             return redirect('profile')
         else:
             messages.error(request, "Veuillez corriger les erreurs dans votre contribution.")
@@ -464,7 +492,6 @@ def delete_notifications(request):
     Notification.objects.filter(recipient=request.user).delete()
     return redirect('profile')
 
-
 @login_required
 def edit_post(request, post_id):
     post = get_object_or_404(Post, id=post_id, author=request.user)
@@ -475,14 +502,35 @@ def edit_post(request, post_id):
         if form.is_valid():
             post = form.save(commit=False)
             
-            # ✅ Gérer le statut
-            post.status = form.cleaned_data.get('status', post.status)
-
             # ✅ Si aucune nouvelle image n'est envoyée, conserver l'ancienne
             if not request.FILES.get('image'):
                 post.image = post.image  # ne change rien
 
+            post.status = 'draft'
             post.save()
+             # --- Notifier tous les administrateurs ---
+            admins = Account.objects.filter(groups__name="Administrateur")
+            for admin in admins:
+                create_notification(
+                    recipient=admin,
+                    sender=request.user,
+                    type="info",
+                    message=f"{request.user.get_full_name()} a apporté une mise à jour à son article. Veuillez examiner !",
+                    objet_cible=post.id,
+                    url=reverse("post_detail", args=[post.slug])  # lien vers l'admin pour voir la demande
+                )
+
+            # Notifier Demandeur
+            create_notification(
+                recipient=request.user,
+                sender=request.user,
+                type="success",
+                message = (
+                    "Votre article a été mis à jour avec succès et est actuellement en cours de vérification. "
+                    "Notre équipe éditoriale l’examinera dans un bref délais."
+                ),
+                url='profile/'
+            )
             messages.success(request, "Votre article a été mis à jour avec succès !")
             return redirect('profile')
         else:

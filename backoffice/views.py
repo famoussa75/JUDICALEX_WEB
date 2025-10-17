@@ -173,9 +173,37 @@ def post_publish(request, slug):
         recipient=post.author,
         sender=request.user,
         type="success",
-        message=f"Votre article '{post.title}' a été approuvé et publié",
+        message=f"Votre article '{post.title}' n'a pas été approuvé.",
         objet_cible=post.id,
         url=reverse("post_detail", args=[post.slug])
+    )
+
+@login_required
+@user_passes_test(is_admin)
+def post_archived(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+
+    # Vérification de l'autorisation : auteur ou admin
+    if post.author != request.user and not request.user.is_staff:
+        messages.error(request, "Vous n’avez pas la permission de publier cet article.")
+        return redirect("post_detail", slug=post.slug)
+
+    # Mettre à jour le statut
+    post.status = "archived"
+    post.rejection_reason = request.POST.get('rejection_reason')
+    post.save()
+
+     # Notifier l’auteur
+    create_notification(
+        recipient=post.author,
+        sender=request.user,
+        type="success",
+        message = (
+            f"Votre article « {post.title} » n’a pas été approuvé par notre équipe éditoriale.\n"
+            f"📝 Motif : {post.rejection_reason}\n\n"
+            "Merci de corriger les points mentionnés avant une nouvelle soumission."
+        ),
+        url='profile/'
     )
 
     messages.success(request, "L’article a été publié avec succès ✅")

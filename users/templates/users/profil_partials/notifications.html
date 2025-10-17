@@ -18,7 +18,7 @@
                     {% if not notification.is_read %}alert-info{% else %}alert-secondary{% endif %}">
           
           <div>
-            {{ notification.message }}
+            {{ notification.message|linebreaksbr }}
             <small class="d-block text-muted">{{ notification.timestamp }}</small>
           </div>
       

@@ -154,11 +154,51 @@
 
             {% endif %}
 
-              {% if post.status != "published" and request.user|has_group:"Administrateur" %}
+              {% if post.status == "draft" and request.user|has_group:"Administrateur" %}
               <a href="{% url 'post_publish' post.slug %}" class="btn btn-outline-success btn-sm px-3">
                 ✅ Approuver & Publier
               </a>
               {% endif %}
+
+              {% if post.status == "draft" and request.user|has_group:"Administrateur" %}
+              <!-- Bouton qui ouvre la modale -->
+              <button 
+                type="button" 
+                class="btn btn-outline-danger btn-sm px-3" 
+                data-bs-toggle="modal" 
+                data-bs-target="#rejectPostModal{{ post.id }}">
+                ❌ Rejeter
+              </button>
+            
+              <!-- Modale de rejet -->
+              <div class="modal fade" id="rejectPostModal{{ post.id }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content border-0 shadow">
+                    <div class="modal-header bg-danger text-white">
+                      <h5 class="modal-title">Motif de refus de l’article</h5>
+                      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="post" action="{% url 'post_archived' post.slug %}">
+                      {% csrf_token %}
+                      <div class="modal-body">
+                        <p class="text-muted mb-2">Merci d’indiquer le motif du refus :</p>
+                        <textarea 
+                          name="rejection_reason" 
+                          class="form-control" 
+                          rows="4" 
+                          placeholder="Saisissez le motif du refus..." 
+                          required></textarea>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Confirmer le rejet</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            {% endif %}
+            
 
               {% if post.status == "published" and request.user|has_group:"Administrateur" %}
                 <a href="{% url 'post_unpublish' post.slug %}" class="btn btn-outline-danger btn-sm px-3">
@@ -171,6 +211,18 @@
               ← Tous les articles
             </a>
           </div>
+
+          {% if post.status == "archived" and request.user|has_group:"Administrateur" %}
+          <div>
+            {% if post.rejection_reason %}
+              <div class="alert alert-warning mt-2">
+                <strong>Motif du refus :</strong><br>
+                {{ post.rejection_reason|linebreaksbr }}
+              </div>
+            {% endif %}
+          </div>
+          {% endif %}
+          
 
         </div>
       </article>

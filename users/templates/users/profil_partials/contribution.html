@@ -34,7 +34,27 @@
               {{ post_form.image }}
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
+              <div class="form-check border p-3 rounded bg-light">
+                <input 
+                  type="checkbox" 
+                  class="form-check-input" 
+                  id="condition_checkbox" 
+                  name="condition" 
+                  value="accepted" 
+                  required>
+                <label class="form-check-label" for="condition_checkbox">
+                  Je reconnais que les contributions doivent être <strong>purement scientifiques, éducatives et objectives</strong>. 
+                  Elles ne doivent exprimer aucune opinion politique ou religieuse, et ne doivent pas violer les lois et règlements. 
+                  <br>
+                  <strong>Judicalex</strong> se réserve le droit de refuser ou de retirer toute publication sans préjudice.
+                </label>
+              </div>
+            </div>
+            
+            
+
+            <!-- <div class="mb-3">
               <label class="form-label d-block">Option de sauvegarde <span class="text-danger">*</span></label>
               <div class="d-flex flex-column gap-2">
                 <div class="form-check">
@@ -58,14 +78,11 @@
                   <label class="form-check-label" for="status_published">Publier</label>
                 </div>
               </div>
-            </div>
+            </div> -->
             
-            
-            
-
             <div class="text-end">
               <button type="submit" name="create_contribution" class="btn btn-success">
-                 Sauvegarder
+                 Enregistrer
               </button>
             </div>
           </form>
@@ -127,21 +144,25 @@
                       {% endif %}
                     </div>
                   </div>
+                  
+                 
                   <div>
-                    <!-- Bouton modifier -->
+                   <!-- Bouton modifier -->
                     <button class="btn btn-sm btn-outline-primary me-1"
-                            data-bs-toggle="modal"
-                            data-bs-target="#editPostModal{{ post.id }}">
-                      <i class="fa fa-pencil"></i>
+                    {% if post.status == 'published' %}disabled title="Modification impossible après publication"{% else %}
+                    data-bs-toggle="modal" data-bs-target="#editPostModal{{ post.id }}"{% endif %}>
+                    <i class="fa fa-pencil"></i>
                     </button>
 
                     <!-- Bouton supprimer -->
                     <button class="btn btn-sm btn-outline-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deletePostModal{{ post.id }}">
-                      <i class="fa fa-trash"></i>
+                    {% if post.status == 'published' %}disabled title="Suppression impossible après publication"{% else %}
+                    data-bs-toggle="modal" data-bs-target="#deletePostModal{{ post.id }}"{% endif %}>
+                    <i class="fa fa-trash"></i>
                     </button>
+
                   </div>
+                 
                 </div>
                 
                 <!-- Modal Modifier -->
@@ -172,7 +193,25 @@
                             <input type="file" name="image" class="form-control" id="id_image_{{ post.id }}">
                           </div>
 
-                          <div class="mb-3">
+                          <div class="mb-4">
+                            <div class="form-check border p-3 rounded bg-light">
+                              <input 
+                                type="checkbox" 
+                                class="form-check-input" 
+                                id="condition_checkbox" 
+                                name="condition" 
+                                value="accepted" 
+                                required>
+                              <label class="form-check-label" for="condition_checkbox">
+                                Je reconnais que les contributions doivent être <strong>purement scientifiques, éducatives et objectives</strong>. 
+                                Elles ne doivent exprimer aucune opinion politique ou religieuse, et ne doivent pas violer les lois et règlements. 
+                                <br>
+                                <strong>Judicalex</strong> se réserve le droit de refuser ou de retirer toute publication sans préjudice.
+                              </label>
+                            </div>
+                          </div>
+
+                          <!-- <div class="mb-3">
                             <label class="form-label d-block">Option de sauvegarde <span class="text-danger">*</span></label>
                             <div class="d-flex flex-column gap-2">
                               <div class="form-check">
@@ -196,7 +235,7 @@
                                 <label class="form-check-label" for="status_published">Publier</label>
                               </div>
                             </div>
-                          </div>
+                          </div> -->
 
                           <div class="text-end">
                             <button type="submit" class="btn btn-success">Enregistrer</button>

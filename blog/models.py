@@ -19,7 +19,7 @@ class Category(models.Model):
 class Post(models.Model):
     
     class Status(models.TextChoices):
-        DRAFT = "draft", _("Brouillon")
+        DRAFT = "draft", _("En attente")
         PUBLISHED = "published", _("Publié")
         ARCHIVED = "archived", _("Archivé")
     
@@ -81,6 +81,13 @@ class Post(models.Model):
         verbose_name=_("Type"),
         help_text=_("Définir si l’article est une actualité ou contribution.")
     )
+    rejection_reason = models.TextField(
+        verbose_name=_("Motif de refus"),
+        help_text=_("Explication fournie en cas de refus de l’article."),
+        null=True,
+        blank=True
+    )
+
     views = models.PositiveIntegerField(
         default=0,
         verbose_name=_("Vues"),

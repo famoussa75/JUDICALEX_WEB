@@ -17,6 +17,7 @@ urlpatterns = [
      path("post/<slug:slug>/update/", views.post_update, name="post_update"),
      path("post/<slug:slug>/delete/", views.post_delete, name="post_delete"),
      path("post/<slug:slug>/publish/", views.post_publish, name="post_publish"),
+     path("post/<slug:slug>/archived/", views.post_archived, name="post_archived"),
      path("post/<slug:slug>/unpublish/", views.post_unpublish, name="post_unpublish"),
      path('notifications/', views.notifications_list, name='notifications_list'),
      path('notification/<int:pk>/read/', views.read_notification, name='read_notification'),
