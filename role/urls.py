@@ -7,6 +7,8 @@ urlpatterns = [
      path('details/<pk>', views.roleDetail, name='role.detail'),
      path('recherche/', views.recherche, name='role.search'),
      path('download-pdf/', views.download_pdf, name='download_pdf'),
+     path('role_detail/export/pdf/', views.export_roleDetail_pdf, name='role_detail.export_pdf'),
+
 
 
 ]

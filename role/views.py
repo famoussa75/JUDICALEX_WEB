@@ -1,4 +1,5 @@
 import html
+from io import BytesIO
 from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -27,6 +28,8 @@ from django.db.models.functions import Coalesce
 from django.db.models import IntegerField
 
 from backoffice.models import Ad
+from django.contrib.staticfiles.storage import staticfiles_storage
+
 
 
 import re
@@ -34,6 +37,56 @@ import unicodedata
 
 
 import uuid
+
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.pdfgen import canvas
+
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.platypus import (
+    SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+)
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.units import mm
+from reportlab.graphics.barcode import qr
+from reportlab.graphics.shapes import Drawing
+from copy import deepcopy
+
+from django.conf import settings
+import os
+from PyPDF2 import PdfReader
+
+
+
+def get_static_path(relative_path: str) -> str:
+    import os
+    from django.conf import settings
+
+    # Cherche dans STATICFILES_DIRS
+    for static_dir in getattr(settings, "STATICFILES_DIRS", []):
+        if static_dir:
+            abs_path = os.path.join(static_dir, relative_path)
+            if os.path.exists(abs_path):
+                return abs_path
+
+    # Cherche dans STATIC_ROOT
+    static_root = getattr(settings, "STATIC_ROOT", None)
+    if static_root:
+        abs_path = os.path.join(static_root, relative_path)
+        if os.path.exists(abs_path):
+            return abs_path
+
+    # Cherche dans les apps
+    base_dir = getattr(settings, "BASE_DIR", None)
+    if base_dir:
+        for app in settings.INSTALLED_APPS:
+            app_path = os.path.join(base_dir, app, "static", relative_path)
+            if os.path.exists(app_path):
+                return app_path
+
+    raise FileNotFoundError(f"Static file not found: {relative_path}")
+
 
 
 
@@ -381,6 +434,237 @@ def roleDetail(request, pk):
         return render(request, 'role/details/tc-refere-detail.html', context)
     else:
         return HttpResponse("Template non disponible pour cette juridiction/type d'audience")
+    
+def export_roleDetail_pdf(request):
+
+    try:
+        path = get_static_path("_base/assets_role/statics/armoirie.png")
+        print("✅ Trouvé :", path)
+    except FileNotFoundError as e:
+        print("❌", e)
+    # =======================
+    # Récupérer les filtres
+    # =======================
+    query = request.GET.get('q', '').strip()
+    role_id = request.GET.get('role_id', '').strip()
+
+    affaire = AffaireRoles.objects.filter(role_id=role_id)
+    role = Roles.objects.filter(id=role_id).first()
+
+    if query:
+        affaire = affaire.filter(
+            Q(objet__icontains=query) |
+            Q(demandeurs__icontains=query) |
+            Q(defendeurs__icontains=query)
+        )
+
+    # =======================
+    # Réponse HTTP PDF
+    # =======================
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="role_{role.dateEnreg or "tous"}.pdf"'
+
+    # =======================
+    # Callbacks pour en-tête et pied de page
+    # =======================
+    def add_footer(canvas, doc, total_pages):
+        page_width, page_height = canvas._pagesize
+        footer_text = f"Téléchargé à partir de judicalex-gn.org - {datetime.now().strftime('%d/%m/%Y %H:%M:%S')}"
+        canvas.saveState()
+        canvas.setFont('Helvetica', 8)
+        page_num = f"P.{doc.page} sur {total_pages}"
+        canvas.drawString(10 * mm, 5 * mm, page_num)
+        canvas.drawCentredString(page_width / 2, 5 * mm, footer_text)
+        canvas.restoreState()
+
+    def add_header(canvas, doc):
+        page_width, page_height = canvas._pagesize
+        canvas.saveState()
+        canvas.setFont('Helvetica-Bold', 10)
+        header_text = f"TCC - RÔLE D'AUDIENCE DE {role.get_typeAudience_display().upper()} DU {role.dateEnreg.strftime('%d/%m/%Y') if role.dateEnreg else 'TOUS'}"
+        canvas.drawCentredString(page_width / 2, page_height - 20, header_text)
+        canvas.restoreState()
+
+    # =======================
+    # Styles
+    # =======================
+    styles = getSampleStyleSheet()
+    style_normal = styles["Normal"]
+    style_normal.fontSize = 9
+    style_normal.leading = 11
+    style_normal.alignment = TA_CENTER
+
+    style_title = ParagraphStyle("title", parent=styles["Heading2"], alignment=TA_CENTER, textColor=colors.HexColor("#000000"))
+    style_title2 = ParagraphStyle(name="TitleCenter", alignment=1, fontSize=12, leading=16, underline=True, spaceAfter=6)
+    style_normal2 = ParagraphStyle(name="NormalCenter", alignment=1, fontSize=12, leading=16)
+
+    # =======================
+    # En-tête du PDF
+    # =======================
+    try:
+        armoirie = Image(staticfiles_storage.path("start/_base/assets_role/armoirie.png"), width=50, height=50)
+        branding = Image(staticfiles_storage.path("start/_base/assets_role/branding.png"), width=80, height=50)
+        simandou = Image(staticfiles_storage.path("start/_base/assets_role/simandou.png"), width=70, height=40)
+        judicalex = Image(staticfiles_storage.path("start/_base/assets_role/ejustice_logo_white.png"), width=120, height=30)
+    except Exception as e:
+        print("❌ Image non trouvée :", e)
+        armoirie = branding = simandou = judicalex = Paragraph("[Image manquante]", style_normal)
+
+    col_gauche = Table(
+        [[armoirie],
+         [Paragraph("<b>République de Guinée</b>", style_normal)],
+         [Paragraph("Travail - Justice - Solidarité", style_normal)],
+         [Paragraph("Ministère de la Justice et des Droits de l'Homme", style_normal)],
+         [branding]],
+         style=TableStyle([
+            ("ALIGN", (0,0), (-1,-1), "CENTER"),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+            ("TOPPADDING", (0,0), (-1,-1), 4),
+        ])
+    )
+
+    titre_final = f"""
+    <para>
+    <b>RÔLE D'AUDIENCE DE {role.get_typeAudience_display().upper()} DU {role.dateEnreg.strftime('%d/%m/%Y') if role.dateEnreg else 'TOUS'}</b><br/>
+    <b>COMPOSITION DU TRIBUNAL</b><br/>
+    <b>PRÉSIDENT(E) :</b> {role.president or ''}<br/>
+    {f'<b>JUGE(S) CONSULAIRE(S) :</b> {role.juge}<br/>' if role.juge else ''}
+    <b>GREFFIER(E) :</b> {role.greffier or ''}
+    </para>
+    """
+
+    filtre_text = f"FILTRE – Recherche : {query}" if query else ""
+
+    centre_elements = [
+        Paragraph("<b>COUR D'APPEL DE CONAKRY</b>", style_title),
+        Paragraph("Tribunal de Commerce de Conakry", style_title),
+        Paragraph("* &nbsp;&nbsp; * &nbsp;&nbsp; *", style_title),
+        Paragraph(titre_final, style_title2)
+    ]
+    if filtre_text:
+        centre_elements.append(Paragraph(filtre_text, style_normal2))
+
+    col_centre = Table([[e] for e in centre_elements],
+       style=TableStyle([
+            ("ALIGN", (0,0), (-1,-1), "CENTER"),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 6),
+            ("TOPPADDING", (0,0), (-1,-1), 6),
+        ])
+    )
+
+    role_url = f"https://judicalex-gn.org/role/{role.id}"
+    qr_code = qr.QrCodeWidget(role_url)
+    qr_drawing = Drawing(55, 55)
+    qr_drawing.scale(0.8, 0.8)
+    qr_drawing.add(qr_code)
+    
+
+    # Style pour le texte en italique
+    style_italic = ParagraphStyle(
+        name="Italic",
+        fontName="Helvetica-Oblique",
+        fontSize=8,
+        alignment=1,  # centre le texte
+        textColor=colors.black,
+        spaceBefore=-8,  # réduit l’espace au-dessus du texte
+
+    )
+
+
+    col_droite = Table(
+        [
+            [judicalex],
+            [Paragraph("<b>Conception & Réalisation</b><br/>Judicalex SARL<br/>contact@judicalex-gn.org<br/>Tel: 613 87 08 92 / 612 73 55 77<br/><br/>", style_normal)],
+            [qr_drawing],
+            [Paragraph("<i>Télécharger / consulter en ligne</i>", style_italic)],  # ✅ texte sous le QR code
+
+        ],
+       style=TableStyle([
+            ("ALIGN", (0,0), (-1,-1), "CENTER"),
+            ("VALIGN", (0,0), (-1,-1), "TOP"),
+            ("TOPPADDING", (0,0), (-1,-1), 4),
+            ("BOTTOMPADDING", (0,0), (-1,-1), 4),
+              # 🔽 Réduction spécifique sous le QR code (3e ligne, index 2)
+            ("BOTTOMPADDING", (0, 2), (0, 2), -6),
+        ]),
+    )
+
+    header_table = Table([[col_gauche, col_centre, col_droite]], colWidths=[155, 440, 155], rowHeights=170)
+
+    # =======================
+    # Contenu principal
+    # =======================
+    data = [[
+        Paragraph("<b>No</b>", style_normal),
+        Paragraph("<b>NUA</b>", style_normal),
+        Paragraph("<b>RG</b>", style_normal),
+        Paragraph("<b>Demandeurs</b>", style_normal),
+        Paragraph("<b>Défendeurs</b>", style_normal),
+        Paragraph("<b>Objet</b>", style_normal),
+    ]]
+
+    for i, r in enumerate(affaire, start=1):
+        data.append([
+            Paragraph(str(i), style_normal),
+            Paragraph(r.numAffaire or "", style_normal),
+            Paragraph(r.numRg or "", style_normal),
+            Paragraph(r.demandeurs or "", style_normal),
+            Paragraph(r.defendeurs or "", style_normal),
+            Paragraph(r.objet or "", style_normal),
+        ])
+
+    table = Table(data, repeatRows=1, colWidths=[35, 120, 40, 190, 190, 170])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#4CAF50')),
+        ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('ALIGN', (0,0), (-1,-1), 'CENTER'),
+        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+        ('GRID', (0,0), (-1,-1), 0.3, colors.grey),
+    ]))
+
+    # =======================
+    # Éléments du PDF
+    # =======================
+    elements = [header_table, Spacer(1, 12), table]
+
+    # =======================
+    # 1️⃣ Duplication (évite corruption)
+    # =======================
+    elements_temp = deepcopy(elements)
+    elements_final = deepcopy(elements)
+
+    # =======================
+    # 2️⃣ Première passe — compter les pages
+    # =======================
+    buffer_temp = BytesIO()
+    doc_temp = SimpleDocTemplate(
+        buffer_temp,
+        pagesize=landscape(A4),
+        rightMargin=10, leftMargin=10, topMargin=20, bottomMargin=20
+    )
+    doc_temp.build(elements_temp)
+    buffer_temp.seek(0)
+    total_pages = len(PdfReader(buffer_temp).pages)
+
+    # =======================
+    # 3️⃣ Deuxième passe — PDF final
+    # =======================
+    def footer_final(canvas, doc): add_footer(canvas, doc, total_pages)
+    def later_final(canvas, doc): add_header(canvas, doc); add_footer(canvas, doc, total_pages)
+
+    doc_final = SimpleDocTemplate(
+        response,
+        pagesize=landscape(A4),
+        rightMargin=10, leftMargin=10, topMargin=20, bottomMargin=20
+    )
+    doc_final.build(elements_final, onFirstPage=footer_final, onLaterPages=later_final)
+
+    return response
+
+
 
 @login_required
 def detailAffaire(request, idAffaire):

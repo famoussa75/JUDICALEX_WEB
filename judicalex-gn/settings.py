@@ -163,6 +163,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# En local, on peut avoir des fichiers dans BASE_DIR/static
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
@@ -230,3 +235,7 @@ ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# En production, collectstatic les envoie ici
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
