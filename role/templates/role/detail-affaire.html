@@ -66,17 +66,16 @@
                 </div> -->
                 <div class="col-12 animate-bottom">
                     <div class="card card-body">
-                        <div class="row text-center text-md-start">
+                        <div class="row align-items-start text-center text-md-start">
                             <!-- Bloc gauche -->
-                            <div class="col-12 col-md-4 mb-3">
-                                <p class="fs-4 fw-bold">{{ affaire.role.juridiction }}</p>
-                                <p class="fs-5 text-muted">NUA : {{ affaire.numAffaire }}</p>
-                                <p class="fs-5">N° RG : {{ affaire.numRg }}</p>
-                                <p class="fs-5">{{ affaire.role.get_section_display }}</p>
-                                <p class="fs-5">{{ affaire.role.get_typeAudience_display }}</p>
-                
+                            <div class="col-12 col-md-4 text-center text-md-start mb-3">
+                                <p class="mb-1 small"><b>NUA : {{ affaire.numAffaire }}</b></p>
+                                <p class="mb-1 fs-5">N° RG : {{ affaire.numRg }}</p>
+                                <p class="mb-1 fs-5">{{ affaire.role.get_section_display }}</p>
+                                <p class="mb-1 fs-5">{{ affaire.role.get_typeAudience_display }}</p>
+                                
                                 {% if is_suivi %}
-                                    <span class="badge bg-success text-light fs-5 d-inline-flex align-items-center">
+                                    <span class="badge bg-success text-light fs-6 d-inline-flex align-items-center mt-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" class="me-1">
                                             <path fill="white" d="M23 10a2 2 0 0 0-2-2h-6.32l.96-4.57c.02-.1.03-.21.03-.32c0-.41-.17-.79-.44-1.06L14.17 1L7.59 7.58C7.22 7.95 7 8.45 7 9v10a2 2 0 0 0 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73zM1 21h4V9H1z"/>
                                         </svg>
@@ -84,22 +83,23 @@
                                     </span>
                                 {% endif %}
                             </div>
-                
+                        
                             <!-- Bloc centre -->
-                            <div class="col-12 col-md-4 mb-3 text-center">
-                                <p class="fs-4 fw-bold text-primary text-decoration-underline">
-                                    Ministère de la Justice et du Droit de l'Homme
-                                </p>
+                            <div class="col-12 col-md-4 text-center mb-3">
+                                <h3>COUR D'APPEL DE CONAKRY</h3>
+                                <h5 class="fw-bold mb-1 text-uppercase text-primary">
+                                    Ministère de la Justice et des Droits de l'Homme
+                                </h5>
+                                <p class="mb-1 text-muted">{{ affaire.role.juridiction }}</p>
                             </div>
-                
+                        
                             <!-- Bloc droite -->
-                            <div class="col-12 col-md-4 mb-3 text-center">
-                                <p class="fs-5 fw-bold">REPUBLIQUE DE GUINÉE</p>
-                                <address class="mb-0">
-                                    Travail - Justice - Solidarité
-                                </address>
+                            <div class="col-12 col-md-4 text-center text-md-end mb-3">
+                                <h4 class="fw-bold mb-1 text-uppercase">RÉPUBLIQUE DE GUINÉE</h4>
+                                <p class="mb-1 text-muted small fst-italic">Travail - Justice - Solidarité</p>
                             </div>
                         </div>
+                        
                 
                         <hr>
                         <p class="fs-3 fw-bold text-center text-decoration-underline mb-4">
@@ -149,7 +149,7 @@
                                         <tr>
                                             <td class="text-center">{{ forloop.counter }}</td>
                                             <td class="text-center">{{ decision.dateDecision|default:"Non défini" }}</td>
-                                            <td class="text-center">{{ decision.typeDecision }}</td>
+                                            <td class="text-center">{{ decision.get_typeDecision_display }}</td>
                                             <td style="white-space: pre-wrap;">{{ decision.decision }}</td>
                                             <td class="text-center">
                                                 <span class="badge bg-secondary">

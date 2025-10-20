@@ -367,7 +367,6 @@ def recherche(request):
 
 
    
-@login_required
 def roleDetail(request, pk):
     search_query = request.GET.get('search', '')
     role = Roles.objects.filter(idRole=pk).first()
@@ -437,11 +436,6 @@ def roleDetail(request, pk):
     
 def export_roleDetail_pdf(request):
 
-    try:
-        path = get_static_path("_base/assets_role/statics/armoirie.png")
-        print("✅ Trouvé :", path)
-    except FileNotFoundError as e:
-        print("❌", e)
     # =======================
     # Récupérer les filtres
     # =======================
@@ -554,7 +548,7 @@ def export_roleDetail_pdf(request):
         ])
     )
 
-    role_url = f"https://judicalex-gn.org/role/{role.id}"
+    role_url = f"https://judicalex-gn.org/role/details/{role.idRole}"
     qr_code = qr.QrCodeWidget(role_url)
     qr_drawing = Drawing(55, 55)
     qr_drawing.scale(0.8, 0.8)

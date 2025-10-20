@@ -436,11 +436,7 @@
                                             <div class="card-body ps-0">
                                                 <div class="row">
                                                     <div class="col">
-                                                     {% if user.is_authenticated %}
                                                         <h3 class="mb-0"><a  href="{% url 'role.detail' role.idRole %}">{{role.juridiction}} - Rôle du {{role.dateEnreg}}</a></h3>
-                                                    {% else %}
-                                                        <h3 class="mb-0"><a  href="#" data-bs-toggle="modal" data-bs-target="#modal-login">{{role.juridiction}} - Rôle du {{role.dateEnreg}}</a></h3>
-                                                    {% endif %}
                                                     </div>
                                                     <div class="col-auto fs-4 text-green">
                                                        
@@ -614,13 +610,7 @@
                                             <div class="card-body ps-0">
                                                 <div class="row">
                                                     <div class="col">
-                                                        
-                                                        {% if user.is_authenticated %}
-                                                            <h3 class="mb-0"><a  href="{% url 'role.detail' role.idRole %}">{{ role.colored_juridiction|safe }} - Rôle du {{role.colored_dateEnreg|safe}}</a></h3>
-                                                        {% else %}
-                                                            <h3 class="mb-0"><a  href="#" data-bs-toggle="modal" data-bs-target="#modal-login">{{ role.colored_juridiction|safe }} - Rôle du {{role.colored_dateEnreg|safe}}</a></h3>
-                                                        {% endif %}
-                                                            
+                                                        <h3 class="mb-0"><a  href="{% url 'role.detail' role.idRole %}">{{ role.colored_juridiction|safe }} - Rôle du {{role.colored_dateEnreg|safe}}</a></h3>
                                                     </div>
                                                     <div class="col-auto fs-4 text-green">
                                                         {% if role.created_at|date:"Y-m-d" == today %}
@@ -682,14 +672,8 @@
                                             <div class="card-body ps-0">
                                                 <div class="row">
                                                     <div class="col">
-                                                         {% if user.is_authenticated %}
-                                                            
-                                                            {% if role.colored_demandeurs and role.colored_defendeurs %}
-                                                            <h3 class="mb-0"><a href="{% url 'role.detail' role.role.idRole %}">{{ role.colored_demandeurs|safe }}  <mark>c/</mark> {{ role.colored_defendeurs|safe }} <span class="text-info">{{ role.role.juridiction }} </span> </a></h3>
-                                                            {% endif %}
-
-                                                        {% else %}
-                                                            <h3 class="mb-0"><a  href="#" data-bs-toggle="modal" data-bs-target="#modal-login">{{ role.colored_demandeurs|safe }} <!--&nbsp;<span class="badge bg-secondary text-light">demandeur</span>&nbsp; --> <mark>c/</mark> {{ role.colored_defendeurs|safe }} <!-- <span class="badge bg-secondary text-light">defendeur</span>&nbsp; [ {{ role.colored_partie3|safe }} ] --></a></h3>
+                                                        {% if role.colored_demandeurs and role.colored_defendeurs %}
+                                                        <h3 class="mb-0"><a href="{% url 'role.detail' role.role.idRole %}">{{ role.colored_demandeurs|safe }}  <mark>c/</mark> {{ role.colored_defendeurs|safe }} <span class="text-info">{{ role.role.juridiction }} </span> </a></h3>
                                                         {% endif %}
                                                     </div>
                                                     <div class="col-auto fs-4 text-green">

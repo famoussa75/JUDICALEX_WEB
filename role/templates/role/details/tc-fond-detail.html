@@ -44,47 +44,56 @@
                 <div class="col-12 animate-bottom">
                     <div class="card card-body shadow-sm">
                   
-                         <!-- En-tête du document -->
-                    <div class=" border-bottom pb-3 mb-4">
-                      <div class="row align-items-center text-center text-md-start">
-                        
+                      <!-- En-tête du document -->
+                      <div class=" border-bottom pb-3 mb-4">
+                        <div class="row align-items-center text-center text-md-start">
+                          
                         <!-- Bloc gauche -->
-                        <div class="col-12 col-md-4">
-                          <h6 class="fw-bold mb-1 text-uppercase h4">COUR D'APPEL DE CONAKRY</h6>
-                          <p class="mb-1 text-muted">Tribunal de Commerce de Conakry</p>
-                          <p class="fw-semibold text-dark mb-0">{{ role.get_section_display }}</p>
-                        </div>
-
-                        <div class="col-12 col-md-4">
-                            <!-- Infos audience -->
-                          <div class="text-center">
-                            <p class="h2 text-decoration-underline mb-2">
-                              Ministère de la Justice et des Droits de l'Homme
-                            </p>
-                            <p class="mb-2">*&nbsp;&nbsp;*&nbsp;&nbsp;*</p>
-                            <p class="h3 text-decoration-underline mb-2">
-                              RÔLE D'AUDIENCE DU FOND DU {{ role.dateEnreg }}
-                            </p>
-                            <p class="h3 text-decoration-underline mb-2">COMPOSITION DU TRIBUNAL</p>
-                            <p class="mb-1"><span class="fw-bold">PRÉSIDENT(E) :</span> {{ role.president }}</p>
-                            <p class="mb-1"><span class="fw-bold">JUGES CONSULAIRES :</span> {{ role.juge }}</p>
-                            <p class="mb-1"><span class="fw-bold">GREFFIER(E) :</span> {{ role.greffier }}</p>
+                          <div class="col-12 col-md-4 text-center align-self-start">
+                            <h4 class="fw-bold mb-1 text-uppercase">RÉPUBLIQUE DE GUINÉE</h4>
+                            <p class="mb-1 text-muted small fst-italic">Travail - Justice - Solidarité</p>
+                            <h6 class="fw-bold mb-1 text-uppercase">Ministère de la Justice et des Droits de l'Homme</h6>
+                            <p class="fw-semibold text-dark mb-0">{{ role.get_section_display }}</p>
                           </div>
-                        </div>
+
+
+                          <div class="col-12 col-md-4">
+                              <!-- Infos audience -->
+                            <div class="text-center">
+                              <p class="h2 text-decoration-underline mb-2">
+                                COUR D'APPEL DE CONAKRY
+                              </p>
+                              <p class="mb-1 text-muted">Tribunal de Commerce de Conakry</p>
+                              <p class="mb-2">*&nbsp;&nbsp;*&nbsp;&nbsp;*</p>
+                              <p class="h3 text-decoration-underline mb-2">
+                                RÔLE D'AUDIENCE DE FOND DU {{ role.dateEnreg }}
+                              </p>
+                              <p class="h3 text-decoration-underline mb-2">COMPOSITION DU TRIBUNAL</p>
+                              <p class="mb-1"><span class="fw-bold">PRÉSIDENT(E) :</span> {{ role.president }}</p>
+                              <p class="mb-1"><span class="fw-bold">JUGES CONSULAIRES :</span> {{ role.juge }}</p>
+                              <p class="mb-1"><span class="fw-bold">GREFFIER(E) :</span> {{ role.greffier }}</p>
+                            </div>
+                          </div>
 
                         <!-- Bloc droit -->
-                        <div class="col-12 col-md-4 text-md-end mt-3 mt-md-0">
-                          <h4 class="fw-bold mb-1 text-uppercase">RÉPUBLIQUE DE GUINÉE</h4>
-                          <p class="mb-1 text-muted small fst-italic">Travail - Justice - Solidarité</p>
+                          <div class="col-12 col-md-4 text-center text-md-end align-self-start mt-3 mt-md-0">
+                            <!-- Bouton de téléchargement PDF -->
+                            <a href="{% url 'role_detail.export_pdf' %}?q={{ request.GET.q }}&role_id={{ role.id }}" 
+                                class="btn btn-outline-warning btn-sm mt-2 px-3 py-2 fw-semibold text-dark d-inline-flex align-items-center" 
+                                style="border:2px solid #DFB23D; border-radius:10px; transition: all 0.3s ease;"
+                                target="_blank"
+                                onmouseover="this.style.backgroundColor='#DFB23D'; this.style.color='white';"
+                                onmouseout="this.style.backgroundColor=''; this.style.color='black';">
+                              <i class="bi bi-file-earmark-pdf-fill me-2 fs-5 text-danger"></i>
+                              Télécharger en PDF
+                            </a>
+                        
+                        
+                          </div>
 
-                          <!-- Bouton de téléchargement PDF -->
-                          <a href="{% url 'role_detail.export_pdf'%}?q={{ request.GET.q }}&role_id={{ role.id }}" class="btn btn-outline-primary btn-sm mt-2" target="_blank">
-                            <i class="bi bi-file-earmark-pdf-fill me-1"></i> Télécharger en PDF
-                          </a>
+
                         </div>
-
                       </div>
-                    </div>
                   
                       <!-- Actions + Recherche -->
                       <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
@@ -217,6 +226,87 @@
     </div>
 
 </div>
+
+<script>
+  {% if not user.is_authenticated %}
+  document.addEventListener("DOMContentLoaded", function () {
+  
+    let formSubmitted = false;
+    let switchingModal = false; // permet la navigation entre les modals
+  
+    // Sélection des modals
+    const loginModalEl = document.getElementById('modal-login');
+    const registerModalEl = document.getElementById('modal-register');
+  
+    // Initialiser les modals Bootstrap avec blocage
+    function initProtectedModal(modalEl) {
+      if (!modalEl) return null;
+      const modal = new bootstrap.Modal(modalEl, {
+        backdrop: 'static',
+        keyboard: false
+      });
+  
+      // Bloquer la fermeture sauf si on change de modal ou on a soumis un form
+      modalEl.addEventListener('hide.bs.modal', function (e) {
+        if (!formSubmitted && !switchingModal) {
+          e.preventDefault();
+        }
+      });
+  
+      return modal;
+    }
+  
+    const loginModal = initProtectedModal(loginModalEl);
+    const registerModal = initProtectedModal(registerModalEl);
+  
+    // 🔹 Ouvre automatiquement le login au démarrage
+    if (loginModal) {
+      setTimeout(() => loginModal.show(), 300);
+    }
+  
+    // 🔹 Navigation entre les modals
+    document.querySelectorAll('[data-bs-target="#modal-register"], [data-bs-target="#modal-login"]').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+  
+        const targetSelector = this.getAttribute('data-bs-target');
+        const targetModalEl = document.querySelector(targetSelector);
+  
+        if (!targetModalEl) return;
+  
+        // Autoriser la fermeture pour le changement
+        switchingModal = true;
+  
+        // Fermer tous les modals visibles
+        [loginModalEl, registerModalEl].forEach(m => {
+          const instance = bootstrap.Modal.getInstance(m);
+          if (instance) instance.hide();
+        });
+  
+        // Ouvrir le modal cible après une courte pause
+        setTimeout(() => {
+          const targetModal = bootstrap.Modal.getOrCreateInstance(targetModalEl);
+          targetModal.show();
+          switchingModal = false; // on désactive la navigation spéciale
+        }, 300);
+      });
+    });
+  
+    // 🔹 Fermer les modals uniquement après soumission d’un formulaire
+    document.querySelectorAll("#modal-login form, #modal-register form").forEach(form => {
+      form.addEventListener("submit", function () {
+        formSubmitted = true;
+        [loginModalEl, registerModalEl].forEach(m => {
+          const instance = bootstrap.Modal.getInstance(m);
+          if (instance) instance.hide();
+        });
+      });
+    });
+  
+  });
+  {% endif %}
+</script>
+  
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

@@ -100,7 +100,7 @@
          <!-- Bouton croix -->
         <button type="button" class="btn btn-close mb-2" data-bs-dismiss="modal" aria-label="Fermer"></button>
             
-          <form class="card card-md"  method="POST" action="{% url 'login' %}" >
+          <form class="card card-md"  method="POST" action="{% url 'login' %}" id="loginForm">
             {% csrf_token %}
               <div class="card-body" style="box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;">
                 <input type="hidden" name="next" value="{{ request.path }}">
