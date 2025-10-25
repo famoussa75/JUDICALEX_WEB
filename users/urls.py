@@ -26,7 +26,6 @@ urlpatterns = [
     path('accounts/confirm-email/<key>/', views.AutoLoginConfirmEmailView.as_view(), name="account_confirm_email"),
     path('connexion/google/', views.google_login_page, name='google_login_page'),
 
-
 ]
 
 
