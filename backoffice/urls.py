@@ -36,6 +36,7 @@ urlpatterns = [
     path("users/create/", uviews.user_create, name="user.create"),
     path("users/<int:pk>/edit/", uviews.user_update, name="user.edit"),
     path("users/<int:pk>/delete/", uviews.user_delete, name="user.delete"),
+    path('users/change-password/', uviews.change_password, name='change_password'),
 
     # Groups
     path("groups/", gviews.group_list, name="groups.list"),

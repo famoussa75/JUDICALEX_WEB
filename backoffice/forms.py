@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import Group, Permission
 from users.models import Account
 from .models import Ad
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 
 # --- Mixin pour appliquer automatiquement les classes Bootstrap ---
@@ -149,3 +151,18 @@ class AdForm(forms.ModelForm):
             "end_date": "Date de fin",
         }
 
+
+
+class AccountPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        label="Ancien mot de passe",
+        widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )
+    new_password1 = forms.CharField(
+        label="Nouveau mot de passe",
+        widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )
+    new_password2 = forms.CharField(
+        label="Confirmer le nouveau mot de passe",
+        widget=forms.PasswordInput(attrs={"class": "form-control"})
+    )

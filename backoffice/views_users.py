@@ -5,10 +5,10 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
-from .forms import AccountCreateForm, AccountUpdateForm
+from .forms import AccountCreateForm, AccountPasswordChangeForm, AccountUpdateForm
 from .permissions import is_admin
 from django.contrib.auth import logout
-
+from django.contrib.auth import update_session_auth_hash
 
 User = get_user_model()
 
@@ -91,3 +91,20 @@ def logout_view(request):
         return redirect(next_url)
 
     return redirect('home')
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        form = AccountPasswordChangeForm(user=request.user, data=request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # pour garder l'utilisateur connecté
+            messages.success(request, "Votre mot de passe a été mis à jour avec succès.")
+            return redirect("home")  # ou une autre page
+        else:
+            messages.error(request, "Veuillez corriger les erreurs ci-dessous.")
+    else:
+        form = AccountPasswordChangeForm(user=request.user)
+
+    return render(request, "backoffice/ges-users/change_password.html", {"form": form})
