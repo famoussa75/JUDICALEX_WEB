@@ -117,6 +117,47 @@
                                 <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
                                 <!-- Photo de profil -->  
                             </div>
+                            <div class="d-flex gap-2 mt-2">
+                               
+                                <!-- Carte Partage avec nombre de partages -->
+                              <div class="share-section mt-3 position-relative">
+                                  <div class="d-flex align-items-center justify-content-end gap-3">
+                                      <!-- Nombre de commentaires -->
+                                      <span style="font-family: Jost; font-size: 14px; color: #888;">
+                                          <i class="fa fa-comment"></i> {{ post.comments.count }} commentaire(s)
+                                      </span>
+                                  
+                                      <!-- Nombre de partages -->
+                                      <span style="font-size: 13px; color: gray;">
+                                          <i class="fa fa-share-alt"></i> {{ post.shares }} partage(s)
+                                      </span>
+                                  
+                                      <!-- Bouton Partager -->
+                                      <button class="btn-share-pro" onclick="toggleShareOverlay(this)">
+                                          <i class="fa fa-share-alt"></i> Partager
+                                      </button>
+                                  </div>
+                                  
+                              
+                                  <!-- Overlay menu -->
+                                  <div class="share-overlay">
+                                      <a href="{% url 'share_post' post.slug 'facebook' %}" target="_blank" class="fb" title="Facebook">
+                                          <i class="fab fa-facebook-f"></i>
+                                      </a>
+                                      <a href="{% url 'share_post' post.slug 'twitter' %}" target="_blank" class="tw" title="X (Twitter)">
+                                          <i class="fab fa-twitter"></i>
+                                      </a>
+                                      <a href="{% url 'share_post' post.slug 'whatsapp' %}" target="_blank" class="wa" title="WhatsApp">
+                                          <i class="fab fa-whatsapp"></i>
+                                      </a>
+                                      <a href="{% url 'share_post' post.slug 'linkedin' %}" target="_blank" class="li" title="LinkedIn">
+                                          <i class="fab fa-linkedin-in"></i>
+                                      </a>
+                                  </div>
+
+                              </div>
+
+                          </div>
                             {% else %}
                             <div class="d-flex justify-content-between align-items-center mb-3 mt-2">
                                 <span style="font-family: Jost; font-weight: 700; color: #143642;">

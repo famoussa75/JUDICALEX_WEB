@@ -12,9 +12,37 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <title>Judicalex - Guinee</title>
 
+<!-- CSS files -->
+{% include 'start/styles.html' %}
 
-  <!-- CSS files -->
- {% include 'start/styles.html' %}
+<!-- Favicon du site -->
+<link rel="icon" type="image/png" href="{% static 'start/assets/statics/logo-icon.png' %}">
+
+<!-- Métadonnées Open Graph (Facebook, LinkedIn, WhatsApp...) -->
+{% if post %}
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="JudicaLex">
+
+  {% if post.image %}
+    <!-- Image de l'article -->
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">
+  {% else %}
+    <!-- Image par défaut (logo du site) -->
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'start/assets/statics/logo-icon.png' %}">
+  {% endif %}
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  {% if post.image %}
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{{ post.image.url }}">
+  {% else %}
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'start/assets/statics/logo-icon.png' %}">
+  {% endif %}
+{% endif %}
+
+  
+  
 
 </head>
 <style>
@@ -478,7 +506,7 @@
         this.setAttribute('title', type === 'password' ? 'Afficher le mot de passe' : 'Masquer le mot de passe');
     });
 
-</script>
+  </script>
 
 
 

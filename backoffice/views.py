@@ -124,6 +124,7 @@ def post_create(request):
                     objet_cible=post.id,
                     url=reverse("post_detail", args=[post.slug])
                 )
+            messages.success(request, "L’article a été soumis avec succès ✅")
             return redirect("post_list")
     else:
         form = PostForm()
@@ -138,6 +139,7 @@ def post_update(request, slug):
         form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
             form.save()
+            messages.success(request, "L’article a été modifié avec succès ✅")
             return redirect("post_detail", slug=post.slug)
     else:
         form = PostForm(instance=post)
@@ -178,6 +180,9 @@ def post_publish(request, slug):
         url=reverse("post_detail", args=[post.slug])
     )
 
+    messages.success(request, "L’article a été publié avec succès ✅")
+    return redirect("post_detail", slug=post.slug)
+
 @login_required
 @user_passes_test(is_admin)
 def post_archived(request, slug):
@@ -206,7 +211,7 @@ def post_archived(request, slug):
         url='profile/'
     )
 
-    messages.success(request, "L’article a été publié avec succès ✅")
+    messages.success(request, "L’article a été archivé avec succès ✅")
     return redirect("post_detail", slug=post.slug)
 
 @login_required
