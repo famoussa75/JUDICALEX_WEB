@@ -141,7 +141,7 @@
           <!-- Barre d’actions -->
           <div class="d-flex align-items-center gap-2 mt-4 pt-3 border-top flex-wrap">
             
-            {% if post.author == request.user %}
+            {% if post.author == request.user or request.user|has_group:"Administrateur"  %}
               
             <div class="btn-group" role="group" aria-label="Actions">
               <a href="{% url 'post_update' post.slug %}" class="btn btn-outline-primary btn-sm px-3">
