@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
-
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,18 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-d2c38^i8%#(sfpkd(f85e!a0b2wp*ec466l_^ux8(i#q1m@hin'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["www.judicalex-gn.org", "judicalex-gn.org"]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # ✅ UNIQUEMENT TOKEN
-    ],
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ]
-}
 
 # Application definition
 
@@ -67,16 +58,23 @@ INSTALLED_APPS = [
     'analytics',
     'rest_framework',
     'rest_framework.authtoken',
-    'captcha',
+
     
 ]
 
-AUTH_USER_MODEL = 'users.Account'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
-]
+
+
+
+AUTH_USER_MODEL = 'users.Account'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,10 +94,11 @@ ROOT_URLCONF = 'judicalex-gn.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Assure-toi que 'templates/' est inclus ici
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -119,10 +118,10 @@ WSGI_APPLICATION = 'judicalex-gn.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'judicalex_gn',
-        'USER': 'famoussa',
-        'PASSWORD': '',
-        'HOST': '',
+        'NAME': 'cp2451178p06_judicalex_gn_db',
+        'USER': 'cp2451178p06_judicalex_gn_usr',
+        'PASSWORD': 'H@eZs~tk([m0',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -146,8 +145,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-SITE_ID = 2
-
+SITE_ID = 1
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -164,20 +162,26 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = '/static/'
 
-# En local, on peut avoir des fichiers dans BASE_DIR/static
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# === Fichiers médias ===
+MEDIA_ROOT = '/var/www/clients/client0/web1/web/media'
+MEDIA_URL = '/media/'
+
+
+
+
+
+
 
 INTERNAL_IPS = [
     # ...
     "127.0.0.1",
     # ...
 ]
-
-
 
 # Email configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -188,7 +192,6 @@ EMAIL_USE_SSL = True                  # Utilisez SSL si le port est 465
 EMAIL_HOST_USER = 'contact@judicalex-gn.org' # Votre adresse email
 EMAIL_HOST_PASSWORD = 'Jud@2025!'      # Mot de passe de l'email
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER       # Adresse utilisée pour l’envoi des emails
-
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -207,12 +210,19 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-
 LOGIN_URL = 'login'
 LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+}
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -234,12 +244,3 @@ ACCOUNT_USERNAME_REQUIRED = True
 
 
 ACCOUNT_ADAPTER = "users.adapter.CustomAccountAdapter"
-
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# En production, collectstatic les envoie ici
-STATIC_ROOT = BASE_DIR / "staticfiles"
-
-

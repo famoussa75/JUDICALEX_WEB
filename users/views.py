@@ -1,3 +1,4 @@
+import requests
 from django.contrib import messages
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
@@ -99,6 +100,17 @@ def signIn(request):
 
 def signUp(request):
     if request.method == 'POST':
+        recaptcha_response = request.POST.get('g-recaptcha-response')
+        data = {
+            'secret': '6LcHhf0rAAAAADocL2nue9NUbiNutdH-TZx8RB2A',
+            'response': recaptcha_response
+        }
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
+        result = r.json()
+
+        if not result.get('success'):
+            messages.error(request, "Veuillez valider le reCAPTCHA.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         form = AccountForm(request.POST)
 
         if form.is_valid():

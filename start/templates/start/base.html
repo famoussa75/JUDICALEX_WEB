@@ -5,6 +5,8 @@
 <html lang="en">
 
 <head>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   {% load static %}
@@ -439,7 +441,10 @@
                       </div> -->
                     
                       <!-- <input id="privilege" type="hidden" class="form-control" name="privilege" value="visiteur"> -->
-                    
+                      <div class="mb-3 text-center">
+                        <div class="g-recaptcha" data-sitekey="6LcHhf0rAAAAADocL2nue9NUbiNutdH-TZx8RB2A"></div>
+                      </div>
+                      
                       <input id="juridiction" type="hidden" class="form-control" name="juridiction" value="">
                         <div class="form-footer">
                             <button type="submit" class="btn btn-primary w-20">S'inscrire</button>
