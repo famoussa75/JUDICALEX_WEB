@@ -194,8 +194,9 @@
       <!-- Traffic -->
       <div class="card shadow-sm border-0">
         <div class="card-body pb-0">
-          <h5 class="card-title">Trafic du site <span>| Aujourd’hui</span></h5>
-          <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+          <h5 class="card-title">Trafic du site</h5>
+          <canvas id="trafficChart2" height="120"></canvas>
+          <!-- <div id="trafficChart" style="min-height: 400px;" class="echart"></div> -->
         </div>
       </div><!-- End Traffic -->
 
@@ -203,6 +204,44 @@
 
   </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+fetch("{% url 'stats_data' %}")
+.then(r => r.json())
+.then(data => {
+  const labels = data.map(d => d.date);
+  const visits = data.map(d => d.total_visits);
+  const uniques = data.map(d => d.unique_ips);
+
+  new Chart(document.getElementById("trafficChart2"), {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Visites totales',
+          data: visits,
+          borderWidth: 2,
+          fill: false,
+        },
+        {
+          label: 'Visiteurs uniques',
+          data: uniques,
+          borderWidth: 2,
+          borderDash: [5,5],
+          fill: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: { y: { beginAtZero: true } }
+    }
+  });
+});
+</script>
+
 
 <!-- ======= Scripts ======= -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>

@@ -14,6 +14,7 @@ urlpatterns = [
     path('gestion-messages/', ges_message, name='ges_message'),
     path('gestion-messages/<int:pk>/<str:action>/', ges_message, name='gestion_messages_edit'),
 
+
     path('divers/', include('divers.urls')),
     path('role/', include('role.urls')),
     path('magistrats/', include('magistrats.urls')),
@@ -24,6 +25,8 @@ urlpatterns = [
     path('blog/', include('blog.urls')),
     path('rccm/', include('rccm.urls')),
     path('professionels/', include('backoffice.urls')),
+    path('analytics/', include('analytics.urls')),
+
 
     #API REST FOR FLUTTER APP
     path('api/signin/', api_sign_in, name='api_sign_in'),

@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'rccm',
     'divers',
     'backoffice',
+    'analytics',
     'rest_framework',
     'rest_framework.authtoken',
     
@@ -86,6 +87,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
      # Allauth middleware requis
     'allauth.account.middleware.AccountMiddleware',
+    'analytics.middleware.AnalyticsMiddleware',
 ]
 
 ROOT_URLCONF = 'judicalex-gn.urls'
