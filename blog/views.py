@@ -17,7 +17,7 @@ def post_list(request):
     last_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[:6]
        # Requêtes
     _last_post_contrib = Post.objects.filter(type='contribution', status='published').order_by('-created_at')
-    _old_post_news = Post.objects.filter(type='news', status='published').order_by('created_at')
+    _old_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[6:]
 
     # Pagination contributions (6 par page)
     contrib_paginator = Paginator(_last_post_contrib, 6)

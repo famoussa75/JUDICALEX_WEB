@@ -34,7 +34,7 @@ def visiteurDashboard(request):
 
     last_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[:6]
     last_post_contrib = Post.objects.filter(type='contribution', status='published').order_by('-created_at')[:6]
-    old_post_news = Post.objects.filter(type='news', status='published').order_by('created_at')[:6]
+    old_post_news = Post.objects.filter(type='news', status='published').order_by('-created_at')[6:12]
     ads_header = Ad.objects.filter(active=True, position='header').order_by('?')
     ads_lateral = Ad.objects.filter(active=True, position='sidebar').order_by('?')
     context = {
