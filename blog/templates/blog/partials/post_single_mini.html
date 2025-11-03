@@ -9,47 +9,45 @@
         
             <div class="card p-3" style="border: none; box-shadow: none;">
                 <a href="{% url 'blog.post_detail' post.slug %}">
-                    <img src="{{ post.image.url }}" 
-                        class="card-img-top" 
-                        alt="Actu 1" 
-                        style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="Actu 1" style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
                 </a>
                         <!-- Ligne Creator + Time -->
                 
                 <div class="">
                     {% if post.author|has_group:"Contributeur" %}
-                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                            {% if post.author.photo %}
-                                <img src="{{ post.author.photo.url }}"
-                                    alt="{{ post.author.username }}"
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                            {% elif post.author|social_avatar %}
-                                <img src="{{ post.author|social_avatar }}"
-                                    alt="{{ post.author.username }}"
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                            {% else %}
-                                <img src="{% static 'start/assets/statics/logo-icon.png' %}"
-                                    alt="{{ post.author.username }}"
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                            {% endif %}
-
-                            {{ post.author.first_name }} {{ post.author.last_name }}
-                        </span>
-                        <!-- Photo de profil -->  
-                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2" style="gap: 10px;">
+                      <span style="display: flex;align-items: center;min-width: 0;font-family: Jost;font-weight: 700;color: #143642;flex: 1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                          {% if post.author.photo %}
+                              <img src="{{ post.author.photo.url }}"
+                                   alt="{{ post.author.username }}"
+                                   style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid;">
+                          {% elif post.author|social_avatar %}
+                              <img src="{{ post.author|social_avatar }}"
+                                   alt="{{ post.author.username }}"
+                                   style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid;">
+                          {% else %}
+                              <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                                   alt="{{ post.author.username }}"
+                                   style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid;">
+                          {% endif %}
+                  
+                          <span style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display: inline-block;max-width: 180px;">
+                              {{ post.author.first_name }} {{ post.author.last_name }}
+                          </span>
+                      </span>
+                  </div>
+                  
                     {% else %}
-                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                        <span style="font-family: Jost; font-weight: 700; color: #143642;">
-
-                                <img src="{% static 'start/assets/statics/logo-icon.png' %}"
-                                    alt="{{ post.author.username }}"
-                                    style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-
-                        Judicalex Guinée
+                    <div class="d-flex justify-content-between align-items-center mb-4 mt-2" style="gap: 10px;">
+                        <span style=" display: flex;align-items: center;min-width: 0;font-family: Jost;font-weight: 700;color: #143642;flex: 1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                            <img src="{% static 'start/assets/statics/logo-icon.png' %}" alt="{{ post.author.username }}" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid;">
+                    
+                            <span style="overflow: hidden;text-overflow: ellipsis; white-space: nowrap;display: inline-block;max-width: 180px;">
+                                Judicalex Guinée
+                            </span>
                         </span>
-                        <!-- Photo de profil -->  
                     </div>
+                  
 
                     {% endif %}
                     <a href="{% url 'blog.post_detail' post.slug %}">

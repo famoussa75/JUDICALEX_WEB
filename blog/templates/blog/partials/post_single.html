@@ -16,41 +16,49 @@
                     <!-- Ligne Creator + Time -->
             
             <div class="">
-                {% if post.author|has_group:"Contributeur" %}
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-                        {% if post.author.photo %}
-                            <img src="{{ post.author.photo.url }}"
-                                alt="{{ post.author.username }}"
-                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                        {% elif post.author|social_avatar %}
-                            <img src="{{ post.author|social_avatar }}"
-                                alt="{{ post.author.username }}"
-                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                        {% else %}
-                            <img src="{% static 'start/assets/statics/logo-icon.png' %}"
-                                alt="{{ post.author.username }}"
-                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-                        {% endif %}
-
+              {% if post.author|has_group:"Contributeur" %}
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2" style="gap: 10px;">
+                  <span style="display: flex;align-items: center;min-width: 0;font-family: Jost;font-weight: 700;color: #143642;flex: 1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                    {% if post.author.photo %}
+                        <img src="{{ post.author.photo.url }}"
+                             alt="{{ post.author.username }}"
+                             style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                    {% elif post.author|social_avatar %}
+                        <img src="{{ post.author|social_avatar }}"
+                             alt="{{ post.author.username }}"
+                             style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                    {% else %}
+                        <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                             alt="{{ post.author.username }}"
+                             style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+                    {% endif %}
+                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                         {{ post.author.first_name }} {{ post.author.last_name }}
                     </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
-                    <!-- Photo de profil -->  
+                  </span>
+                
+                  <a href="#" style="color: gray;font-weight: 700;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;flex-shrink: 0;max-width: 120px;display: inline-block; ">
+                      Il y'a {{ post.created_at|timesince }}
+                  </a>
                 </div>
+                
                 {% else %}
-                <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
-                    <span style="font-family: Jost; font-weight: 700; color: #143642;">
-
-                            <img src="{% static 'start/assets/statics/logo-icon.png' %}"
-                                alt="{{ post.author.username }}"
-                                style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
-
-                    Judicalex Guinée
-                    </span>
-                    <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ post.created_at|timesince }} </a>
-                    <!-- Photo de profil -->  
+                <div class="d-flex justify-content-between align-items-center mb-4 mt-2" style="gap: 10px;">
+                  <span style="display: flex;align-items: center; min-width: 0;font-family: Jost;font-weight: 700;color: #143642;flex: 1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                      <img src="{% static 'start/assets/statics/logo-icon.png' %}"
+                           alt="{{ post.author.username }}"
+                           style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover; margin-right: 5px; border: 1px solid">
+              
+                      <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                          Judicalex Guinée
+                      </span>
+                  </span>
+              
+                  <a href="#" style="color: gray;font-weight: 700;white-space: nowrap; overflow: hidden;text-overflow: ellipsis;flex-shrink: 0;max-width: 120px; display: inline-block;">
+                      Il y'a {{ post.created_at|timesince }}
+                  </a>
                 </div>
+              
 
                 {% endif %}
                 <a href="{% url 'blog.post_detail' post.slug %}">
