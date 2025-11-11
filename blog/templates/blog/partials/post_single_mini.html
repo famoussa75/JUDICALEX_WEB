@@ -8,9 +8,11 @@
     <div class="col-md-4">
         
             <div class="card p-3" style="border: none; box-shadow: none;">
+                {% if post.image %}
                 <a href="{% url 'blog.post_detail' post.slug %}">
                     <img src="{{ post.image.url }}" class="card-img-top" alt="Actu 1" style="height: 200px; object-fit: cover; border-radius: 15px; overflow: hidden;">
                 </a>
+                {% endif %}
                         <!-- Ligne Creator + Time -->
                 
                 <div class="">

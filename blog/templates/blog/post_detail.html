@@ -88,11 +88,13 @@
                     <!-- Carte Actualité 1 -->
                     <div class="col-md-12">
                         <div class="card" style="border: none; box-shadow: none;">
+                        {% if post.image %}
                         <img src="{{ post.image.url }}" 
                             class="card-img-top" 
                             alt="Actu 1" 
                             style="height: 500px; object-fit: cover; border-radius: 15px; overflow: hidden;">
                                 <!-- Ligne Creator + Time -->
+                        {% endif %}
                         
                         <div class="">
                             {% if post.author|has_group:"Contributeur" %}

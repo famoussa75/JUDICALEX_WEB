@@ -88,10 +88,12 @@
             <div class="card p-3" style="border: none; box-shadow: none;">
                 <div class="row g-3"> <!-- row séparé pour les colonnes -->
                     <div class="col-md-7">
+                         {% if last_post_news.first.image %}
                         <img src="{{ last_post_news.first.image.url }}" 
                             class="card-img-top" 
                             alt="Actu 1" 
                             style="height: 400px; object-fit: cover; border-radius: 15px; overflow: hidden;">
+                        {% endif %}
                     </div>
                     <div class="col-md-5 d-flex flex-column">
                         <div>
