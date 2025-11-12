@@ -57,18 +57,54 @@ def signIn(request):
         email = request.POST.get('email', None)
         password = request.POST.get('password', None)
         user = Account.objects.filter(email=email).first()
+        page_source = request.POST.get('page')
         if user:
             auth_user = authenticate(username=user.username, password=password)
             if auth_user is not None:
-                login(request, auth_user)
-                # Si "Se rappeler de moi" n'est pas coché, la session expire à la fermeture du navigateur
-                if not request.POST.get('remember'):
-                    request.session.set_expiry(0)  # session temporaire
-                else:
-                    request.session.set_expiry(60 * 60 * 24 * 30)  # 30 jours
+                # Récupérer les noms des groupes de l'utilisateur
+                user_groups = auth_user.groups.values_list('name', flat=True)
 
-                next_url = request.POST.get("next") or request.GET.get("next") or "home"
-                return redirect(next_url)
+                # Définir les groupes autorisés par type de page
+                public_groups = ['Visiteur', 'Contributeur']
+                pro_groups = ['Administrateur', 'Collaborateur', 'Pigiste']
+
+                authorized = (
+                    (page_source == 'public_page' and any(g in public_groups for g in user_groups))
+                    or
+                    (page_source == 'pro_page' and any(g in pro_groups for g in user_groups))
+                )
+
+                if authorized:
+                    # Connexion utilisateur
+                    login(request, auth_user)
+
+                    # Gestion du "Se souvenir de moi"
+                    if not request.POST.get('remember'):
+                        request.session.set_expiry(0)  # session temporaire
+                    else:
+                        request.session.set_expiry(60 * 60 * 24 * 30)  # 30 jours
+
+                    # Redirection après connexion
+                    next_url = (
+                        request.POST.get("next")
+                        or request.GET.get("next")
+                        or "home"
+                    )
+                    return redirect(next_url)
+
+                else:
+                    # Non autorisé depuis cette page
+                    msg_error_login = "Vous tentez de vous connecter depuis une page qui n’est pas autorisée pour votre type de compte."
+                    referer = request.META.get('HTTP_REFERER', '/')
+                    parsed_url = urlparse(referer)
+                    query_params = parse_qs(parsed_url.query)
+                    query_params['msg_error_login'] = msg_error_login
+                    new_query_string = urlencode(query_params, doseq=True)
+                    cleaned_url = urlunparse(parsed_url._replace(query=''))  # nettoie l’URL
+                    redirect_url = f"{cleaned_url}?{new_query_string}"
+                    return HttpResponseRedirect(redirect_url)
+
+                
             else:
                 error = True
                 msg_error_login = "Email ou mot de passe incorrecte."

@@ -11,6 +11,7 @@ from django.contrib import messages
 from users.models import Notification
 from django.urls import reverse
 from django.http import Http404, JsonResponse
+from urllib.parse import quote
 
 
 def post_list(request):
@@ -150,25 +151,24 @@ def share_post(request, slug, platform):
     post.save(update_fields=["shares"])
 
     post_url = request.build_absolute_uri(reverse("blog.post_detail", args=[post.slug]))
-    title = post.title
+    title = quote(post.title)  # ✅ encodage du titre
+    encoded_url = quote(post_url)  # ✅ encodage de l’URL
 
-    # Choisir l’URL de partage (mobile app ou web)
+    # Choisir l’URL de partage
     if platform == "facebook":
-        app_url = f"fb://facewebmodal/f?href={post_url}"
-        web_url = f"https://www.facebook.com/sharer/sharer.php?u={post_url}"
+        app_url = f"fb://facewebmodal/f?href={encoded_url}"
+        web_url = f"https://www.facebook.com/sharer/sharer.php?u={encoded_url}"
     elif platform == "twitter":
-        app_url = f"twitter://post?message={title} {post_url}"
-        web_url = f"https://twitter.com/intent/tweet?url={post_url}&text={title}"
+        app_url = f"twitter://post?message={title}%20{encoded_url}"
+        web_url = f"https://twitter.com/intent/tweet?url={encoded_url}&text={title}"
     elif platform == "whatsapp":
-        app_url = f"whatsapp://send?text={title} {post_url}"
-        web_url = f"https://api.whatsapp.com/send?text={title} {post_url}"
+        app_url = f"whatsapp://send?text={title}%20{encoded_url}"
+        web_url = f"https://api.whatsapp.com/send?text={title}%20{encoded_url}"
     elif platform == "linkedin":
-        # LinkedIn n’a pas de schéma d’app universel
-        app_url = web_url = f"https://www.linkedin.com/sharing/share-offsite/?url={post_url}"
+        app_url = web_url = f"https://www.linkedin.com/sharing/share-offsite/?url={encoded_url}"
     else:
-        app_url = web_url = post_url
+        app_url = web_url = encoded_url
 
-    # Rendre une page qui tente d’ouvrir l’app, sinon fallback web
     return render(request, "blog/share_redirect.html", {
         "app_url": app_url,
         "web_url": web_url,

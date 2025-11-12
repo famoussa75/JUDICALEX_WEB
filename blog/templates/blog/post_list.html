@@ -8,6 +8,8 @@
 {% load static %}
 {% load social_extras %}
 {% load user_extras %}
+{% load post_extras %}
+
 
 
 
@@ -116,7 +118,13 @@
                 
                                     {{ last_post_news.first.author.first_name }} {{ last_post_news.first.author.last_name }}
                                 </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ last_post_news.first.created_at|timesince }} </a>
+                                <a href="#" style="color: gray; font-weight: 700;">
+                                    {% if last_post_news.first.created_at|within_hours:24 %}
+                                        Il y'a {{ last_post_news.first.created_at|timesince }}
+                                    {% else %}
+                                        {{ last_post_news.first.created_at|date:"d/m/Y" }}
+                                    {% endif %}
+                                </a>
                                   <!-- Photo de profil -->  
                             </div>
                             {% else %}
@@ -129,7 +137,14 @@
                 
                                    Judicalex Guinée
                                 </span>
-                                <a href="#" style="color: gray; font-weight: 700;">Il y'a {{ last_post_news.first.created_at|timesince }} </a>
+                                <a href="#" style="color: gray; font-weight: 700;">
+                                    {% if last_post_news.first.created_at|within_hours:24 %}
+                                        Il y'a {{ last_post_news.first.created_at|timesince }}
+                                    {% else %}
+                                        {{ last_post_news.first.created_at|date:"d/m/Y" }}
+                                    {% endif %}
+
+                                </a>
                                   <!-- Photo de profil -->  
                             </div>
                 

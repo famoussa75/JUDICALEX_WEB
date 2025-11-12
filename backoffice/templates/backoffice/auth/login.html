@@ -128,12 +128,16 @@
                         <label class="form-check-label" for="rememberMe">Se rappeler de moi</label>
                       </div>
                     </div>
+                    <input type="hidden" value="pro_page" name="page">
                     <div class="col-12">
                       <button class="btn btn-judicalex w-100" type="submit">Se connecter</button>
                     </div>
-                    <div class="col-12">
-                      <!-- <p class="small mb-0">Don't have account? <a href="pages-register.html">Create an account</a></p> -->
+                    <div class="col-12 text-center mt-3">
+                      <a href="{% url 'home' %}" style="color: #007bff; text-decoration: none;">
+                        ← Retour à l’accueil
+                      </a>
                     </div>
+                    
                   </form>
 
                 </div>

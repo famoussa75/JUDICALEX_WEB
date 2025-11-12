@@ -5,6 +5,8 @@
 
     {% load user_extras %}
     
+    {% load post_extras %}
+
     <div class="col-md-4">
             <div class="card p-3" style="border: none; box-shadow: none;">
               {% if post.image %}
@@ -39,11 +41,15 @@
                   </span>
                 
                   <a href="#" style="color: gray;font-weight: 700;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;flex-shrink: 0;max-width: 120px;display: inline-block; ">
-                      Il y'a {{ post.created_at|timesince }}
+                    {% if post.created_at|within_hours:24 %}
+                        Il y'a {{ post.created_at|timesince }}
+                    {% else %}
+                        {{ post.created_at|date:"d/m/Y" }}
+                    {% endif %}
                   </a>
                 </div>
                 
-                {% else %}
+              {% else %}
                 <div class="d-flex justify-content-between align-items-center mb-4 mt-2" style="gap: 10px;">
                   <span style="display: flex;align-items: center; min-width: 0;font-family: Jost;font-weight: 700;color: #143642;flex: 1;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
                       <img src="{% static 'start/assets/statics/logo-icon.png' %}"
@@ -56,12 +62,18 @@
                   </span>
               
                   <a href="#" style="color: gray;font-weight: 700;white-space: nowrap; overflow: hidden;text-overflow: ellipsis;flex-shrink: 0;max-width: 120px; display: inline-block;">
-                      Il y'a {{ post.created_at|timesince }}
+                    {% if post.created_at|within_hours:24 %}
+                        Il y'a {{ post.created_at|timesince }}
+                    {% else %}
+                        {{ post.created_at|date:"d/m/Y" }}
+                    {% endif %}
+                    
+                    
                   </a>
                 </div>
               
 
-                {% endif %}
+              {% endif %}
                 <a href="{% url 'blog.post_detail' post.slug %}">
                     <h5 class="card-title" style="font-family: Jost; font-weight: 700; color: #143642;">
                         {{post.title|striptags|truncatechars:70}}
