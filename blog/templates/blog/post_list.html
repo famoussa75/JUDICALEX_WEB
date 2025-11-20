@@ -240,19 +240,68 @@
                 <!-- Pagination news -->
                 <nav>
                     <ul class="pagination">
-                    {% if old_post_news.has_previous %}
-                        <li class="page-item"><a class="page-link" href="?news_page={{ old_post_news.previous_page_number }}">Précédent</a></li>
-                    {% endif %}
                 
-                    {% for num in old_post_news.paginator.page_range %}
-                        <li class="page-item {% if old_post_news.number == num %}active{% endif %}">
-                        <a class="page-link" href="?news_page={{ num }}">{{ num }}</a>
+                        {# Lien "Précédent" #}
+                        {% if old_post_news.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?news_page={{ old_post_news.previous_page_number }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <polyline points="15 6 9 12 15 18" />
+                                </svg>
+                                Précédent
+                            </a>
                         </li>
-                    {% endfor %}
-                
-                    {% if old_post_news.has_next %}
-                        <li class="page-item"><a class="page-link" href="?news_page={{ old_post_news.next_page_number }}">Suivant</a></li>
-                    {% endif %}
+                        {% endif %}
+            
+                        {# Toujours afficher la première page #}
+                        {% if old_post_news.number > 3 %}
+                        <li class="page-item"><a class="page-link" href="?news_page=1">1</a></li>
+                        {% if old_post_news.number > 4 %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                        {% endif %}
+            
+                        {# Afficher 2 pages avant et après la page courante #}
+                        {% for num in old_post_news.paginator.page_range %}
+                            {% if num >= old_post_news.number|add:"-2" and num <= old_post_news.number|add:"2" %}
+                                {% if num == old_post_news.number %}
+                                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                                {% else %}
+                                <li class="page-item"><a class="page-link" href="?news_page={{ num }}">{{ num }}</a></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+            
+                        {# Toujours afficher la dernière page #}
+                        {% if old_post_news.number < old_post_news.paginator.num_pages|add:"-2" %}
+                            {% if old_post_news.number < old_post_news.paginator.num_pages|add:"-3" %}
+                                <li class="page-item disabled"><span class="page-link">...</span></li>
+                            {% endif %}
+                            <li class="page-item">
+                                <a class="page-link" href="?news_page={{ old_post_news.paginator.num_pages }}">
+                                    {{ old_post_news.paginator.num_pages }}
+                                </a>
+                            </li>
+                        {% endif %}
+            
+                        {# Lien "Suivant" #}
+                        {% if old_post_news.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?news_page={{ old_post_news.next_page_number }}">
+                                Suivant
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                    viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <polyline points="9 6 15 12 9 18" />
+                                </svg>
+                            </a>
+                        </li>
+                        {% endif %}
+            
                     </ul>
                 </nav>
 
@@ -299,21 +348,71 @@
             <!-- Pagination contributions -->
             <nav>
                 <ul class="pagination">
-                {% if last_post_contrib.has_previous %}
-                    <li class="page-item"><a class="page-link" href="?contrib_page={{ last_post_contrib.previous_page_number }}">Précédent</a></li>
-                {% endif %}
             
-                {% for num in last_post_contrib.paginator.page_range %}
-                    <li class="page-item {% if last_post_contrib.number == num %}active{% endif %}">
-                    <a class="page-link" href="?contrib_page={{ num }}">{{ num }}</a>
+                    {# Lien "Précédent" #}
+                    {% if last_post_contrib.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?contrib_page={{ last_post_contrib.previous_page_number }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <polyline points="15 6 9 12 15 18" />
+                            </svg>
+                            Précédent
+                        </a>
                     </li>
-                {% endfor %}
+                    {% endif %}
             
-                {% if last_post_contrib.has_next %}
-                    <li class="page-item"><a class="page-link" href="?contrib_page={{ last_post_contrib.next_page_number }}">Suivant</a></li>
-                {% endif %}
+                    {# Toujours afficher la première page #}
+                    {% if last_post_contrib.number > 3 %}
+                    <li class="page-item"><a class="page-link" href="?contrib_page=1">1</a></li>
+                    {% if last_post_contrib.number > 4 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                    {% endif %}
+            
+                    {# Afficher 2 pages avant et après la page courante #}
+                    {% for num in last_post_contrib.paginator.page_range %}
+                        {% if num >= last_post_contrib.number|add:"-2" and num <= last_post_contrib.number|add:"2" %}
+                            {% if num == last_post_contrib.number %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                            {% else %}
+                            <li class="page-item"><a class="page-link" href="?contrib_page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+            
+                    {# Toujours afficher la dernière page #}
+                    {% if last_post_contrib.number < last_post_contrib.paginator.num_pages|add:"-2" %}
+                        {% if last_post_contrib.number < last_post_contrib.paginator.num_pages|add:"-3" %}
+                            <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                        <li class="page-item">
+                            <a class="page-link" href="?contrib_page={{ last_post_contrib.paginator.num_pages }}">
+                                {{ last_post_contrib.paginator.num_pages }}
+                            </a>
+                        </li>
+                    {% endif %}
+            
+                    {# Lien "Suivant" #}
+                    {% if last_post_contrib.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?contrib_page={{ last_post_contrib.next_page_number }}">
+                            Suivant
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <polyline points="9 6 15 12 9 18" />
+                            </svg>
+                        </a>
+                    </li>
+                    {% endif %}
+            
                 </ul>
             </nav>
+            
 
         </div>
     {% endif %}
